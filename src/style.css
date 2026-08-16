@@ -1,0 +1,96 @@
+@import 'tailwindcss';
+
+/* ===== For Infinite 主题：星权穹顶 =====
+   灰阶 + 冷蓝 + 唯一暖色（LIFE / 光核）
+*/
+:root {
+  --fi-bg: #0a0a0f;
+  --fi-panel: #12121a;
+  --fi-panel-2: #181822;
+  --fi-line: #23232f;
+  --fi-blue: #5b7fd4;
+  --fi-blue-dim: #2c3a5e;
+  --fi-text: #c8cbd4;
+  --fi-muted: #6b7080;
+  --fi-warm: #f0b35a; /* LIFE / 光核 唯一暖色 */
+  --fi-warm-soft: #ffd9a0;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--fi-bg);
+  color: var(--fi-text);
+  font-family:
+    'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+}
+
+.serif-quote {
+  font-family: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+}
+
+/* 细网格 / 数据背景 */
+.fi-grid-bg {
+  background-image:
+    linear-gradient(rgba(91, 127, 212, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91, 127, 212, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* 光核发光 */
+.fi-glow-warm {
+  text-shadow: 0 0 12px rgba(240, 179, 90, 0.5);
+}
+.fi-glow-blue {
+  box-shadow: 0 0 0 1px var(--fi-blue-dim), 0 0 24px rgba(91, 127, 212, 0.15);
+}
+
+/* 微光呼吸 */
+@keyframes fi-breathe {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+.fi-breathe {
+  animation: fi-breathe 3.2s ease-in-out infinite;
+}
+
+/* 扫描线 */
+@keyframes fi-scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+/* 淡入上移 */
+@keyframes fi-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fi-rise {
+  animation: fi-rise 0.7s ease both;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--fi-line);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fi-blue-dim);
+}

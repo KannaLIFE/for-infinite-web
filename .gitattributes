@@ -1,0 +1,12 @@
+# Force LF line endings everywhere
+* text=auto eol=lf
+
+# binaries
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
