@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
-import { marked } from 'marked';
 import { api } from '../lib/api';
+import { renderMarkdown } from '../lib/md';
 import type { Article, ArticleMeta } from '../types';
 
 const tags = ref<{ tag: string; count: number }[]>([]);
@@ -47,9 +47,6 @@ async function openArticle(slug: string): Promise<void> {
   }
 }
 
-function renderMarkdown(s: string): string {
-  return marked.parse(s) as string;
-}
 
 // 标签/搜索变化时重新加载
 watch([selectedTags, keyword], () => void loadArticles(), { deep: false });
