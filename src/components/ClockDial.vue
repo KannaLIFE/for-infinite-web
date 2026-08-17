@@ -37,8 +37,10 @@ watch(
 );
 
 function onWheel(e: WheelEvent): void {
-  // 滚轮一格 ≈ 0.55 年份速度；向上滚=去未来(+)，向下滚=回过去(-)
-  velocity.value += -e.deltaY * 0.0055;
+  // 鼠标一格 ≈ 1 年（速度 0.07 对应阻尼下总位移约 1 年）；
+  // 触控板的小步长按比例缩小；向上滚=去未来(+)，向下滚=回过去(-)
+  const unit = Math.min(Math.abs(e.deltaY) * 0.0007, 0.07);
+  velocity.value += (e.deltaY < 0 ? 1 : -1) * unit;
   if (rafId === null) rafId = requestAnimationFrame(step);
 }
 
