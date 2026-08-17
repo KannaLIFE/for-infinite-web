@@ -14,8 +14,14 @@ const disk = ref<{ messagesBytes: number; mediaBytes: number; totalUsedBytes: nu
 const keepDays = ref(30);
 const cleanupMsg = ref('');
 const showKeys = ref(false);
+const lastRefresh = ref('');
 
 const token = () => getToken() || undefined;
+
+async function refresh(): Promise<void> {
+  await loadAll();
+  lastRefresh.value = new Date().toLocaleTimeString();
+}
 
 function fmtBytes(n: number): string {
   if (n === 0) return '0 B';
@@ -109,7 +115,18 @@ onMounted(async () => {
     <template v-else>
       <!-- 账号状态 -->
       <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
-        <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">账号状态</h2>
+        <div class="mb-3 flex items-center justify-between">
+          <h2 class="mono text-sm text-[var(--fi-warm)]">账号状态</h2>
+          <button
+            class="mono rounded border border-[var(--fi-line)] px-3 py-1 text-xs text-[var(--fi-text)] hover:border-[var(--fi-blue)]"
+            @click="refresh"
+          >
+            ⟳ 刷新检测
+          </button>
+        </div>
+        <p v-if="lastRefresh" class="mono mb-2 text-[10px] text-[var(--fi-muted)]">
+          上次刷新：{{ lastRefresh }}
+        </p>
         <div class="space-y-2">
           <div v-for="a in accounts" :key="a.id" class="flex items-center gap-3">
             <span

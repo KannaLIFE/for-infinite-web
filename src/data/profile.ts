@@ -1,35 +1,35 @@
 // 个人主页内容（可自行编辑）
 export const profile = {
-  name: 'Kanna / LIFE',
-  tagline: '星权穹顶的观测者与记录者',
+  name: 'KannaLIFE',
+  tagline: '你好！',
   intro:
-    '这里是 For Infinite 委员会的观测站。记录、观测、反制——以及，给壳里留一点暖光。',
+    '我是 KannaLIFE，一个还在成长中的开发者。想学更多东西，交更多朋友。',
 
   techStack: [
-    'TypeScript / Node.js',
-    'Vue 3 / Vite',
+    'C',
+    'Java',
     'Python',
-    'SQLite / SQL',
-    'Linux 部署与运维',
+    'HTML',
+    'CSS',
   ],
 
   learning: [
-    '分布式系统基础',
+    'AI/机器学习',
     'LLM 应用与 Agent',
-    'NapCat / OneBot 协议',
+    '全栈（React + Node)'
   ],
 
   interests: [
-    '科幻（阿西莫夫、银河帝国、永恒的终结）',
-    '心理史学与变数理论',
-    '视觉小说与叙事设计',
-    '赛博朋克美学',
+    '社会学理论',
+    '心理学理论',
+    '经济学理论',
+    
   ],
 
   contacts: [
-    { label: 'Email', value: 'you@example.com' },
-    { label: 'GitHub', value: 'https://github.com/yourname' },
-    { label: 'QQ', value: '（见消息页）' },
+    { label: 'Email', value: 'jinshihuabei@gmail.com' },
+    { label: 'GitHub', value: 'https://github.com/kannalife' },
+    { label: '', value: '' },
   ],
 
   friends: [

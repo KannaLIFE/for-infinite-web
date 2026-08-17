@@ -53,7 +53,8 @@ async function load(reset = false): Promise<void> {
     for (const m of messages.value) map.set(m.id, m);
     for (const m of r.items) map.set(m.id, m);
     messages.value = [...map.values()].sort((a, b) => a.timestamp - b.timestamp);
-    if (reset) await scrollToBottom(true);
+    // reset 时强制滚到底；轮询时仅在用户原本就在底部（nearBottom）时才自动滚
+    await scrollToBottom(reset);
   } catch (err) {
     if ((err as { status?: number }).status === 401) unlocked.value = false;
   }
