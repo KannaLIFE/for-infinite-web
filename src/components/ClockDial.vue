@@ -37,8 +37,8 @@ watch(
 );
 
 function onWheel(e: WheelEvent): void {
-  // 滚轮一格 ≈ 0.55 年份速度
-  velocity.value += (e.deltaY > 0 ? -1 : 1) * e.deltaY * 0.0055;
+  // 滚轮一格 ≈ 0.55 年份速度；向上滚=去未来(+)，向下滚=回过去(-)
+  velocity.value += -e.deltaY * 0.0055;
   if (rafId === null) rafId = requestAnimationFrame(step);
 }
 
