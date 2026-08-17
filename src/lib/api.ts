@@ -30,4 +30,6 @@ export const api = {
   get: <T>(p: string, token?: string) => request<T>(p, { token }),
   post: <T>(p: string, body?: unknown, token?: string) =>
     request<T>(p, { method: 'POST', body, token }),
+  delete: <T>(p: string, token?: string) =>
+    request<T>(p, { method: 'DELETE', token }),
 };

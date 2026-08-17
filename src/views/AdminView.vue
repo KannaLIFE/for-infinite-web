@@ -79,10 +79,67 @@ async function cleanup(): Promise<void> {
   await loadAll();
 }
 
+// ===== 文章管理 =====
+type ArtCategory = 'blog' | 'worldview' | 'reality';
+const artCategory = ref<ArtCategory>('blog');
+const artList = ref<{ slug: string; title: string; locked: boolean }[]>([]);
+const artForm = ref({ title: '', year: '', date: '', tags: '', excerpt: '', content: '' });
+const artMsg = ref('');
+
+async function loadArtList(): Promise<void> {
+  try {
+    const r = await api.get<{ items: typeof artList.value }>(
+      `/api/admin/articles/${artCategory.value}`,
+      token(),
+    );
+    artList.value = r.items;
+  } catch {
+    /* ignore */
+  }
+}
+
+async function createArticle(): Promise<void> {
+  artMsg.value = '';
+  if (!artForm.value.title.trim() || !artForm.value.content.trim()) {
+    artMsg.value = '标题和正文不能为空。';
+    return;
+  }
+  const body: Record<string, unknown> = {
+    category: artCategory.value,
+    title: artForm.value.title.trim(),
+    content: artForm.value.content,
+  };
+  if (artCategory.value === 'worldview') body.year = Number(artForm.value.year) || 0;
+  if (artCategory.value !== 'worldview' && artForm.value.date.trim()) body.date = artForm.value.date.trim();
+  if (artForm.value.tags.trim()) {
+    body.tags = artForm.value.tags.split(',').map((s) => s.trim()).filter(Boolean);
+  }
+  if (artForm.value.excerpt.trim()) body.excerpt = artForm.value.excerpt.trim();
+  try {
+    await api.post('/api/admin/articles', body, token());
+    artMsg.value = '已创建。';
+    artForm.value = { title: '', year: '', date: '', tags: '', excerpt: '', content: '' };
+    await loadArtList();
+  } catch (err) {
+    artMsg.value = `创建失败：${String(err)}`;
+  }
+}
+
+async function deleteArticle(slug: string): Promise<void> {
+  if (!confirm(`删除文章 ${slug}？`)) return;
+  try {
+    await api.delete(`/api/admin/articles/${artCategory.value}/${slug}`, token());
+    await loadArtList();
+  } catch {
+    /* ignore */
+  }
+}
+
 onMounted(async () => {
   if (getToken()) {
     unlocked.value = true;
     await loadAll();
+    await loadArtList();
   }
 });
 </script>
@@ -190,6 +247,69 @@ onMounted(async () => {
           </button>
         </div>
         <p v-if="cleanupMsg" class="mono mt-2 text-xs text-[var(--fi-warm)]">{{ cleanupMsg }}</p>
+      </section>
+
+      <!-- 文章管理 -->
+      <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
+        <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">文章管理</h2>
+
+        <!-- 分类切换 -->
+        <div class="mb-4 flex gap-2">
+          <button
+            v-for="c in (['blog', 'worldview', 'reality'] as ArtCategory[])"
+            :key="c"
+            class="mono rounded border px-3 py-1.5 text-xs"
+            :class="artCategory === c ? 'border-[var(--fi-warm)] text-[var(--fi-warm)]' : 'border-[var(--fi-line)] text-[var(--fi-muted)]'"
+            @click="artCategory = c; loadArtList()"
+          >
+            {{ c === 'blog' ? '博客' : c === 'worldview' ? '世界观' : '现实(上锁)' }}
+          </button>
+        </div>
+
+        <!-- 上传表单 -->
+        <div class="space-y-2">
+          <input v-model="artForm.title" class="mono w-full rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none" placeholder="标题" />
+          <div class="flex gap-2">
+            <input
+              v-if="artCategory === 'worldview'"
+              v-model="artForm.year"
+              type="number"
+              class="mono w-28 rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none"
+              placeholder="世界观年"
+            />
+            <input
+              v-else
+              v-model="artForm.date"
+              class="mono w-40 rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none"
+              placeholder="日期 YYYY-MM-DD"
+            />
+            <input v-model="artForm.tags" class="mono min-w-0 flex-1 rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none" placeholder="标签，逗号分隔" />
+          </div>
+          <input v-model="artForm.excerpt" class="mono w-full rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none" placeholder="摘要（可选）" />
+          <textarea
+            v-model="artForm.content"
+            rows="8"
+            class="w-full rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm leading-relaxed text-[var(--fi-text)] outline-none"
+            placeholder="正文（Markdown）……"
+          ></textarea>
+          <button class="rounded-lg px-4 py-2 text-sm" style="background: var(--fi-warm); color: #1a1208" @click="createArticle">
+            创建文章
+          </button>
+          <p v-if="artMsg" class="mono text-xs text-[var(--fi-warm)]">{{ artMsg }}</p>
+        </div>
+
+        <!-- 已有文章 -->
+        <div class="mt-4 space-y-1">
+          <div v-for="a in artList" :key="a.slug" class="flex items-center gap-3">
+            <span class="mono truncate text-sm text-[var(--fi-text)]">{{ a.title }}</span>
+            <span v-if="a.locked" class="mono text-[10px] text-[var(--fi-muted)]">🔒</span>
+            <span class="mono shrink-0 text-[10px] text-[var(--fi-muted)]">{{ a.slug }}</span>
+            <button class="mono ml-auto rounded border border-[var(--fi-line)] px-2 py-1 text-xs text-[var(--fi-muted)] hover:border-[#f87171] hover:text-[#f87171]" @click="deleteArticle(a.slug)">
+              删除
+            </button>
+          </div>
+          <p v-if="!artList.length" class="mono text-xs text-[var(--fi-muted)]">该分类暂无文章。</p>
+        </div>
       </section>
     </template>
   </div>
