@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onUnmounted, ref, watch } from 'vue';
 
 const props = defineProps<{
   /** 有文章的年份（暖色粗刻度） */
   years: number[];
-  /** 当前选中年份 */
+  /** 当前选中年份（吸附完成后回传） */
   modelValue: number;
 }>();
 
@@ -21,30 +21,70 @@ const END_ANGLE = 150; // 5 点
 const POINTER_ANGLE = 90; // 3 点
 const ANGLE_PER_YEAR = 6;
 
+// ===== 惯性滑动 + 刻度吸附 =====
+const displayYear = ref(props.modelValue); // 浮点年份，驱动刻度连续移动
+const velocity = ref(0); // 年份/帧
+let rafId: number | null = null;
+
+// 外部传入的年份变化（如文章加载后初始化）同步到 displayYear
+watch(
+  () => props.modelValue,
+  (v) => {
+    if (rafId === null && Math.abs(displayYear.value - v) > 0.01) {
+      displayYear.value = v;
+    }
+  },
+);
+
+function onWheel(e: WheelEvent): void {
+  // 滚轮一格 ≈ 0.55 年份速度
+  velocity.value += (e.deltaY > 0 ? -1 : 1) * e.deltaY * 0.0055;
+  if (rafId === null) rafId = requestAnimationFrame(step);
+}
+
+function step(): void {
+  displayYear.value += velocity.value;
+  velocity.value *= 0.93; // 阻尼：逐渐减慢
+
+  if (Math.abs(velocity.value) < 0.004) {
+    // 吸附到最近的整数年份（刻度吸引力）
+    const target = Math.round(displayYear.value);
+    const diff = target - displayYear.value;
+    if (Math.abs(diff) < 0.02) {
+      displayYear.value = target;
+      velocity.value = 0;
+      rafId = null;
+      emit('update:modelValue', target);
+      return;
+    }
+    displayYear.value += diff * 0.22; // 缓动吸附
+  }
+  rafId = requestAnimationFrame(step);
+}
+
+onUnmounted(() => {
+  if (rafId !== null) cancelAnimationFrame(rafId);
+});
+
 function pt(angleDeg: number, r: number) {
   const rad = (angleDeg * Math.PI) / 180;
   return { x: CX + r * Math.sin(rad), y: CY - r * Math.cos(rad) };
 }
 
 function angleOf(year: number): number {
-  return POINTER_ANGLE - (props.modelValue - year) * ANGLE_PER_YEAR;
+  return POINTER_ANGLE - (displayYear.value - year) * ANGLE_PER_YEAR;
 }
 
 const visibleTicks = computed(() => {
   const has = new Set(props.years);
   const ticks: { year: number; angle: number; hasWorld: boolean }[] = [];
-  for (let y = props.modelValue - 40; y <= props.modelValue + 40; y++) {
+  for (let y = Math.floor(displayYear.value) - 40; y <= Math.ceil(displayYear.value) + 40; y++) {
     const a = angleOf(y);
     if (a < START_ANGLE - 2 || a > END_ANGLE + 2) continue;
     ticks.push({ year: y, angle: a, hasWorld: has.has(y) });
   }
   return ticks;
 });
-
-function onWheel(e: WheelEvent): void {
-  if (e.deltaY > 0) emit('update:modelValue', props.modelValue - 1);
-  else if (e.deltaY < 0) emit('update:modelValue', props.modelValue + 1);
-}
 
 const arcD = computed(() => {
   const a = pt(START_ANGLE, R);

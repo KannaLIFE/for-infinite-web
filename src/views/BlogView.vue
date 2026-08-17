@@ -76,7 +76,7 @@ onMounted(async () => {
   <div class="mx-auto max-w-6xl space-y-6 px-5">
     <header>
       <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">博客文章</h1>
-      <p class="mono mt-1 text-xs text-[var(--fi-muted)]">观测者与记录者的公开记录</p>
+      <p class="mono mt-1 text-xs text-[var(--fi-muted)]">技术笔记与分享</p>
     </header>
 
     <!-- 搜索 -->
