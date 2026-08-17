@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { marked } from 'marked';
 import { api } from '../lib/api';
 import { getToken, hasScope, setAuth } from '../lib/auth';
+import { renderMarkdown } from '../lib/md';
 import type { Article, ArticleMeta } from '../types';
 import ClockDial from '../components/ClockDial.vue';
 
@@ -109,9 +109,6 @@ async function openArticle(slug: string, category: 'worldview' | 'reality'): Pro
   }
 }
 
-function renderMarkdown(s: string): string {
-  return marked.parse(s) as string;
-}
 
 onMounted(async () => {
   await loadWorld();
