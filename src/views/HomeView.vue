@@ -4,7 +4,7 @@ import { nowWorldYear } from '../lib/time';
 </script>
 
 <template>
-  <div class="space-y-12">
+  <div class="mx-auto max-w-6xl space-y-12 px-5">
     <!-- 头部 -->
     <section class="fi-rise pt-6">
       <p class="mono text-xs tracking-widest text-[var(--fi-muted)]">

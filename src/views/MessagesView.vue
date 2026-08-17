@@ -166,7 +166,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="mx-auto max-w-6xl space-y-6 px-5">
     <header>
       <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">消息</h1>
       <p class="mono mt-1 text-xs text-[var(--fi-muted)]">Aetherlink · 跨星通讯</p>

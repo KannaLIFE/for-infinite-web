@@ -13,7 +13,7 @@ const bootDone = ref(false);
 
     <TopBar v-show="bootDone" />
 
-    <main class="mx-auto max-w-6xl px-5 pb-28 pt-20">
+    <main class="pb-28 pt-20">
       <router-view v-slot="{ Component }">
         <transition name="page" mode="out-in">
           <component :is="Component" />
