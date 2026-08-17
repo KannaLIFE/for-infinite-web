@@ -30,6 +30,19 @@ function fmtBytes(n: number): string {
   return `${(n / Math.pow(1024, i)).toFixed(1)} ${units[i]}`;
 }
 
+/** 距最后收到消息的可读时间 */
+function fmtAgo(sec: number | null | undefined): string {
+  if (sec === null || sec === undefined) return '等待首条消息…';
+  if (sec < 60) return `${Math.floor(sec)} 秒前`;
+  if (sec < 3600) return `${Math.floor(sec / 60)} 分钟前`;
+  return `${Math.floor(sec / 3600)} 小时前`;
+}
+
+/** 疑似掉线：连着 WS 但超过 1 小时没收到任何消息 */
+function isStale(a: AccountState): boolean {
+  return a.connected && a.lastMessageAgoSec !== null && a.lastMessageAgoSec !== undefined && a.lastMessageAgoSec > 3600;
+}
+
 async function unlock(): Promise<void> {
   unlockError.value = '';
   try {
@@ -188,11 +201,17 @@ onMounted(async () => {
           <div v-for="a in accounts" :key="a.id" class="flex items-center gap-3">
             <span
               class="inline-block h-2 w-2 rounded-full"
-              :style="a.connected ? 'background:#4ade80' : 'background:#f87171'"
+              :style="isStale(a) ? 'background:#fbbf24' : a.connected ? 'background:#4ade80' : 'background:#f87171'"
             ></span>
             <span class="mono text-sm text-[var(--fi-text)]">{{ a.id }}</span>
             <span class="mono text-xs text-[var(--fi-muted)]">
-              {{ a.connected ? '在线' : '离线' }} · {{ a.mode === 'whitelist' ? '白名单' : '黑名单' }}
+              {{ isStale(a) ? '疑似掉线' : a.connected ? '在线' : '离线' }} · {{ a.mode === 'whitelist' ? '白名单' : '黑名单' }}
+            </span>
+            <span
+              class="mono text-[10px]"
+              :style="isStale(a) ? 'color:#fbbf24' : 'color:var(--fi-muted)'"
+            >
+              最后收到：{{ fmtAgo(a.lastMessageAgoSec) }}
             </span>
             <button
               class="mono ml-auto rounded border border-[var(--fi-line)] px-2 py-1 text-xs text-[var(--fi-muted)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-text)]"

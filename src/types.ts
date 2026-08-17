@@ -42,4 +42,8 @@ export interface AccountState {
   enabled: boolean;
   mode: 'whitelist' | 'blacklist';
   connected: boolean;
+  /** 最后一次收到消息的时间戳（ms），从未收到为 null */
+  lastMessageAt: number | null;
+  /** 距最后收到消息的秒数，null 表示从未收到 */
+  lastMessageAgoSec: number | null;
 }
