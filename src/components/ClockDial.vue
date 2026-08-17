@@ -36,16 +36,26 @@ watch(
   },
 );
 
+const MIN_YEAR = 0; // 0 年是下限，不再往负数滑
+
 function onWheel(e: WheelEvent): void {
   // 鼠标一格 ≈ 1 年（速度 0.07 对应阻尼下总位移约 1 年）；
   // 触控板的小步长按比例缩小；向上滚=去未来(+)，向下滚=回过去(-)
   const unit = Math.min(Math.abs(e.deltaY) * 0.0007, 0.07);
-  velocity.value += (e.deltaY < 0 ? 1 : -1) * unit;
+  const dir = e.deltaY < 0 ? 1 : -1;
+  // 已到 0 年，且方向是继续往过去 → 忽略本次滚动
+  if (displayYear.value <= MIN_YEAR && dir < 0) return;
+  velocity.value += dir * unit;
   if (rafId === null) rafId = requestAnimationFrame(step);
 }
 
 function step(): void {
   displayYear.value += velocity.value;
+  // 下限钳制：不滑到负数年份
+  if (displayYear.value < MIN_YEAR) {
+    displayYear.value = MIN_YEAR;
+    velocity.value = 0;
+  }
   velocity.value *= 0.93; // 阻尼：逐渐减慢
 
   if (Math.abs(velocity.value) < 0.004) {
