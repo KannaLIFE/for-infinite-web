@@ -4,7 +4,10 @@ import { api } from '../lib/api';
 
 const emit = defineEmits<{ done: [] }>();
 
-const phrase = ref('算不完，也要算。');
+const quote = ref<{ text: string; author: string }>({
+  text: '认识你自己。',
+  author: '苏格拉底',
+});
 const phase = ref<'intro' | 'shrink'>('intro');
 const showQuote = ref(false);
 
@@ -28,18 +31,18 @@ const style = computed(() => {
 });
 
 onMounted(async () => {
-  // 后台拉取哲学语句（失败则用默认）
+  // 后台拉取哲言（失败则用默认）
   try {
-    const r = await api.get<{ quote: string }>('/api/quote');
-    if (r.quote) phrase.value = r.quote;
+    const r = await api.get<{ text: string; author: string }>('/api/quote');
+    if (r.text) quote.value = { text: r.text, author: r.author || '' };
   } catch {
     /* keep default */
   }
 
-  // 时间轴：字符动画 -> 显示语句 -> 缩小 -> 结束
-  setTimeout(() => (showQuote.value = true), 1500);
-  setTimeout(() => (phase.value = 'shrink'), 3300);
-  setTimeout(() => emit('done'), 4200);
+  // 时间轴：字符快速显现 → 立即显哲言 → 立即缩小 → 结束
+  setTimeout(() => (showQuote.value = true), 900);
+  setTimeout(() => (phase.value = 'shrink'), 1500);
+  setTimeout(() => emit('done'), 2500);
 });
 
 function skip(): void {
@@ -58,7 +61,7 @@ function skip(): void {
     <!-- 徽标：随阶段从中心缩小到左上角 -->
     <div
       class="absolute flex flex-col items-center"
-      :style="{ ...style, transition: 'all 0.9s cubic-bezier(0.4, 0, 0.2, 1)' }"
+      :style="{ ...style, transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)' }"
     >
       <div class="flex items-baseline gap-[0.12em]">
         <span
@@ -67,7 +70,7 @@ function skip(): void {
           class="inline-block font-mono text-4xl font-semibold tracking-tight text-[var(--fi-text)] md:text-6xl"
           :style="{
             opacity: 0,
-            animation: `fi-letter 0.05s ease ${i * 0.06}s forwards`,
+            animation: `fi-letter 0.05s ease ${i * 0.05}s forwards`,
             color: ch === ' ' ? 'transparent' : undefined,
           }"
         >{{ ch === ' ' ? '\u00A0' : ch }}</span>
@@ -78,18 +81,21 @@ function skip(): void {
         class="mt-3 h-px w-full"
         style="
           background: linear-gradient(90deg, transparent, var(--fi-warm), transparent);
-          animation: fi-line-grow 1.4s ease 0.2s forwards;
+          animation: fi-line-grow 0.6s ease 0.3s forwards;
           transform-origin: center;
           opacity: 0;
         "
       ></div>
 
-      <!-- 哲学语句 -->
+      <!-- 哲言（带出处） -->
       <p
         v-show="showQuote"
         class="serif-quote fi-rise mt-5 max-w-md px-6 text-center text-sm text-[var(--fi-muted)] md:text-base"
       >
-        {{ phrase }}
+        {{ quote.text }}
+        <span v-if="quote.author" class="mono mt-1 block text-xs text-[var(--fi-muted)]">
+          —— {{ quote.author }}
+        </span>
       </p>
     </div>
 
