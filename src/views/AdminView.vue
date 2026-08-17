@@ -88,7 +88,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="mx-auto max-w-6xl space-y-6 px-5">
     <header>
       <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">后台 · 调控</h1>
       <p class="mono mt-1 text-xs text-[var(--fi-muted)]">账号状态 · 名单 · 清理 · 钥匙</p>
