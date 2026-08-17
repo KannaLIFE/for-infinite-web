@@ -28,7 +28,7 @@ jobs:
       - name: Build
         env:
           VITE_API_BASE: https://api.kannalife.asia
-          VITE_BASE: /
+          VITE_BASE: /for-infinite-web/
         run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
