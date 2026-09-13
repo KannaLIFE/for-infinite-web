@@ -48,4 +48,8 @@ export interface AccountState {
   lastMessageAgoSec: number | null;
   /** NapCat systemd 服务的真实状态 */
   napcatState: 'running' | 'starting' | 'stopping' | 'stopped' | 'failed' | 'unknown';
+  /** 是否收到过 bot_offline 通知且尚未恢复（可靠掉线信号） */
+  offline: boolean;
+  /** 掉线时间戳（ms），null 表示从未掉线 */
+  offlineAt: number | null;
 }

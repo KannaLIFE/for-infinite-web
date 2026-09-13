@@ -44,8 +44,9 @@ function isStale(a: AccountState): boolean {
   return a.connected && a.lastMessageAgoSec !== null && a.lastMessageAgoSec !== undefined && a.lastMessageAgoSec > 3600;
 }
 
-/** NapCat 服务状态 → 中文 + 颜色 */
+/** NapCat 服务状态 → 中文 + 颜色（offline 掉线信号优先级最高） */
 function napcatInfo(a: AccountState): { label: string; color: string; busy: boolean } {
+  if (a.offline) return { label: '已掉线（需重扫登录）', color: '#ef4444', busy: false };
   switch (a.napcatState) {
     case 'running': return { label: '正常运行', color: '#4ade80', busy: false };
     case 'starting': return { label: '正在启动', color: '#60a5fa', busy: true };
