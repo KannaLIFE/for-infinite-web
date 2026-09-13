@@ -17,7 +17,7 @@ const navs = [
     class="fixed left-0 right-0 top-0 z-40 border-b border-[var(--fi-line)] bg-[var(--fi-bg)]/80 backdrop-blur"
   >
     <div class="mx-auto flex max-w-6xl items-center gap-6 px-5 py-3">
-      <!-- 左上角徽标（开场动画收束到这里） -->
+
       <RouterLink to="/" class="flex items-center gap-2">
         <span
           class="fi-breathe inline-block h-2 w-2 rounded-full"

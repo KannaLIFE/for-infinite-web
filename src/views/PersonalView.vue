@@ -6,13 +6,11 @@ import { renderMarkdown } from '../lib/md';
 import type { Article, ArticleMeta } from '../types';
 import ClockDial from '../components/ClockDial.vue';
 
-// ===== 数据 =====
 const worldArticles = ref<ArticleMeta[]>([]);
 const realityArticles = ref<ArticleMeta[]>([]);
 const currentYear = ref(0);
 const expanded = ref<Article | null>(null);
 
-// 现实解锁状态
 const realityLoaded = ref(false);
 const showReality = ref(false);
 const keyInput = ref('');
@@ -32,7 +30,6 @@ function groupByYear(list: ArticleMeta[]): Map<number, ArticleMeta[]> {
 const worldByYear = computed(() => groupByYear(worldArticles.value));
 const realityByYear = computed(() => groupByYear(realityArticles.value));
 
-/** 钟表/列表的年份：世界观 ∪（解锁后）现实 */
 const dialYears = computed(() => {
   const set = new Set<number>();
   for (const a of worldArticles.value) set.add(a.year ?? 0);
@@ -45,7 +42,6 @@ const realityOfYear = computed(() => realityByYear.value.get(currentYear.value) 
 
 const canReadReality = computed(() => hasScope('article') || hasScope('admin'));
 
-// ===== 加载 =====
 async function loadWorld(): Promise<void> {
   try {
     const r = await api.get<{ items: ArticleMeta[] }>('/api/articles/worldview');
@@ -54,7 +50,7 @@ async function loadWorld(): Promise<void> {
       currentYear.value = Math.max(...dialYears.value);
     }
   } catch {
-    /* ignore */
+
   }
 }
 
@@ -105,10 +101,9 @@ async function openArticle(slug: string, category: 'worldview' | 'reality'): Pro
     const token = getToken() || undefined;
     expanded.value = await api.get<Article>(`/api/articles/${category}/${slug}`, token);
   } catch {
-    /* ignore */
+
   }
 }
-
 
 onMounted(async () => {
   await loadWorld();
@@ -118,7 +113,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <!-- ============ 移动版：竖排列表 ============ -->
+
     <div class="space-y-8 px-5 md:hidden">
       <header>
         <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">个人文章</h1>
@@ -145,7 +140,6 @@ onMounted(async () => {
         </article>
       </div>
 
-      <!-- 移动版现实解锁入口 -->
       <div v-if="!realityLoaded" class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
         <p class="text-sm text-[var(--fi-muted)]">现实记录已上锁。</p>
         <div v-if="!canReadReality" class="mt-3 flex gap-2">
@@ -164,14 +158,13 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- ============ 桌面版：钟表 + 文章 ============ -->
     <div class="hidden md:flex">
       <aside class="relative w-72 shrink-0">
         <ClockDial v-model="currentYear" :years="dialYears" />
       </aside>
 
       <section class="min-w-0 flex-1 space-y-4 py-6 pr-6">
-        <!-- 世界观文章 -->
+
         <div
           v-for="a in worldOfYear"
           :key="a.slug"
@@ -185,7 +178,6 @@ onMounted(async () => {
           这一年没有记录。
         </div>
 
-        <!-- 现实区块 -->
         <div class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
           <div class="flex items-center justify-between">
             <span class="mono text-sm text-[var(--fi-muted)]">
@@ -203,7 +195,6 @@ onMounted(async () => {
             </button>
           </div>
 
-          <!-- 未解锁：钥匙输入 -->
           <div v-if="showReality && !realityLoaded && !canReadReality" class="mt-3">
             <p class="text-xs text-[var(--fi-muted)]">现实记录已上锁，需要钥匙。</p>
             <div class="mt-2 flex gap-2">
@@ -221,7 +212,6 @@ onMounted(async () => {
             <p v-if="unlockError" class="mt-2 text-xs text-red-400">{{ unlockError }}</p>
           </div>
 
-          <!-- 已解锁：现实文章 -->
           <div v-if="showReality && realityLoaded" class="mt-3 space-y-2">
             <div
               v-for="a in realityOfYear"
@@ -237,7 +227,6 @@ onMounted(async () => {
       </section>
     </div>
 
-    <!-- 文章详情弹层 -->
     <div
       v-if="expanded"
       class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-6 pt-16"

@@ -1,8 +1,6 @@
-// Markdown 渲染（带 XSS 消毒）
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 
-/** 渲染 Markdown 并消毒 HTML，安全用于 v-html */
 export function renderMarkdown(s: string): string {
   const html = marked.parse(s) as string;
   return DOMPurify.sanitize(html, {

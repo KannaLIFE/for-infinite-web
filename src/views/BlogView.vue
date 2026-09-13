@@ -43,12 +43,10 @@ async function openArticle(slug: string): Promise<void> {
   try {
     expanded.value = await api.get<Article>(`/api/articles/blog/${slug}`);
   } catch {
-    /* ignore */
+
   }
 }
 
-
-// 标签/搜索变化时重新加载
 watch([selectedTags, keyword], () => void loadArticles(), { deep: false });
 
 onMounted(async () => {
@@ -56,7 +54,6 @@ onMounted(async () => {
   tags.value = r.items;
   await loadArticles();
 
-  // 无限滚动哨兵
   const io = new IntersectionObserver(
     (entries) => {
       if (entries[0].isIntersecting && visibleCount.value < articles.value.length) {
@@ -76,7 +73,6 @@ onMounted(async () => {
       <p class="mono mt-1 text-xs text-[var(--fi-muted)]">技术笔记与分享</p>
     </header>
 
-    <!-- 搜索 -->
     <div class="flex items-center gap-3">
       <input
         v-model="keyword"
@@ -85,7 +81,6 @@ onMounted(async () => {
       />
     </div>
 
-    <!-- 标签（多选 = 并集） -->
     <div class="flex flex-wrap gap-2">
       <button
         v-for="t in tags"
@@ -102,7 +97,6 @@ onMounted(async () => {
       </button>
     </div>
 
-    <!-- 列表 -->
     <div v-if="loading" class="mono text-sm text-[var(--fi-muted)]">读取中……</div>
     <div v-else-if="!articles.length" class="mono text-sm text-[var(--fi-muted)]">
       暂无记录。
@@ -135,7 +129,6 @@ onMounted(async () => {
       </p>
     </div>
 
-    <!-- 文章详情弹层 -->
     <div
       v-if="expanded"
       class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-6 pt-16"

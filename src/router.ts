@@ -5,7 +5,6 @@ import PersonalView from './views/PersonalView.vue';
 import MessagesView from './views/MessagesView.vue';
 import AdminView from './views/AdminView.vue';
 
-// 用 hash 路由，GitHub Pages 无需服务端重写规则
 export const router = createRouter({
   history: createWebHashHistory(),
   routes: [

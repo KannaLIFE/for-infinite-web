@@ -16,7 +16,6 @@ const scroller = ref<HTMLElement | null>(null);
 const nearBottom = ref(true);
 let pollTimer: ReturnType<typeof setInterval> | null = null;
 
-// 详情面板
 const active = ref<StoredMessage | null>(null);
 const replyText = ref('');
 
@@ -48,12 +47,12 @@ async function load(reset = false): Promise<void> {
       `/api/messages/${page.value}`,
       token(),
     );
-    // 合并去重，按时间正序（新在下）
+
     const map = new Map<string, StoredMessage>();
     for (const m of messages.value) map.set(m.id, m);
     for (const m of r.items) map.set(m.id, m);
     messages.value = [...map.values()].sort((a, b) => a.timestamp - b.timestamp);
-    // reset 时强制滚到底；轮询时仅在用户原本就在底部（nearBottom）时才自动滚
+
     await scrollToBottom(reset);
   } catch (err) {
     if ((err as { status?: number }).status === 401) unlocked.value = false;
@@ -88,7 +87,6 @@ function onScroll(): void {
   if (el.scrollTop < 80) void loadOlder();
 }
 
-// ---- 颜色：同会话同色，群聊冷色、私聊暖色 ----
 const colorCache = new Map<string, string>();
 function hashHue(id: string): number {
   let h = 0;
@@ -100,8 +98,8 @@ function convColor(m: StoredMessage): string {
   const cached = colorCache.get(key);
   if (cached) return cached;
   const hue = m.source === 'group'
-    ? 180 + (hashHue(key) % 90) // 冷色 180-270
-    : 20 + (hashHue(key) % 50);  // 暖色 20-70
+    ? 180 + (hashHue(key) % 90)
+    : 20 + (hashHue(key) % 50);
   const c = `hsl(${hue}, 45%, 30%)`;
   colorCache.set(key, c);
   return c;
@@ -118,7 +116,6 @@ function title(m: StoredMessage): string {
     : m.senderName;
 }
 
-// ---- 面板操作 ----
 async function toggleMode(m: StoredMessage): Promise<void> {
   const newMode = m.filter.mode === 'whitelist' ? 'blacklist' : 'whitelist';
   await api.post('/api/admin/config', { accountId: m.accountId, mode: newMode }, token());
@@ -152,7 +149,7 @@ watch(page, () => {
 });
 
 onMounted(async () => {
-  // 已有 token 则尝试直接进入
+
   if (getToken()) {
     unlocked.value = true;
     await load(true);
@@ -172,7 +169,6 @@ onUnmounted(() => {
       <p class="mono mt-1 text-xs text-[var(--fi-muted)]">Aetherlink · 跨星通讯</p>
     </header>
 
-    <!-- 解锁 -->
     <div v-if="!unlocked" class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-6">
       <p class="text-sm text-[var(--fi-muted)]">消息链路已上锁，请输入钥匙。</p>
       <div class="mt-4 flex gap-2">
@@ -191,7 +187,7 @@ onUnmounted(() => {
     </div>
 
     <template v-else>
-      <!-- 页面切换 -->
+
       <div class="flex rounded-lg border border-[var(--fi-line)] p-1 md:w-80">
         <button
           class="flex-1 rounded-md py-2 text-sm"
@@ -209,7 +205,6 @@ onUnmounted(() => {
         </button>
       </div>
 
-      <!-- 消息流 -->
       <div
         ref="scroller"
         class="h-[60vh] space-y-3 overflow-y-auto rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-4"
@@ -232,7 +227,6 @@ onUnmounted(() => {
           </div>
           <p class="mt-1 truncate text-sm text-white/80">{{ m.content }}</p>
 
-          <!-- 第2页额外：三检测 -->
           <div v-if="page === 'unfiltered'" class="mono mt-2 flex flex-wrap gap-2 text-[10px]">
             <span class="rounded bg-black/20 px-1.5 py-0.5">
               模式:{{ m.filter.mode === 'whitelist' ? '白' : m.filter.mode === 'blacklist' ? '黑' : '无' }}
@@ -247,7 +241,6 @@ onUnmounted(() => {
             </span>
           </div>
 
-          <!-- 图片缩略 -->
           <div v-if="m.mediaPaths.length" class="mt-2 flex flex-wrap gap-2">
             <img
               v-for="p in m.mediaPaths"
@@ -260,7 +253,6 @@ onUnmounted(() => {
       </div>
     </template>
 
-    <!-- 消息面板 -->
     <div
       v-if="active"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6"
@@ -273,7 +265,7 @@ onUnmounted(() => {
         </p>
 
         <div class="mt-4 space-y-3">
-          <!-- 回复 -->
+
           <div>
             <label class="mono text-xs text-[var(--fi-muted)]">回复（发回原会话）</label>
             <div class="mt-1 flex gap-2">
@@ -288,7 +280,6 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <!-- 模式切换 -->
           <button
             class="w-full rounded-lg border border-[var(--fi-line)] px-3 py-2 text-sm text-[var(--fi-text)] hover:border-[var(--fi-blue)]"
             @click="toggleMode(active)"
@@ -296,7 +287,6 @@ onUnmounted(() => {
             当前模式：{{ active.filter.mode === 'whitelist' ? '白名单' : '黑名单' }}（点击切换）
           </button>
 
-          <!-- 加入名单 -->
           <button
             class="w-full rounded-lg border border-[var(--fi-line)] px-3 py-2 text-sm text-[var(--fi-text)] hover:border-[var(--fi-warm)]"
             @click="addToList(active)"

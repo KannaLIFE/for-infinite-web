@@ -1,4 +1,3 @@
-// 个人主页内容（可自行编辑）
 export const profile = {
   name: 'KannaLIFE',
   tagline: '你好！',
@@ -23,7 +22,7 @@ export const profile = {
     '社会学理论',
     '心理学理论',
     '经济学理论',
-    
+
   ],
 
   contacts: [
@@ -36,5 +35,5 @@ export const profile = {
     { name: '示例友链', url: 'https://example.com', desc: '一个示例' },
   ],
 
-  bannerUrl: '', // 友链横幅图 URL（88x31 或 200x40），留空则显示默认占位
+  bannerUrl: '',
 };

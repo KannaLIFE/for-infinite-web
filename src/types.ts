@@ -1,5 +1,3 @@
-// 前端共享类型
-
 export interface ArticleMeta {
   slug: string;
   title: string;
@@ -42,14 +40,14 @@ export interface AccountState {
   enabled: boolean;
   mode: 'whitelist' | 'blacklist';
   connected: boolean;
-  /** 最后一次收到消息的时间戳（ms），从未收到为 null */
+
   lastMessageAt: number | null;
-  /** 距最后收到消息的秒数，null 表示从未收到 */
+
   lastMessageAgoSec: number | null;
-  /** NapCat systemd 服务的真实状态 */
+
   napcatState: 'running' | 'starting' | 'stopping' | 'stopped' | 'failed' | 'unknown';
-  /** 是否收到过 bot_offline 通知且尚未恢复（可靠掉线信号） */
+
   offline: boolean;
-  /** 掉线时间戳（ms），null 表示从未掉线 */
+
   offlineAt: number | null;
 }

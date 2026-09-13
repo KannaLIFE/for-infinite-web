@@ -12,7 +12,7 @@
   --fi-blue-dim: #2c3a5e;
   --fi-text: #c8cbd4;
   --fi-muted: #6b7080;
-  --fi-warm: #f0b35a; /* LIFE / 光核 唯一暖色 */
+  --fi-warm: #f0b35a;
   --fi-warm-soft: #ffd9a0;
 }
 
@@ -39,7 +39,6 @@ body {
   font-family: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
 }
 
-/* 细网格 / 数据背景 */
 .fi-grid-bg {
   background-image:
     linear-gradient(rgba(91, 127, 212, 0.05) 1px, transparent 1px),
@@ -47,7 +46,6 @@ body {
   background-size: 40px 40px;
 }
 
-/* 光核发光 */
 .fi-glow-warm {
   text-shadow: 0 0 12px rgba(240, 179, 90, 0.5);
 }
@@ -55,7 +53,6 @@ body {
   box-shadow: 0 0 0 1px var(--fi-blue-dim), 0 0 24px rgba(91, 127, 212, 0.15);
 }
 
-/* 微光呼吸 */
 @keyframes fi-breathe {
   0%, 100% { opacity: 0.75; }
   50% { opacity: 1; }
@@ -64,13 +61,11 @@ body {
   animation: fi-breathe 3.2s ease-in-out infinite;
 }
 
-/* 扫描线 */
 @keyframes fi-scan {
   0% { transform: translateY(-100%); }
   100% { transform: translateY(100%); }
 }
 
-/* 淡入上移 */
 @keyframes fi-rise {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
@@ -79,7 +74,6 @@ body {
   animation: fi-rise 0.7s ease both;
 }
 
-/* 滚动条 */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

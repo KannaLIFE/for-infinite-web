@@ -22,7 +22,7 @@ async function scrollBottom(): Promise<void> {
 async function openChat(): Promise<void> {
   open.value = !open.value;
   if (open.value && messages.value.length === 0) {
-    // 首次打开，请求 LIFE 的欢迎语（基于访客记忆）
+
     try {
       const r = await api.post<{ reply: string }>('/api/life/hello', {
         visitorId: getVisitorId(),
@@ -59,7 +59,7 @@ async function send(): Promise<void> {
 
 <template>
   <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end">
-    <!-- 聊天窗 -->
+
     <transition name="pop">
       <div
         v-if="open"
@@ -115,7 +115,6 @@ async function send(): Promise<void> {
       </div>
     </transition>
 
-    <!-- 小人：光核光点 -->
     <button
       class="group relative flex h-14 w-14 items-center justify-center rounded-full border border-[var(--fi-line)] bg-[var(--fi-panel)] transition hover:border-[var(--fi-warm)]"
       @click="openChat"

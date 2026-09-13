@@ -31,15 +31,14 @@ const style = computed(() => {
 });
 
 onMounted(async () => {
-  // 后台拉取哲言（失败则用默认）
+
   try {
     const r = await api.get<{ text: string; author: string }>('/api/quote');
     if (r.text) quote.value = { text: r.text, author: r.author || '' };
   } catch {
-    /* keep default */
+
   }
 
-  // 时间轴：字符快速显现 → 立即显哲言 → 立即缩小 → 结束
   setTimeout(() => (showQuote.value = true), 900);
   setTimeout(() => (phase.value = 'shrink'), 1500);
   setTimeout(() => emit('done'), 2500);
@@ -52,13 +51,12 @@ function skip(): void {
 
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-[var(--fi-bg)]">
-    <!-- 光核背景晕光 -->
+
     <div
       class="fi-breathe pointer-events-none absolute h-72 w-72 rounded-full"
       style="background: radial-gradient(circle, rgba(240,179,90,0.10), transparent 70%)"
     ></div>
 
-    <!-- 徽标：随阶段从中心缩小到左上角 -->
     <div
       class="absolute flex flex-col items-center"
       :style="{ ...style, transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)' }"
@@ -76,7 +74,6 @@ function skip(): void {
         >{{ ch === ' ' ? '\u00A0' : ch }}</span>
       </div>
 
-      <!-- 光核细线 -->
       <div
         class="mt-3 h-px w-full"
         style="
@@ -87,7 +84,6 @@ function skip(): void {
         "
       ></div>
 
-      <!-- 哲言（带出处） -->
       <p
         v-show="showQuote"
         class="serif-quote fi-rise mt-5 max-w-md px-6 text-center text-sm text-[var(--fi-muted)] md:text-base"
@@ -99,7 +95,6 @@ function skip(): void {
       </p>
     </div>
 
-    <!-- 跳过 -->
     <button
       class="absolute bottom-8 right-8 text-xs text-[var(--fi-muted)] opacity-60 transition hover:opacity-100"
       @click="skip"

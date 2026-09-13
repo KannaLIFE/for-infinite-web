@@ -1,5 +1,3 @@
-// 授权 token 管理（localStorage）
-
 const TOKEN_KEY = 'fi_token';
 const SCOPES_KEY = 'fi_scopes';
 
@@ -11,7 +9,6 @@ export function setToken(t: string): void {
   localStorage.setItem(TOKEN_KEY, t);
 }
 
-/** 解锁成功后：存 token + 授权范围（message/article/admin） */
 export function setAuth(t: string, scopes: string[]): void {
   localStorage.setItem(TOKEN_KEY, t);
   localStorage.setItem(SCOPES_KEY, JSON.stringify(scopes));

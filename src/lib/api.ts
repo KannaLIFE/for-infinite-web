@@ -1,5 +1,3 @@
-// API 客户端：开发走 Vite 代理(/api)，生产走 VITE_API_BASE
-
 export const API_BASE = import.meta.env.VITE_API_BASE || '';
 
 export function mediaUrl(relPath: string): string {
@@ -11,7 +9,7 @@ async function request<T>(
   opts: { method?: string; body?: unknown; token?: string } = {},
 ): Promise<T> {
   const headers: Record<string, string> = {};
-  // 只有带 body 的请求才声明 JSON；否则 Fastify 会尝试解析空 body 导致 400
+
   if (opts.body !== undefined) headers['Content-Type'] = 'application/json';
   if (opts.token) headers.Authorization = `Bearer ${opts.token}`;
   const res = await fetch(`${API_BASE}${path}`, {

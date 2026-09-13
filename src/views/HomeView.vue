@@ -5,7 +5,7 @@ import { nowWorldYear } from '../lib/time';
 
 <template>
   <div class="mx-auto max-w-6xl space-y-12 px-5">
-    <!-- 头部 -->
+
     <section class="fi-rise pt-6">
       <p class="mono text-xs tracking-widest text-[var(--fi-muted)]">
         星权穹顶 · 第 {{ nowWorldYear() }} 观测纪
@@ -21,7 +21,6 @@ import { nowWorldYear } from '../lib/time';
       </p>
     </section>
 
-    <!-- 技术 / 学习 / 兴趣 -->
     <section class="grid gap-6 md:grid-cols-3">
       <div class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
         <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">TECH · 技术</h2>
@@ -51,7 +50,6 @@ import { nowWorldYear } from '../lib/time';
       </div>
     </section>
 
-    <!-- 联系方式 -->
     <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
       <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">CONTACT · 联系方式</h2>
       <div class="flex flex-wrap gap-4">
@@ -67,7 +65,6 @@ import { nowWorldYear } from '../lib/time';
       </div>
     </section>
 
-    <!-- 友链 -->
     <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
       <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">FRIENDS · 友链</h2>
       <div class="flex flex-wrap gap-4">
@@ -85,7 +82,6 @@ import { nowWorldYear } from '../lib/time';
       </div>
     </section>
 
-    <!-- Banner（友链横幅） -->
     <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
       <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">BANNER</h2>
       <img

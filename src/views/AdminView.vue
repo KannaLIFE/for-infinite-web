@@ -31,7 +31,6 @@ function fmtBytes(n: number): string {
   return `${(n / Math.pow(1024, i)).toFixed(1)} ${units[i]}`;
 }
 
-/** 距最后收到消息的可读时间 */
 function fmtAgo(sec: number | null | undefined): string {
   if (sec === null || sec === undefined) return '等待首条消息…';
   if (sec < 60) return `${Math.floor(sec)} 秒前`;
@@ -39,12 +38,10 @@ function fmtAgo(sec: number | null | undefined): string {
   return `${Math.floor(sec / 3600)} 小时前`;
 }
 
-/** 疑似掉线：连着 WS 但超过 1 小时没收到任何消息 */
 function isStale(a: AccountState): boolean {
   return a.connected && a.lastMessageAgoSec !== null && a.lastMessageAgoSec !== undefined && a.lastMessageAgoSec > 3600;
 }
 
-/** NapCat 服务状态 → 中文 + 颜色（offline 掉线信号优先级最高） */
 function napcatInfo(a: AccountState): { label: string; color: string; busy: boolean } {
   if (a.offline) return { label: '已掉线（需重扫登录）', color: '#ef4444', busy: false };
   switch (a.napcatState) {
@@ -117,7 +114,6 @@ async function cleanup(): Promise<void> {
   await loadAll();
 }
 
-// ===== 文章管理 =====
 type ArtCategory = 'blog' | 'worldview' | 'reality';
 const artCategory = ref<ArtCategory>('blog');
 const artList = ref<{ slug: string; title: string; locked: boolean }[]>([]);
@@ -132,7 +128,7 @@ async function loadArtList(): Promise<void> {
     );
     artList.value = r.items;
   } catch {
-    /* ignore */
+
   }
 }
 
@@ -169,7 +165,7 @@ async function deleteArticle(slug: string): Promise<void> {
     await api.delete(`/api/admin/articles/${artCategory.value}/${slug}`, token());
     await loadArtList();
   } catch {
-    /* ignore */
+
   }
 }
 
@@ -179,7 +175,7 @@ onMounted(async () => {
     await loadAll();
     await loadArtList();
   }
-  // 自动轮询账号状态（每 5 秒），NapCat 启停状态自动反映
+
   pollTimer = setInterval(() => {
     if (unlocked.value) void loadAll();
   }, 5000);
@@ -197,7 +193,6 @@ onUnmounted(() => {
       <p class="mono mt-1 text-xs text-[var(--fi-muted)]">账号状态 · 名单 · 清理 · 钥匙</p>
     </header>
 
-    <!-- 解锁 -->
     <div v-if="!unlocked" class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-6">
       <p class="text-sm text-[var(--fi-muted)]">后台需管理权限，请输入钥匙。</p>
       <div class="mt-4 flex gap-2">
@@ -216,7 +211,7 @@ onUnmounted(() => {
     </div>
 
     <template v-else>
-      <!-- 账号状态 -->
+
       <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
         <div class="mb-3 flex items-center justify-between">
           <h2 class="mono text-sm text-[var(--fi-warm)]">账号状态</h2>
@@ -258,7 +253,6 @@ onUnmounted(() => {
         </div>
       </section>
 
-      <!-- 钥匙 -->
       <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
         <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">今日钥匙</h2>
         <button
@@ -275,7 +269,6 @@ onUnmounted(() => {
         </div>
       </section>
 
-      <!-- 清理 + 磁盘 -->
       <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
         <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">存储</h2>
         <div v-if="disk" class="mono space-y-1 text-sm text-[var(--fi-muted)]">
@@ -302,11 +295,9 @@ onUnmounted(() => {
         <p v-if="cleanupMsg" class="mono mt-2 text-xs text-[var(--fi-warm)]">{{ cleanupMsg }}</p>
       </section>
 
-      <!-- 文章管理 -->
       <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
         <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">文章管理</h2>
 
-        <!-- 分类切换 -->
         <div class="mb-4 flex gap-2">
           <button
             v-for="c in (['blog', 'worldview', 'reality'] as ArtCategory[])"
@@ -319,7 +310,6 @@ onUnmounted(() => {
           </button>
         </div>
 
-        <!-- 上传表单 -->
         <div class="space-y-2">
           <input v-model="artForm.title" class="mono w-full rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none" placeholder="标题" />
           <div class="flex gap-2">
@@ -351,7 +341,6 @@ onUnmounted(() => {
           <p v-if="artMsg" class="mono text-xs text-[var(--fi-warm)]">{{ artMsg }}</p>
         </div>
 
-        <!-- 已有文章 -->
         <div class="mt-4 space-y-1">
           <div v-for="a in artList" :key="a.slug" class="flex items-center gap-3">
             <span class="mono truncate text-sm text-[var(--fi-text)]">{{ a.title }}</span>
