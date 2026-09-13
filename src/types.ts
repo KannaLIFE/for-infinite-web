@@ -46,4 +46,6 @@ export interface AccountState {
   lastMessageAt: number | null;
   /** 距最后收到消息的秒数，null 表示从未收到 */
   lastMessageAgoSec: number | null;
+  /** NapCat systemd 服务的真实状态 */
+  napcatState: 'running' | 'starting' | 'stopping' | 'stopped' | 'failed' | 'unknown';
 }

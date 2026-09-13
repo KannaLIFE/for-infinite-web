@@ -10,7 +10,9 @@ async function request<T>(
   path: string,
   opts: { method?: string; body?: unknown; token?: string } = {},
 ): Promise<T> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  const headers: Record<string, string> = {};
+  // 只有带 body 的请求才声明 JSON；否则 Fastify 会尝试解析空 body 导致 400
+  if (opts.body !== undefined) headers['Content-Type'] = 'application/json';
   if (opts.token) headers.Authorization = `Bearer ${opts.token}`;
   const res = await fetch(`${API_BASE}${path}`, {
     method: opts.method || 'GET',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { api } from '../lib/api';
 import { getToken, setToken } from '../lib/auth';
 import type { AccountState } from '../types';
@@ -15,6 +15,7 @@ const keepDays = ref(30);
 const cleanupMsg = ref('');
 const showKeys = ref(false);
 const lastRefresh = ref('');
+let pollTimer: ReturnType<typeof setInterval> | null = null;
 
 const token = () => getToken() || undefined;
 
@@ -41,6 +42,18 @@ function fmtAgo(sec: number | null | undefined): string {
 /** 疑似掉线：连着 WS 但超过 1 小时没收到任何消息 */
 function isStale(a: AccountState): boolean {
   return a.connected && a.lastMessageAgoSec !== null && a.lastMessageAgoSec !== undefined && a.lastMessageAgoSec > 3600;
+}
+
+/** NapCat 服务状态 → 中文 + 颜色 */
+function napcatInfo(a: AccountState): { label: string; color: string; busy: boolean } {
+  switch (a.napcatState) {
+    case 'running': return { label: '正常运行', color: '#4ade80', busy: false };
+    case 'starting': return { label: '正在启动', color: '#60a5fa', busy: true };
+    case 'stopping': return { label: '正在关闭', color: '#fbbf24', busy: true };
+    case 'stopped': return { label: '已关闭', color: '#f87171', busy: false };
+    case 'failed': return { label: '失败', color: '#ef4444', busy: false };
+    default: return { label: '状态未知', color: '#9ca3af', busy: false };
+  }
 }
 
 async function unlock(): Promise<void> {
@@ -82,7 +95,18 @@ async function loadKeys(): Promise<void> {
 }
 
 async function toggleAccount(id: string): Promise<void> {
-  await api.post(`/api/admin/account/${id}/toggle`, undefined, token());
+  try {
+    const r = await api.post<{ ok: boolean; enabled?: boolean; error?: string }>(
+      `/api/admin/account/${id}/toggle`,
+      undefined,
+      token(),
+    );
+    if (!r.ok && r.error) {
+      alert(`操作未完全生效：\n${r.error}`);
+    }
+  } catch (err) {
+    alert(`操作失败：${String(err)}`);
+  }
   await loadAll();
 }
 
@@ -154,6 +178,14 @@ onMounted(async () => {
     await loadAll();
     await loadArtList();
   }
+  // 自动轮询账号状态（每 5 秒），NapCat 启停状态自动反映
+  pollTimer = setInterval(() => {
+    if (unlocked.value) void loadAll();
+  }, 5000);
+});
+
+onUnmounted(() => {
+  if (pollTimer) clearInterval(pollTimer);
 });
 </script>
 
@@ -201,23 +233,24 @@ onMounted(async () => {
           <div v-for="a in accounts" :key="a.id" class="flex items-center gap-3">
             <span
               class="inline-block h-2 w-2 rounded-full"
-              :style="isStale(a) ? 'background:#fbbf24' : a.connected ? 'background:#4ade80' : 'background:#f87171'"
+              :style="isStale(a) ? 'background:#fbbf24' : `background:${napcatInfo(a).color}`"
             ></span>
             <span class="mono text-sm text-[var(--fi-text)]">{{ a.id }}</span>
-            <span class="mono text-xs text-[var(--fi-muted)]">
-              {{ isStale(a) ? '疑似掉线' : a.connected ? '在线' : '离线' }} · {{ a.mode === 'whitelist' ? '白名单' : '黑名单' }}
+            <span class="mono text-xs" :style="`color:${napcatInfo(a).color}`">
+              {{ napcatInfo(a).label }}<template v-if="isStale(a)"> · 疑似掉线</template>
             </span>
-            <span
-              class="mono text-[10px]"
-              :style="isStale(a) ? 'color:#fbbf24' : 'color:var(--fi-muted)'"
-            >
+            <span class="mono text-[10px]" :style="isStale(a) ? 'color:#fbbf24' : 'color:var(--fi-muted)'">
               最后收到：{{ fmtAgo(a.lastMessageAgoSec) }}
             </span>
+            <span class="mono text-[10px] text-[var(--fi-muted)]">
+              {{ a.mode === 'whitelist' ? '白名单' : '黑名单' }}
+            </span>
             <button
-              class="mono ml-auto rounded border border-[var(--fi-line)] px-2 py-1 text-xs text-[var(--fi-muted)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-text)]"
+              class="mono ml-auto rounded border border-[var(--fi-line)] px-2 py-1 text-xs text-[var(--fi-muted)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-text)] disabled:opacity-40"
+              :disabled="napcatInfo(a).busy"
               @click="toggleAccount(a.id)"
             >
-              {{ a.enabled ? '停用' : '启用' }}
+              {{ napcatInfo(a).busy ? '…' : a.napcatState === 'running' ? '停用' : '启用' }}
             </button>
           </div>
           <p v-if="!accounts.length" class="mono text-xs text-[var(--fi-muted)]">尚无账号配置。</p>
