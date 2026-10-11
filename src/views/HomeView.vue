@@ -10,6 +10,7 @@ import type { ArticleMeta } from '../types';
 type ApiState = 'checking' | 'online' | 'offline';
 const apiState = ref<ApiState>('checking');
 const latestPosts = ref<ArticleMeta[]>([]);
+const base = import.meta.env.BASE_URL;
 
 const contentGrid = [
   { to: '/blog', glyph: '▤', label: '博客' },
@@ -83,7 +84,7 @@ onMounted(async () => {
             >
               <img
                 v-if="profile.avatar"
-                :src="import.meta.env.BASE_URL + profile.avatar"
+                :src="base + profile.avatar"
                 alt="avatar"
                 class="h-full w-full object-cover"
               />
