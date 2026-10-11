@@ -199,11 +199,11 @@ onUnmounted(() => {
         <input
           v-model="keyInput"
           type="password"
-          class="mono flex-1 rounded-lg border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none focus:border-[var(--fi-blue)]"
+          class="mono flex-1 fi-px-panel bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none focus:border-[var(--fi-blue)]"
           placeholder="管理钥匙……"
           @keyup.enter="unlock"
         />
-        <button class="rounded-lg px-4 py-2 text-sm" style="background: var(--fi-warm); color: #1a1208" @click="unlock">
+        <button class="fi-px-btn px-4 py-2 text-sm" style="background: var(--fi-warm); color: #1a1208" @click="unlock">
           进入
         </button>
       </div>
@@ -212,7 +212,7 @@ onUnmounted(() => {
 
     <template v-else>
 
-      <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
+      <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
         <div class="mb-3 flex items-center justify-between">
           <h2 class="mono text-sm text-[var(--fi-warm)]">账号状态</h2>
           <button
@@ -228,7 +228,7 @@ onUnmounted(() => {
         <div class="space-y-2">
           <div v-for="a in accounts" :key="a.id" class="flex items-center gap-3">
             <span
-              class="inline-block h-2 w-2 rounded-full"
+              class="inline-block h-2 w-2"
               :style="isStale(a) ? 'background:#fbbf24' : `background:${napcatInfo(a).color}`"
             ></span>
             <span class="mono text-sm text-[var(--fi-text)]">{{ a.id }}</span>
@@ -253,7 +253,7 @@ onUnmounted(() => {
         </div>
       </section>
 
-      <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
+      <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
         <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">今日钥匙</h2>
         <button
           class="mono rounded border border-[var(--fi-line)] px-3 py-1.5 text-xs text-[var(--fi-text)] hover:border-[var(--fi-warm)]"
@@ -269,7 +269,7 @@ onUnmounted(() => {
         </div>
       </section>
 
-      <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
+      <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
         <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">存储</h2>
         <div v-if="disk" class="mono space-y-1 text-sm text-[var(--fi-muted)]">
           <p>消息占用：{{ fmtBytes(disk.messagesBytes) }}</p>
@@ -295,7 +295,7 @@ onUnmounted(() => {
         <p v-if="cleanupMsg" class="mono mt-2 text-xs text-[var(--fi-warm)]">{{ cleanupMsg }}</p>
       </section>
 
-      <section class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
+      <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
         <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">文章管理</h2>
 
         <div class="mb-4 flex gap-2">

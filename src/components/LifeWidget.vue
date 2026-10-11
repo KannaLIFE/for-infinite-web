@@ -22,7 +22,6 @@ async function scrollBottom(): Promise<void> {
 async function openChat(): Promise<void> {
   open.value = !open.value;
   if (open.value && messages.value.length === 0) {
-
     try {
       const r = await api.post<{ reply: string }>('/api/life/hello', {
         visitorId: getVisitorId(),
@@ -59,17 +58,16 @@ async function send(): Promise<void> {
 
 <template>
   <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end">
-
     <transition name="pop">
       <div
         v-if="open"
-        class="mb-3 flex w-80 flex-col overflow-hidden rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] shadow-2xl"
+        class="fi-px-panel mb-3 flex w-80 flex-col overflow-hidden bg-[var(--fi-panel)]"
       >
         <div
-          class="flex items-center gap-2 border-b border-[var(--fi-line)] px-4 py-3"
+          class="flex items-center gap-2 border-b-2 border-[var(--fi-line-solid)] px-4 py-3"
         >
           <span
-            class="inline-block h-2 w-2 rounded-full"
+            class="inline-block h-2 w-2"
             style="background: var(--fi-warm); box-shadow: 0 0 6px var(--fi-warm)"
           ></span>
           <span class="mono text-sm text-[var(--fi-text)]">LIFE</span>
@@ -84,28 +82,28 @@ async function send(): Promise<void> {
             :class="m.role === 'user' ? 'justify-end' : 'justify-start'"
           >
             <div
-              class="max-w-[80%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm leading-relaxed"
+              class="max-w-[80%] whitespace-pre-wrap border-2 px-3 py-2 text-sm leading-relaxed"
               :class="
                 m.role === 'user'
-                  ? 'bg-[var(--fi-blue-dim)] text-[var(--fi-text)]'
-                  : 'bg-[var(--fi-panel-2)] text-[var(--fi-text)]'
+                  ? 'border-[var(--fi-blue-dim)] bg-[var(--fi-blue-dim)]/40 text-[var(--fi-text)]'
+                  : 'border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] text-[var(--fi-text)]'
               "
             >
               {{ m.content }}
             </div>
           </div>
-          <div v-if="busy" class="text-xs text-[var(--fi-muted)]">…</div>
+          <div v-if="busy" class="mono text-xs text-[var(--fi-muted)]">…</div>
         </div>
 
-        <div class="flex items-center gap-2 border-t border-[var(--fi-line)] p-2">
+        <div class="flex items-center gap-2 border-t-2 border-[var(--fi-line-solid)] p-2">
           <input
             v-model="input"
-            class="min-w-0 flex-1 rounded-md bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none placeholder:text-[var(--fi-muted)]"
+            class="mono fi-px-panel min-w-0 flex-1 bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none placeholder:text-[var(--fi-muted)] focus:border-[var(--fi-blue)]"
             placeholder="说点什么……"
             @keyup.enter="send"
           />
           <button
-            class="rounded-md px-3 py-2 text-sm"
+            class="mono fi-px-btn px-3 py-2 text-sm"
             style="background: var(--fi-warm); color: #1a1208"
             @click="send"
           >
@@ -116,18 +114,17 @@ async function send(): Promise<void> {
     </transition>
 
     <button
-      class="group relative flex h-14 w-14 items-center justify-center rounded-full border border-[var(--fi-line)] bg-[var(--fi-panel)] transition hover:border-[var(--fi-warm)]"
+      class="fi-px-btn relative flex h-14 w-14 items-center justify-center bg-[var(--fi-panel)] hover:border-[var(--fi-warm)]"
       @click="openChat"
     >
       <span
-        class="fi-breathe absolute inset-0 rounded-full"
-        style="background: radial-gradient(circle, rgba(240,179,90,0.25), transparent 65%)"
+        class="fi-breathe absolute inset-1"
+        style="background: radial-gradient(circle, rgba(247,211,138,0.3), transparent 65%)"
       ></span>
-      <svg viewBox="0 0 24 24" class="relative h-7 w-7" fill="none">
-        <circle cx="12" cy="12" r="4.5" fill="var(--fi-warm)" />
-        <circle cx="12" cy="12" r="9" stroke="var(--fi-warm)" stroke-opacity="0.35" stroke-width="1" />
-        <circle cx="12" cy="12" r="11" stroke="var(--fi-warm)" stroke-opacity="0.15" stroke-width="0.5" />
-      </svg>
+      <span
+        class="relative inline-block h-4 w-4"
+        style="background: var(--fi-warm); box-shadow: 0 0 12px var(--fi-warm)"
+      ></span>
     </button>
   </div>
 </template>

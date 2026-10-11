@@ -113,10 +113,10 @@ onMounted(async () => {
 
 <template>
   <div>
-
     <div class="space-y-8 px-5 md:hidden">
-      <header>
+      <header class="flex items-center gap-3">
         <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">个人文章</h1>
+        <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-violet)]">/clock</span>
       </header>
 
       <div v-for="y in dialYears" :key="y" class="space-y-2">
@@ -124,33 +124,33 @@ onMounted(async () => {
         <article
           v-for="a in worldByYear.get(y)"
           :key="a.slug"
-          class="cursor-pointer rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-4"
+          class="fi-px-panel cursor-pointer bg-[var(--fi-panel)] p-4 transition hover:border-[var(--fi-blue)]"
           @click="openArticle(a.slug, 'worldview')"
         >
-          <span class="text-sm font-medium text-[var(--fi-text)]">{{ a.title }}</span>
+          <span class="mono text-sm text-[var(--fi-text)]">{{ a.title }}</span>
         </article>
         <article
           v-if="realityLoaded"
           v-for="a in realityByYear.get(y)"
           :key="'r' + a.slug"
-          class="cursor-pointer rounded-xl border border-[var(--fi-warm)]/40 bg-[var(--fi-panel)] p-4"
+          class="fi-px-panel cursor-pointer bg-[var(--fi-panel)] p-4 transition hover:border-[var(--fi-warm)]"
           @click="openArticle(a.slug, 'reality')"
         >
-          <span class="text-sm text-[var(--fi-warm-soft)]">现实 · {{ a.title }}</span>
+          <span class="mono text-sm text-[var(--fi-warm-soft)]">现实 · {{ a.title }}</span>
         </article>
       </div>
 
-      <div v-if="!realityLoaded" class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
+      <div v-if="!realityLoaded" class="fi-px-panel bg-[var(--fi-panel)] p-5">
         <p class="text-sm text-[var(--fi-muted)]">现实记录已上锁。</p>
         <div v-if="!canReadReality" class="mt-3 flex gap-2">
           <input
             v-model="keyInput"
             type="password"
-            class="mono min-w-0 flex-1 rounded-lg border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none"
+            class="mono fi-px-panel min-w-0 flex-1 bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none focus:border-[var(--fi-blue)]"
             placeholder="钥匙……"
             @keyup.enter="unlockReality"
           />
-          <button class="rounded-lg px-3 py-2 text-sm" style="background: var(--fi-warm); color: #1a1208" @click="unlockReality">
+          <button class="mono fi-px-btn px-3 py-2 text-sm" style="background: var(--fi-warm); color: #1a1208" @click="unlockReality">
             解锁
           </button>
         </div>
@@ -164,21 +164,20 @@ onMounted(async () => {
       </aside>
 
       <section class="min-w-0 flex-1 space-y-4 py-6 pr-6">
-
         <div
           v-for="a in worldOfYear"
           :key="a.slug"
-          class="cursor-pointer rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5 transition hover:border-[var(--fi-blue-dim)]"
+          class="fi-px-panel cursor-pointer bg-[var(--fi-panel)] p-5 transition hover:border-[var(--fi-blue)]"
           @click="openArticle(a.slug, 'worldview')"
         >
-          <h3 class="text-lg font-medium text-[var(--fi-text)]">{{ a.title }}</h3>
+          <h3 class="mono text-lg text-[var(--fi-text)]">{{ a.title }}</h3>
           <p v-if="a.excerpt" class="mt-1 text-sm text-[var(--fi-muted)]">{{ a.excerpt }}</p>
         </div>
         <div v-if="!worldOfYear.length && !realityOfYear.length" class="mono text-sm text-[var(--fi-muted)]">
           这一年没有记录。
         </div>
 
-        <div class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5">
+        <div class="fi-px-panel bg-[var(--fi-panel)] p-5">
           <div class="flex items-center justify-between">
             <span class="mono text-sm text-[var(--fi-muted)]">
               现实
@@ -187,8 +186,8 @@ onMounted(async () => {
               <span v-else>· 上锁</span>
             </span>
             <button
-              class="mono rounded border px-3 py-1.5 text-xs"
-              :class="showReality ? 'border-[var(--fi-warm)] text-[var(--fi-warm)]' : 'border-[var(--fi-line)] text-[var(--fi-muted)] hover:text-[var(--fi-text)]'"
+              class="mono fi-px-btn bg-[var(--fi-panel-2)] px-3 py-1.5 text-xs"
+              :class="showReality ? 'text-[var(--fi-warm)]' : 'text-[var(--fi-muted)]'"
               @click="toggleReality"
             >
               {{ showReality ? '收起' : '展开' }}
@@ -201,11 +200,15 @@ onMounted(async () => {
               <input
                 v-model="keyInput"
                 type="password"
-                class="mono min-w-0 flex-1 rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-1.5 text-sm text-[var(--fi-text)] outline-none"
+                class="mono fi-px-panel min-w-0 flex-1 bg-[var(--fi-panel-2)] px-3 py-1.5 text-sm text-[var(--fi-text)] outline-none focus:border-[var(--fi-blue)]"
                 placeholder="钥匙……"
                 @keyup.enter="unlockReality"
               />
-              <button class="rounded border border-[var(--fi-warm)] px-3 py-1.5 text-xs text-[var(--fi-warm)]" :disabled="unlocking" @click="unlockReality">
+              <button
+                class="mono fi-px-btn px-3 py-1.5 text-xs text-[var(--fi-warm)]"
+                :disabled="unlocking"
+                @click="unlockReality"
+              >
                 {{ unlocking ? '…' : '解锁' }}
               </button>
             </div>
@@ -216,10 +219,10 @@ onMounted(async () => {
             <div
               v-for="a in realityOfYear"
               :key="a.slug"
-              class="cursor-pointer rounded-lg border border-[var(--fi-warm)]/30 bg-[var(--fi-panel-2)] p-3 transition hover:border-[var(--fi-warm)]"
+              class="cursor-pointer border-2 border-[var(--fi-violet-dim)] bg-[var(--fi-panel-2)] p-3 transition hover:border-[var(--fi-warm)]"
               @click="openArticle(a.slug, 'reality')"
             >
-              <span class="text-sm text-[var(--fi-warm-soft)]">{{ a.title }}</span>
+              <span class="mono text-sm text-[var(--fi-warm-soft)]">{{ a.title }}</span>
             </div>
             <p v-if="!realityOfYear.length" class="text-xs text-[var(--fi-muted)]">该年无现实记录。</p>
           </div>
@@ -232,13 +235,19 @@ onMounted(async () => {
       class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-6 pt-16"
       @click.self="expanded = null"
     >
-      <div class="w-full max-w-3xl rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-8">
+      <div class="fi-px-panel w-full max-w-3xl bg-[var(--fi-panel)] p-8">
         <div class="flex items-start justify-between gap-4">
-          <h2 class="text-2xl font-semibold text-[var(--fi-text)]">{{ expanded.title }}</h2>
+          <h2 class="mono text-xl text-[var(--fi-text)]">{{ expanded.title }}</h2>
           <button class="mono text-sm text-[var(--fi-muted)] hover:text-[var(--fi-text)]" @click="expanded = null">
             关闭 ✕
           </button>
         </div>
+        <img
+          v-if="expanded.cover"
+          :src="expanded.cover"
+          :alt="expanded.title"
+          class="mt-4 max-h-72 w-full border-2 border-[var(--fi-line-solid)] object-cover"
+        />
         <div class="mt-6 max-w-none leading-relaxed text-[var(--fi-text)]" v-html="renderMarkdown(expanded.content)"></div>
       </div>
     </div>
