@@ -15,6 +15,26 @@ const groups = [
     ],
   },
   {
+    key: 'workshop',
+    label: '工坊',
+    items: [
+      { to: '/projects', label: '项目' },
+      { to: '/gallery', label: '画廊' },
+      { to: '/tech', label: '技术栈' },
+      { to: '/services', label: '服务·委托' },
+    ],
+  },
+  {
+    key: 'archive',
+    label: '档案',
+    items: [
+      { to: '/achievements', label: '成就' },
+      { to: '/certificates', label: '证书' },
+      { to: '/affiliations', label: '阵营' },
+      { to: '/testimonials', label: '好评' },
+    ],
+  },
+  {
     key: 'link',
     label: '星联',
     items: [
@@ -40,7 +60,7 @@ function toggle(key: string): void {
   <header
     class="fixed left-0 right-0 top-0 z-40 border-b border-[var(--fi-line)] bg-[var(--fi-bg)]/85 backdrop-blur"
   >
-    <div class="mx-auto flex max-w-6xl items-center gap-5 px-5 py-3">
+    <div class="mx-auto flex max-w-6xl items-center gap-4 px-5 py-3">
       <RouterLink to="/" class="flex items-center gap-2">
         <span
           class="fi-breathe inline-block h-2 w-2"
@@ -51,7 +71,7 @@ function toggle(key: string): void {
         </span>
       </RouterLink>
 
-      <nav class="ml-auto flex items-center gap-1">
+      <nav class="ml-auto flex items-center gap-0.5">
         <RouterLink
           to="/"
           class="mono px-3 py-1.5 text-xs transition"

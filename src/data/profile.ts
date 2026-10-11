@@ -3,6 +3,14 @@ export const profile = {
   tagline: '你好！',
   intro:
     '我是 KannaLIFE，一个还在成长中的开发者。想学更多东西，交更多朋友。',
+  status: '观测站运行中',
+
+  music: [
+    'Ado',
+    'Roselia',
+    'Poppin\' Party',
+    'Yoasobi',
+  ],
 
   techStack: [
     'C',
@@ -22,13 +30,11 @@ export const profile = {
     '社会学理论',
     '心理学理论',
     '经济学理论',
-
   ],
 
   contacts: [
     { label: 'Email', value: 'jinshihuabei@gmail.com' },
     { label: 'GitHub', value: 'https://github.com/kannalife' },
-    { label: '', value: '' },
   ],
 
   friends: [
