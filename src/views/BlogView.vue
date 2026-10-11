@@ -68,15 +68,15 @@ onMounted(async () => {
 
 <template>
   <div class="mx-auto max-w-6xl space-y-6 px-5">
-    <header>
+    <header class="flex items-center gap-3">
       <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">博客文章</h1>
-      <p class="mono mt-1 text-xs text-[var(--fi-muted)]">技术笔记与分享</p>
+      <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-blue)]">/blog</span>
     </header>
 
     <div class="flex items-center gap-3">
       <input
         v-model="keyword"
-        class="mono w-full max-w-sm rounded-lg border border-[var(--fi-line)] bg-[var(--fi-panel)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none placeholder:text-[var(--fi-muted)] focus:border-[var(--fi-blue)]"
+        class="mono fi-px-panel w-full max-w-sm bg-[var(--fi-panel)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none placeholder:text-[var(--fi-muted)] focus:border-[var(--fi-blue)]"
         placeholder="关键字搜索……"
       />
     </div>
@@ -85,11 +85,11 @@ onMounted(async () => {
       <button
         v-for="t in tags"
         :key="t.tag"
-        class="mono rounded-full border px-3 py-1 text-xs transition"
+        class="mono border-2 px-3 py-1 text-xs transition"
         :class="
           selectedTags.includes(t.tag)
             ? 'border-[var(--fi-warm)] bg-[var(--fi-warm)]/10 text-[var(--fi-warm)]'
-            : 'border-[var(--fi-line)] text-[var(--fi-muted)] hover:text-[var(--fi-text)]'
+            : 'border-[var(--fi-line-solid)] text-[var(--fi-muted)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-text)]'
         "
         @click="toggleTag(t.tag)"
       >
@@ -102,24 +102,45 @@ onMounted(async () => {
       暂无记录。
     </div>
 
-    <div v-else class="space-y-3">
+    <div v-else class="fi-stagger space-y-4">
       <article
         v-for="a in visible"
         :key="a.slug"
-        class="cursor-pointer rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-5 transition hover:border-[var(--fi-blue-dim)]"
+        class="group flex cursor-pointer overflow-hidden border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel)] transition hover:border-[var(--fi-blue)] hover:shadow-[0_0_20px_rgba(121,184,255,0.12)]"
         @click="openArticle(a.slug)"
       >
-        <div class="flex items-baseline justify-between gap-4">
-          <h2 class="text-lg font-medium text-[var(--fi-text)]">{{ a.title }}</h2>
-          <time class="mono shrink-0 text-xs text-[var(--fi-muted)]">{{ a.date || '' }}</time>
-        </div>
-        <p v-if="a.excerpt" class="mt-2 text-sm text-[var(--fi-muted)]">{{ a.excerpt }}</p>
-        <div v-if="a.tags.length" class="mt-3 flex flex-wrap gap-2">
+        <div
+          class="relative h-32 w-44 shrink-0 overflow-hidden"
+          style="background: linear-gradient(135deg, rgba(121, 184, 255, 0.18), rgba(183, 140, 255, 0.14))"
+        >
+          <img
+            v-if="a.cover"
+            :src="a.cover"
+            :alt="a.title"
+            class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            loading="lazy"
+          />
           <span
-            v-for="t in a.tags"
-            :key="t"
-            class="mono rounded border border-[var(--fi-line)] px-2 py-0.5 text-[10px] text-[var(--fi-muted)]"
-          >{{ t }}</span>
+            v-else
+            class="mono absolute inset-0 flex items-center justify-center text-4xl text-[var(--fi-blue)]/50"
+          >{{ a.title.slice(0, 1) }}</span>
+        </div>
+
+        <div class="min-w-0 flex-1 p-4">
+          <div class="flex items-baseline justify-between gap-4">
+            <h2 class="mono truncate text-base text-[var(--fi-text)] transition group-hover:text-[var(--fi-blue)]">
+              {{ a.title }}
+            </h2>
+            <time class="mono shrink-0 text-[10px] text-[var(--fi-muted)]">{{ a.date || '' }}</time>
+          </div>
+          <p v-if="a.excerpt" class="mt-2 line-clamp-2 text-sm text-[var(--fi-muted)]">{{ a.excerpt }}</p>
+          <div v-if="a.tags.length" class="mt-3 flex flex-wrap gap-2">
+            <span
+              v-for="t in a.tags"
+              :key="t"
+              class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-2 py-0.5 text-[10px] text-[var(--fi-muted)]"
+            >{{ t }}</span>
+          </div>
         </div>
       </article>
 
@@ -134,14 +155,20 @@ onMounted(async () => {
       class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-6 pt-16"
       @click.self="expanded = null"
     >
-      <div class="w-full max-w-3xl rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-8">
+      <div class="fi-px-panel w-full max-w-3xl bg-[var(--fi-panel)] p-8">
         <div class="flex items-start justify-between gap-4">
-          <h2 class="text-2xl font-semibold text-[var(--fi-text)]">{{ expanded.title }}</h2>
+          <h2 class="mono text-xl text-[var(--fi-text)]">{{ expanded.title }}</h2>
           <button class="mono text-sm text-[var(--fi-muted)] hover:text-[var(--fi-text)]" @click="expanded = null">
             关闭 ✕
           </button>
         </div>
         <time class="mono mt-1 block text-xs text-[var(--fi-muted)]">{{ expanded.date || '' }}</time>
+        <img
+          v-if="expanded.cover"
+          :src="expanded.cover"
+          :alt="expanded.title"
+          class="mt-4 max-h-72 w-full border border-[var(--fi-line-solid)] object-cover"
+        />
         <div class="prose-invert mt-6 max-w-none leading-relaxed text-[var(--fi-text)]" v-html="renderMarkdown(expanded.content)"></div>
       </div>
     </div>

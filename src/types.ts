@@ -6,6 +6,7 @@ export interface ArticleMeta {
   tags: string[];
   category: 'blog' | 'worldview' | 'reality';
   excerpt?: string;
+  cover?: string;
   locked: boolean;
   orderKey: number;
 }
