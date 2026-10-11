@@ -172,7 +172,7 @@ onMounted(async () => {
           </section>
 
           <div class="grid grid-cols-2 gap-3">
-            <section class="fi-px-panel bg-[var(--fi-panel)] p-3">
+            <section class="fi-px-panel bg-[var(--fi-panel)] p-3" :class="profile.dni.length ? '' : 'col-span-2'">
               <div class="mb-2 flex items-center justify-between">
                 <h2 class="mono text-xs text-[var(--fi-blue)]">BYF · 关注前须知</h2>
                 <span class="mono text-[9px] text-[var(--fi-blue)]">/byf</span>
@@ -183,7 +183,7 @@ onMounted(async () => {
                 </li>
               </ul>
             </section>
-            <section class="fi-px-panel bg-[var(--fi-panel)] p-3">
+            <section v-if="profile.dni.length" class="fi-px-panel bg-[var(--fi-panel)] p-3">
               <div class="mb-2 flex items-center justify-between">
                 <h2 class="mono text-xs text-[#ff8a8a]">DNI · 请勿互动</h2>
                 <span class="mono text-[9px] text-[#ff8a8a]">/dni</span>

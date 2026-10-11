@@ -14,6 +14,8 @@ export const profile = {
   socials: [
     { label: 'GitHub', url: 'https://github.com/kannalife' },
     { label: 'Email', url: 'mailto:jinshihuabei@gmail.com' },
+    { label: 'Bluesky', url: 'https://bsky.app/profile/in-life-k.bsky.social' },
+    { label: 'X', url: 'https://x.com/IN_LIFE_K' },
   ],
 
   pills: [
@@ -34,49 +36,49 @@ export const profile = {
 
   about: [
     {
-      key: 'anime',
-      title: 'anime · 番剧',
-      items: ['示例番剧 A', '示例番剧 B'],
+      key: 'shows',
+      title: 'shows · 影视',
+      items: ['神探夏洛克', '是，大臣', '是，首相', 'Alan Becker 火柴人动画', '星球大战', 'Harry Potter'],
       thumbs: [] as string[],
     },
     {
       key: 'games',
       title: 'games · 游戏',
-      items: ['Minecraft', '示例游戏 B'],
+      items: ['Minecraft', 'Mindustry', 'Stellaris', 'Dancing Line', 'Among Us', 'Phigros', 'Clash Royale', 'Seven years later'],
       thumbs: [] as string[],
     },
     {
       key: 'vtubers',
       title: 'vtubers · 主播',
-      items: ['示例主播 A'],
+      items: ['vedal987（Neuro-sama）', '各类切片（英文圈为主）'],
       thumbs: [] as string[],
     },
     {
       key: 'vocaloid',
       title: 'vocaloid · 术力口',
-      items: ['示例 P 主 A'],
+      items: ['YES or NO（雨衣 × 重音テト）', 'Fake Dance（雨衣 × 重音テト）', 'MESMERIZER（Bao & Neuro 英语翻唱）'],
       thumbs: [] as string[],
     },
     {
       key: 'music',
       title: 'music · 音乐',
-      items: ['Ado', 'Roselia', 'Poppin\' Party', 'Yoasobi'],
+      items: ['Hans Zimmer（汉斯·季默）', 'Ludwig Göransson（信条 Tenet 配乐）', '按精选集听歌'],
       thumbs: [] as string[],
     },
     {
       key: 'others',
       title: 'others · 其他',
-      items: ['示例爱好 A'],
+      items: ['写作（世界观创作）', '板绘（数位板）', '乐曲创作', '学日语（想开始）'],
       thumbs: [] as string[],
     },
   ],
 
   byf: [
-    '这里写 BYF（Before You Follow）说明',
+    '目前忙于学业，回复可能较慢。',
+    '关注后我会回查你的账号：发言涉及极端政治或偏激内容的，可能会被我屏蔽。',
+    '与我交流可用中文或英文（Chinese & English both welcome）。',
   ],
-  dni: [
-    '这里写 DNI（Do Not Interact）说明',
-  ],
+  dni: [] as string[],
 
   reachout: '欢迎合作与交流：开源项目、网站开发、有趣的 AI 想法。',
 
@@ -94,11 +96,7 @@ export const profile = {
     '全栈（React + Node)'
   ],
 
-  interests: [
-    '社会学理论',
-    '心理学理论',
-    '经济学理论',
-  ],
+  interests: [] as string[],
 
   friends: [
     { name: '示例友链', url: 'https://example.com', desc: '一个示例' },
