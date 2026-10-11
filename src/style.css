@@ -1,19 +1,35 @@
 @import 'tailwindcss';
 
-/* ===== For Infinite 主题：星权穹顶 =====
-   灰阶 + 冷蓝 + 唯一暖色（LIFE / 光核）
-*/
 :root {
-  --fi-bg: #0a0a0f;
-  --fi-panel: #12121a;
-  --fi-panel-2: #181822;
-  --fi-line: #23232f;
-  --fi-blue: #5b7fd4;
-  --fi-blue-dim: #2c3a5e;
-  --fi-text: #c8cbd4;
-  --fi-muted: #6b7080;
-  --fi-warm: #f0b35a;
-  --fi-warm-soft: #ffd9a0;
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 5px;
+  --radius-xl: 6px;
+  --radius-2xl: 6px;
+  --radius-3xl: 8px;
+  --radius-4xl: 8px;
+
+  --fi-bg: #040611;
+  --fi-bg-2: #07101f;
+  --fi-panel: #0a101d;
+  --fi-panel-2: #0e1626;
+  --fi-line: rgba(185, 210, 255, 0.16);
+  --fi-line-solid: #1d2a45;
+  --fi-blue: #79b8ff;
+  --fi-blue-dim: #26456e;
+  --fi-violet: #b78cff;
+  --fi-violet-dim: #4a3670;
+  --fi-text: #eef4ff;
+  --fi-muted: #98a7c2;
+  --fi-warm: #f7d38a;
+  --fi-warm-soft: #ffe6b8;
+}
+
+@font-face {
+  font-family: 'Zpix';
+  src: url('./assets/Zpix.ttf') format('truetype');
+  font-display: swap;
 }
 
 html,
@@ -24,7 +40,11 @@ body,
 
 body {
   margin: 0;
-  background: var(--fi-bg);
+  background:
+    radial-gradient(1200px 700px at 82% -12%, rgba(121, 184, 255, 0.09), transparent 62%),
+    radial-gradient(900px 640px at 12% 18%, rgba(183, 140, 255, 0.07), transparent 60%),
+    radial-gradient(760px 520px at 58% 112%, rgba(247, 211, 138, 0.05), transparent 62%),
+    var(--fi-bg);
   color: var(--fi-text);
   font-family:
     'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
@@ -32,7 +52,8 @@ body {
 }
 
 .mono {
-  font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  font-family: 'Zpix', 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  letter-spacing: 0.04em;
 }
 
 .serif-quote {
@@ -41,50 +62,126 @@ body {
 
 .fi-grid-bg {
   background-image:
-    linear-gradient(rgba(91, 127, 212, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(91, 127, 212, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(121, 184, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(121, 184, 255, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
 .fi-glow-warm {
-  text-shadow: 0 0 12px rgba(240, 179, 90, 0.5);
+  text-shadow: 0 0 12px rgba(247, 211, 138, 0.55);
 }
+
 .fi-glow-blue {
-  box-shadow: 0 0 0 1px var(--fi-blue-dim), 0 0 24px rgba(91, 127, 212, 0.15);
+  box-shadow:
+    0 0 0 1px var(--fi-blue-dim),
+    0 0 24px rgba(121, 184, 255, 0.16);
+}
+
+.fi-glow-violet {
+  box-shadow:
+    0 0 0 1px var(--fi-violet-dim),
+    0 0 24px rgba(183, 140, 255, 0.16);
+}
+
+.fi-px-btn {
+  border: 2px solid var(--fi-line-solid);
+  box-shadow:
+    0 3px 0 0 #05070f,
+    inset 0 1px 0 rgba(238, 244, 255, 0.1);
+  transition:
+    transform 0.06s ease,
+    box-shadow 0.06s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.fi-px-btn:hover {
+  border-color: var(--fi-blue);
+}
+
+.fi-px-btn:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 0 #05070f,
+    inset 0 1px 0 rgba(238, 244, 255, 0.06);
+}
+
+.fi-px-panel {
+  border: 2px solid var(--fi-line-solid);
+  box-shadow:
+    0 4px 0 0 #05070f,
+    inset 0 1px 0 rgba(238, 244, 255, 0.06);
 }
 
 @keyframes fi-breathe {
-  0%, 100% { opacity: 0.75; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 1;
+  }
 }
+
 .fi-breathe {
   animation: fi-breathe 3.2s ease-in-out infinite;
 }
 
 @keyframes fi-scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
 }
 
 @keyframes fi-rise {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 .fi-rise {
   animation: fi-rise 0.7s ease both;
 }
+
+.fi-stagger > * {
+  animation: fi-rise 0.5s ease both;
+}
+
+.fi-stagger > *:nth-child(1) { animation-delay: 0.02s; }
+.fi-stagger > *:nth-child(2) { animation-delay: 0.07s; }
+.fi-stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.fi-stagger > *:nth-child(4) { animation-delay: 0.17s; }
+.fi-stagger > *:nth-child(5) { animation-delay: 0.22s; }
+.fi-stagger > *:nth-child(6) { animation-delay: 0.27s; }
+.fi-stagger > *:nth-child(7) { animation-delay: 0.32s; }
+.fi-stagger > *:nth-child(8) { animation-delay: 0.37s; }
+.fi-stagger > *:nth-child(9) { animation-delay: 0.42s; }
+.fi-stagger > *:nth-child(10) { animation-delay: 0.47s; }
+.fi-stagger > *:nth-child(11) { animation-delay: 0.52s; }
+.fi-stagger > *:nth-child(12) { animation-delay: 0.57s; }
 
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: var(--fi-line);
-  border-radius: 4px;
+  background: var(--fi-line-solid);
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--fi-blue-dim);
 }
