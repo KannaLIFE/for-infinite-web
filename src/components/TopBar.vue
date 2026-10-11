@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ref, watch } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 
@@ -8,40 +8,40 @@ const open = ref<string | null>(null);
 const groups = [
   {
     key: 'map',
-    label: '星图',
+    label: '鏄熷浘',
     items: [
-      { to: '/blog', label: '博客' },
-      { to: '/personal', label: '个人文章' },
+      { to: '/blog', label: '鍗氬' },
+      { to: '/personal', label: '涓汉鏂囩珷' },
     ],
   },
   {
     key: 'workshop',
-    label: '工坊',
+    label: '宸ュ潑',
     items: [
-      { to: '/projects', label: '项目' },
-      { to: '/gallery', label: '画廊' },
-      { to: '/tech', label: '技术栈' },
-      { to: '/roadmap', label: '路线图' },
-      { to: '/services', label: '服务·委托' },
+      { to: '/projects', label: '椤圭洰' },
+      { to: '/gallery', label: '鐢诲粖' },
+      { to: '/tech', label: '鎶€鏈爤' },
+      { to: '/roadmap', label: '璺嚎鍥? },
+      { to: '/services', label: '鏈嶅姟路濮旀墭' },
     ],
   },
   {
     key: 'archive',
-    label: '档案',
+    label: '妗ｆ',
     items: [
-      { to: '/achievements', label: '成就' },
-      { to: '/certificates', label: '证书' },
-      { to: '/affiliations', label: '阵营' },
-      { to: '/testimonials', label: '好评' },
+      { to: '/achievements', label: '鎴愬氨' },
+      { to: '/certificates', label: '璇佷功' },
+      { to: '/affiliations', label: '闃佃惀' },
+      { to: '/testimonials', label: '濂借瘎' },
     ],
   },
   {
     key: 'link',
-    label: '星联',
+    label: '鏄熻仈',
     items: [
-      { to: '/messages', label: '消息' },
-      { to: '/guestbook', label: '留言板' },
-      { to: '/admin', label: '后台' },
+      { to: '/messages', label: '娑堟伅' },
+      { to: '/guestbook', label: '鐣欒█鏉? },
+      { to: '/admin', label: '鍚庡彴' },
     ],
   },
 ];
@@ -62,7 +62,7 @@ function toggle(key: string): void {
   <header
     class="fixed left-0 right-0 top-0 z-40 border-b border-[var(--fi-line)] bg-[var(--fi-bg)]/85 backdrop-blur"
   >
-    <div class="mx-auto flex max-w-6xl items-center gap-4 px-5 py-3">
+    <div class="flex w-full items-center gap-4 px-4 py-3">
       <RouterLink to="/" class="flex items-center gap-2">
         <span
           class="fi-breathe inline-block h-2 w-2"
@@ -83,7 +83,7 @@ function toggle(key: string): void {
               : 'text-[var(--fi-muted)] hover:text-[var(--fi-text)]'
           "
         >
-          主页
+          涓婚〉
         </RouterLink>
 
         <RouterLink
@@ -95,7 +95,7 @@ function toggle(key: string): void {
               : 'text-[var(--fi-muted)] hover:text-[var(--fi-text)]'
           "
         >
-          友链
+          鍙嬮摼
         </RouterLink>
 
         <div
@@ -114,7 +114,7 @@ function toggle(key: string): void {
             "
             @click="toggle(g.key)"
           >
-            {{ g.label }} <span class="text-[10px]">▾</span>
+            {{ g.label }} <span class="text-[10px]">鈻?/span>
           </button>
 
           <div

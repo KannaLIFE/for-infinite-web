@@ -1,20 +1,18 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { friends } from '../data/friends';
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl space-y-6 px-5">
+  <div class="w-full space-y-6 px-4">
     <header class="flex items-center gap-3">
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">友链 · 星群</h1>
+      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">鍙嬮摼 路 鏄熺兢</h1>
       <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-violet)]">/friends</span>
     </header>
     <p class="mono text-xs text-[var(--fi-muted)]">
-      每个坐标，都是一位同行者。想加入？在 <span class="text-[var(--fi-blue)]">src/data/friends.ts</span> 添加。
-    </p>
+      姣忎釜鍧愭爣锛岄兘鏄竴浣嶅悓琛岃€呫€傛兂鍔犲叆锛熷湪 <span class="text-[var(--fi-blue)]">src/data/friends.ts</span> 娣诲姞銆?    </p>
 
     <div v-if="!friends.length" class="mono fi-px-panel bg-[var(--fi-panel)] p-8 text-center text-sm text-[var(--fi-muted)]">
-      星群空空如也。
-    </div>
+      鏄熺兢绌虹┖濡備篃銆?    </div>
 
     <div v-else class="fi-stagger grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       <article
@@ -69,7 +67,7 @@ import { friends } from '../data/friends';
               target="_blank"
               rel="noopener"
               class="mono fi-px-btn bg-[var(--fi-panel-2)] px-2.5 py-1 text-[10px] text-[var(--fi-blue)]"
-            >{{ l.label }} ▸</a>
+            >{{ l.label }} 鈻?/a>
           </div>
         </div>
       </article>

@@ -1,17 +1,16 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { projects } from '../data/projects';
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl space-y-6 px-5">
+  <div class="w-full space-y-6 px-4">
     <header class="flex items-center gap-3">
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">项目 · 工坊</h1>
+      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">椤圭洰 路 宸ュ潑</h1>
       <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-blue)]">/projects</span>
     </header>
 
     <div v-if="!projects.length" class="mono fi-px-panel bg-[var(--fi-panel)] p-8 text-center text-sm text-[var(--fi-muted)]">
-      工坊还空着，在 src/data/projects.ts 添加项目。
-    </div>
+      宸ュ潑杩樼┖鐫€锛屽湪 src/data/projects.ts 娣诲姞椤圭洰銆?    </div>
 
     <div v-else class="fi-stagger grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       <article
@@ -52,7 +51,7 @@ import { projects } from '../data/projects';
               target="_blank"
               rel="noopener"
               class="mono fi-px-btn bg-[var(--fi-panel-2)] px-2.5 py-1 text-[10px] text-[var(--fi-blue)]"
-            >{{ l.label }} ▸</a>
+            >{{ l.label }} 鈻?/a>
           </div>
         </div>
       </article>

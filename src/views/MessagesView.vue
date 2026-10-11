@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { api, mediaUrl } from '../lib/api';
 import { getToken, setToken } from '../lib/auth';
@@ -33,10 +33,10 @@ async function unlock(): Promise<void> {
       keyInput.value = '';
       await load(true);
     } else {
-      unlockError.value = '钥匙无效';
+      unlockError.value = '閽ュ寵鏃犳晥';
     }
   } catch {
-    unlockError.value = '解锁失败';
+    unlockError.value = '瑙ｉ攣澶辫触';
   }
 }
 
@@ -112,7 +112,7 @@ function convBorder(m: StoredMessage): string {
 
 function title(m: StoredMessage): string {
   return m.source === 'group'
-    ? `${m.conversationName} · ${m.senderName}`
+    ? `${m.conversationName} 路 ${m.senderName}`
     : m.senderName;
 }
 
@@ -162,20 +162,20 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl space-y-6 px-5">
+  <div class="w-full space-y-6 px-4">
     <header class="flex items-center gap-3">
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">消息</h1>
+      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">娑堟伅</h1>
       <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-warm)]">/aetherlink</span>
     </header>
 
     <div v-if="!unlocked" class="fi-px-panel bg-[var(--fi-panel)] p-6">
-      <p class="text-sm text-[var(--fi-muted)]">消息链路已上锁，请输入钥匙。</p>
+      <p class="text-sm text-[var(--fi-muted)]">娑堟伅閾捐矾宸蹭笂閿侊紝璇疯緭鍏ラ挜鍖欍€?/p>
       <div class="mt-4 flex gap-2">
         <input
           v-model="keyInput"
           type="password"
           class="mono fi-px-panel min-w-0 flex-1 bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none placeholder:text-[var(--fi-muted)] focus:border-[var(--fi-blue)]"
-          placeholder="钥匙……"
+          placeholder="閽ュ寵鈥︹€?
           @keyup.enter="unlock"
         />
         <button
@@ -183,7 +183,7 @@ onUnmounted(() => {
           style="background: var(--fi-warm); color: #1a1208"
           @click="unlock"
         >
-          解锁
+          瑙ｉ攣
         </button>
       </div>
       <p v-if="unlockError" class="mt-2 text-xs text-red-400">{{ unlockError }}</p>
@@ -200,8 +200,7 @@ onUnmounted(() => {
           "
           @click="page = 'filtered'"
         >
-          过滤后
-        </button>
+          杩囨护鍚?        </button>
         <button
           class="mono border-2 px-4 py-1.5 text-xs transition"
           :class="
@@ -211,8 +210,7 @@ onUnmounted(() => {
           "
           @click="page = 'unfiltered'"
         >
-          未过滤
-        </button>
+          鏈繃婊?        </button>
       </div>
 
       <div
@@ -220,7 +218,7 @@ onUnmounted(() => {
         class="fi-px-panel h-[60vh] space-y-1.5 overflow-y-auto bg-[var(--fi-bg-2)]/70 p-3"
         @scroll="onScroll"
       >
-        <div v-if="!messages.length" class="mono p-4 text-sm text-[var(--fi-muted)]">暂无消息。</div>
+        <div v-if="!messages.length" class="mono p-4 text-sm text-[var(--fi-muted)]">鏆傛棤娑堟伅銆?/div>
 
         <button
           v-for="m in messages"
@@ -234,20 +232,20 @@ onUnmounted(() => {
               &lt;{{ title(m) }}&gt;
             </span>
             <span class="mono shrink-0 text-[10px] text-[var(--fi-muted)]">
-              {{ m.source === 'group' ? '群' : '私' }} · {{ new Date(m.timestamp).toLocaleString() }}
+              {{ m.source === 'group' ? '缇? : '绉? }} 路 {{ new Date(m.timestamp).toLocaleString() }}
             </span>
           </div>
           <p class="mt-0.5 truncate text-sm text-[var(--fi-text)]">{{ m.content }}</p>
 
           <div v-if="page === 'unfiltered'" class="mono mt-2 flex flex-wrap gap-1.5 text-[10px]">
             <span class="border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-1.5 py-0.5 text-[var(--fi-muted)]">
-              模式:{{ m.filter.mode === 'whitelist' ? '白' : m.filter.mode === 'blacklist' ? '黑' : '无' }}
+              妯″紡:{{ m.filter.mode === 'whitelist' ? '鐧? : m.filter.mode === 'blacklist' ? '榛? : '鏃? }}
             </span>
             <span class="border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-1.5 py-0.5 text-[var(--fi-muted)]">
-              群检测:{{ m.filter.groupCheck }}
+              缇ゆ娴?{{ m.filter.groupCheck }}
             </span>
             <span class="border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-1.5 py-0.5 text-[var(--fi-muted)]">
-              用户检测:{{ m.filter.userCheck }}
+              鐢ㄦ埛妫€娴?{{ m.filter.userCheck }}
             </span>
             <span
               class="border px-1.5 py-0.5"
@@ -257,7 +255,7 @@ onUnmounted(() => {
                   : 'border-color:rgba(255,90,90,0.5);color:#ff7a7a'
               "
             >
-              最终:{{ m.filter.final === 'pass' ? '通过' : '拦截' }}
+              鏈€缁?{{ m.filter.final === 'pass' ? '閫氳繃' : '鎷︽埅' }}
             </span>
           </div>
 
@@ -281,25 +279,24 @@ onUnmounted(() => {
       <div class="fi-px-panel w-full max-w-md bg-[var(--fi-panel)] p-6">
         <h3 class="mono text-base text-[var(--fi-text)]">&lt;{{ title(active) }}&gt;</h3>
         <p class="mono mt-1 text-xs text-[var(--fi-muted)]">
-          账号 {{ active.accountId }} · {{ active.source === 'group' ? '群聊' : '私聊' }}
+          璐﹀彿 {{ active.accountId }} 路 {{ active.source === 'group' ? '缇よ亰' : '绉佽亰' }}
         </p>
 
         <div class="mt-4 space-y-3">
           <div>
-            <label class="mono text-xs text-[var(--fi-muted)]">回复（发回原会话）</label>
+            <label class="mono text-xs text-[var(--fi-muted)]">鍥炲锛堝彂鍥炲師浼氳瘽锛?/label>
             <div class="mt-1 flex gap-2">
               <input
                 v-model="replyText"
                 class="mono fi-px-panel min-w-0 flex-1 bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none focus:border-[var(--fi-blue)]"
-                placeholder="回复内容……"
+                placeholder="鍥炲鍐呭鈥︹€?
               />
               <button
                 class="mono fi-px-btn px-3 py-2 text-sm"
                 style="background: var(--fi-blue); color: #04101f"
                 @click="sendReply"
               >
-                发送
-              </button>
+                鍙戦€?              </button>
             </div>
           </div>
 
@@ -307,19 +304,19 @@ onUnmounted(() => {
             class="mono fi-px-btn w-full bg-[var(--fi-panel-2)] px-3 py-2 text-xs text-[var(--fi-text)]"
             @click="toggleMode(active)"
           >
-            当前模式：{{ active.filter.mode === 'whitelist' ? '白名单' : '黑名单' }}（点击切换）
+            褰撳墠妯″紡锛歿{ active.filter.mode === 'whitelist' ? '鐧藉悕鍗? : '榛戝悕鍗? }}锛堢偣鍑诲垏鎹級
           </button>
 
           <button
             class="mono fi-px-btn w-full bg-[var(--fi-panel-2)] px-3 py-2 text-xs text-[var(--fi-text)]"
             @click="addToList(active)"
           >
-            将{{ active.source === 'group' ? '该群' : '该用户' }}加入{{ active.filter.mode === 'whitelist' ? '白名单' : '黑名单' }}
+            灏唟{ active.source === 'group' ? '璇ョ兢' : '璇ョ敤鎴? }}鍔犲叆{{ active.filter.mode === 'whitelist' ? '鐧藉悕鍗? : '榛戝悕鍗? }}
           </button>
         </div>
 
         <button class="mono mt-4 text-xs text-[var(--fi-muted)] hover:text-[var(--fi-text)]" @click="active = null">
-          关闭
+          鍏抽棴
         </button>
       </div>
     </div>

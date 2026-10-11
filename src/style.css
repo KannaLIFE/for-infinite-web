@@ -169,6 +169,28 @@ body {
 .fi-stagger > *:nth-child(11) { animation-delay: 0.52s; }
 .fi-stagger > *:nth-child(12) { animation-delay: 0.57s; }
 
+.fi-marquee {
+  overflow: hidden;
+  position: relative;
+}
+
+.fi-marquee-track {
+  display: flex;
+  gap: 8px;
+  width: max-content;
+  animation: fi-marquee 26s linear infinite;
+}
+
+.fi-marquee:hover .fi-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes fi-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

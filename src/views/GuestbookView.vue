@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { api } from '../lib/api';
 
@@ -39,8 +39,8 @@ async function submit(): Promise<void> {
     await load();
   } catch (err) {
     error.value = (err as { message?: string }).message === 'too many requests, try later'
-      ? '发得太快了，歇一会儿再来。'
-      : '信号中断，留言失败。';
+      ? '鍙戝緱澶揩浜嗭紝姝囦竴浼氬効鍐嶆潵銆?
+      : '淇″彿涓柇锛岀暀瑷€澶辫触銆?;
   } finally {
     busy.value = false;
   }
@@ -50,15 +50,14 @@ onMounted(() => void load());
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl space-y-6 px-5">
+  <div class="w-full space-y-6 px-4">
     <header class="flex items-center gap-3">
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">留言板 · 星声</h1>
+      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">鐣欒█鏉?路 鏄熷０</h1>
       <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-warm)]">/guestbook</span>
     </header>
 
     <div v-if="offline" class="mono fi-px-panel bg-[var(--fi-panel)] p-8 text-center text-sm text-[var(--fi-muted)]">
-      星联离线——留言板要等观测站后端上线后才能使用。
-    </div>
+      鏄熻仈绂荤嚎鈥斺€旂暀瑷€鏉胯绛夎娴嬬珯鍚庣涓婄嚎鍚庢墠鑳戒娇鐢ㄣ€?    </div>
 
     <template v-else>
       <form class="fi-px-panel space-y-3 bg-[var(--fi-panel)] p-5" @submit.prevent="submit">
@@ -66,26 +65,25 @@ onMounted(() => void load());
           v-model="name"
           maxlength="32"
           class="mono fi-px-panel w-full max-w-56 bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none placeholder:text-[var(--fi-muted)] focus:border-[var(--fi-blue)]"
-          placeholder="你的名字"
+          placeholder="浣犵殑鍚嶅瓧"
         />
         <textarea
           v-model="text"
           maxlength="500"
           rows="3"
           class="fi-px-panel w-full bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none placeholder:text-[var(--fi-muted)] focus:border-[var(--fi-blue)]"
-          placeholder="留下一点声音……"
+          placeholder="鐣欎笅涓€鐐瑰０闊斥€︹€?
         ></textarea>
         <div class="flex items-center gap-3">
           <button type="submit" class="mono fi-px-btn px-4 py-2 text-sm" style="background: var(--fi-warm); color: #1a1208" :disabled="busy">
-            {{ busy ? '发送中…' : '投递 ▸' }}
+            {{ busy ? '鍙戦€佷腑鈥? : '鎶曢€?鈻? }}
           </button>
           <p v-if="error" class="mono text-xs text-[#ff8a8a]">{{ error }}</p>
         </div>
       </form>
 
       <div v-if="!entries.length" class="mono fi-px-panel bg-[var(--fi-panel)] p-8 text-center text-sm text-[var(--fi-muted)]">
-        还没有声音，留下第一条吧。
-      </div>
+        杩樻病鏈夊０闊筹紝鐣欎笅绗竴鏉″惂銆?      </div>
 
       <div v-else class="fi-stagger space-y-3">
         <article v-for="e in entries" :key="e.id" class="fi-px-panel bg-[var(--fi-panel)] p-4">

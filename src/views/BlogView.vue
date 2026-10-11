@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
 import { api } from '../lib/api';
 import { renderMarkdown } from '../lib/md';
@@ -70,9 +70,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl space-y-6 px-5">
+  <div class="w-full space-y-6 px-4">
     <header class="flex items-center gap-3">
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">博客文章</h1>
+      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">鍗氬鏂囩珷</h1>
       <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-blue)]">/blog</span>
     </header>
 
@@ -80,7 +80,7 @@ onMounted(async () => {
       <input
         v-model="keyword"
         class="mono fi-px-panel w-full max-w-sm bg-[var(--fi-panel)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none placeholder:text-[var(--fi-muted)] focus:border-[var(--fi-blue)]"
-        placeholder="关键字搜索……"
+        placeholder="鍏抽敭瀛楁悳绱⑩€︹€?
       />
     </div>
 
@@ -96,14 +96,13 @@ onMounted(async () => {
         "
         @click="toggleTag(t.tag)"
       >
-        {{ t.tag }} · {{ t.count }}
+        {{ t.tag }} 路 {{ t.count }}
       </button>
     </div>
 
-    <div v-if="loading" class="mono text-sm text-[var(--fi-muted)]">读取中……</div>
+    <div v-if="loading" class="mono text-sm text-[var(--fi-muted)]">璇诲彇涓€︹€?/div>
     <div v-else-if="!articles.length" class="mono text-sm text-[var(--fi-muted)]">
-      暂无记录。
-    </div>
+      鏆傛棤璁板綍銆?    </div>
 
     <div v-else class="space-y-6">
       <article
@@ -127,7 +126,7 @@ onMounted(async () => {
           >{{ featured.title.slice(0, 1) }}</span>
           <div class="absolute inset-0" style="background: linear-gradient(0deg, rgba(4, 6, 17, 0.92), transparent 65%)"></div>
           <div class="absolute bottom-0 left-0 right-0 p-5">
-            <span class="mono border border-[var(--fi-warm)]/60 bg-[var(--fi-bg)]/70 px-2 py-0.5 text-[10px] text-[var(--fi-warm)]">置顶</span>
+            <span class="mono border border-[var(--fi-warm)]/60 bg-[var(--fi-bg)]/70 px-2 py-0.5 text-[10px] text-[var(--fi-warm)]">缃《</span>
             <h2 class="mono mt-2 text-xl text-[var(--fi-text)] md:text-2xl">{{ featured.title }}</h2>
             <time class="mono mt-1 block text-[10px] text-[var(--fi-muted)]">{{ featured.date || '' }}</time>
           </div>
@@ -178,8 +177,7 @@ onMounted(async () => {
 
       <div ref="sentinel" class="h-1"></div>
       <p v-if="visibleCount < articles.length" class="mono text-center text-xs text-[var(--fi-muted)]">
-        继续下滑……
-      </p>
+        缁х画涓嬫粦鈥︹€?      </p>
     </div>
 
     <div
@@ -191,8 +189,7 @@ onMounted(async () => {
         <div class="flex items-start justify-between gap-4">
           <h2 class="mono text-xl text-[var(--fi-text)]">{{ expanded.title }}</h2>
           <button class="mono text-sm text-[var(--fi-muted)] hover:text-[var(--fi-text)]" @click="expanded = null">
-            关闭 ✕
-          </button>
+            鍏抽棴 鉁?          </button>
         </div>
         <time class="mono mt-1 block text-xs text-[var(--fi-muted)]">{{ expanded.date || '' }}</time>
         <img
