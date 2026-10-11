@@ -216,7 +216,7 @@ onMounted(async () => {
         </section>
       </div>
 
-      <div class="min-w-0 space-y-4 px-3 py-4 lg:max-w-[320px]">
+      <div class="min-w-0 space-y-4 px-3 py-4">
         <section class="fi-px-panel relative overflow-hidden bg-[var(--fi-panel)]">
           <img
             v-if="profile.bannerUrl"
