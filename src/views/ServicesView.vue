@@ -14,21 +14,26 @@ import { services } from '../data/services';
     <p class="mono text-xs text-[var(--fi-muted)]">{{ services.tagline }}</p>
 
     <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
-      <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">价格 · 服务类型</h2>
+      <div class="mb-3 flex items-center justify-between">
+        <h2 class="mono text-sm text-[var(--fi-warm)]">价格 · 服务类型</h2>
+        <span class="mono text-[10px] text-[var(--fi-blue)]">{{ services.discountNote }}</span>
+      </div>
       <div class="overflow-x-auto">
         <table class="w-full text-left text-sm">
           <thead>
             <tr class="mono border-b-2 border-[var(--fi-line-solid)] text-xs text-[var(--fi-muted)]">
               <th class="py-2 pr-4">类型</th>
               <th class="py-2 pr-4">范围</th>
-              <th class="py-2">价格</th>
+              <th class="py-2 pr-4">原价</th>
+              <th class="py-2">折扣价</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="r in services.rows" :key="r.type" class="border-b border-[var(--fi-line)]">
               <td class="mono py-2 pr-4 text-[var(--fi-text)]">{{ r.type }}</td>
               <td class="py-2 pr-4 text-[var(--fi-muted)]">{{ r.scope }}</td>
-              <td class="mono py-2 text-[var(--fi-warm)]">{{ r.price }}</td>
+              <td class="mono py-2 pr-4 text-[var(--fi-muted)] line-through">{{ r.price }}</td>
+              <td class="mono py-2 text-[var(--fi-warm)]">{{ r.discounted || r.price }}</td>
             </tr>
           </tbody>
         </table>

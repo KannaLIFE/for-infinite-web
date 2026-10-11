@@ -21,6 +21,7 @@ const groups = [
       { to: '/projects', label: '项目' },
       { to: '/gallery', label: '画廊' },
       { to: '/tech', label: '技术栈' },
+      { to: '/roadmap', label: '路线图' },
       { to: '/services', label: '服务·委托' },
     ],
   },

@@ -2,16 +2,18 @@ export interface ServiceRow {
   type: string;
   scope: string;
   price: string;
+  discounted?: string;
 }
 
 export const services = {
   status: 'open',
   tagline: '目前不接新委托，开放状态以后更新。',
+  discountNote: '新客首单 75 折',
 
   rows: [
-    { type: '小工具脚本', scope: 'Python / Shell 自动化', price: '面议' },
-    { type: '静态网页', scope: '单页 / 多页展示站', price: '面议' },
-    { type: '网页改版', scope: '样式与布局重构', price: '面议' },
+    { type: '小工具脚本', scope: 'Python / Shell 自动化', price: '¥100 起', discounted: '¥75 起' },
+    { type: '静态网页', scope: '单页 / 多页展示站', price: '¥300 起', discounted: '¥225 起' },
+    { type: '网页改版', scope: '样式与布局重构', price: '¥500 起', discounted: '¥375 起' },
   ] as ServiceRow[],
 
   rushNote: '加急（48 小时内）+ 20~30%',

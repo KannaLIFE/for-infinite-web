@@ -14,6 +14,7 @@ import CertificatesView from './views/CertificatesView.vue';
 import AffiliationsView from './views/AffiliationsView.vue';
 import ServicesView from './views/ServicesView.vue';
 import GuestbookView from './views/GuestbookView.vue';
+import RoadmapView from './views/RoadmapView.vue';
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -33,5 +34,6 @@ export const router = createRouter({
     { path: '/affiliations', name: 'affiliations', component: AffiliationsView },
     { path: '/services', name: 'services', component: ServicesView },
     { path: '/guestbook', name: 'guestbook', component: GuestbookView },
+    { path: '/roadmap', name: 'roadmap', component: RoadmapView },
   ],
 });
