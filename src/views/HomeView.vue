@@ -79,10 +79,17 @@ onMounted(async () => {
 
           <section class="fi-px-panel flex gap-4 bg-[var(--fi-panel)] p-5">
             <div
-              class="relative flex h-16 w-16 shrink-0 items-center justify-center border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)]"
+              class="relative h-16 w-16 shrink-0 overflow-hidden border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)]"
             >
+              <img
+                v-if="profile.avatar"
+                :src="import.meta.env.BASE_URL + profile.avatar"
+                alt="avatar"
+                class="h-full w-full object-cover"
+              />
               <span
-                class="fi-breathe inline-block h-5 w-5"
+                v-else
+                class="fi-breathe absolute inset-0 m-auto inline-block h-5 w-5"
                 style="background: var(--fi-warm); box-shadow: 0 0 12px var(--fi-warm)"
               ></span>
               <span class="mono absolute -bottom-1 -right-1 border border-[var(--fi-line-solid)] bg-[var(--fi-bg)] px-1 text-[9px] text-[var(--fi-blue)]">

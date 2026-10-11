@@ -6,6 +6,7 @@ export const profile = {
     '我是 KannaLIFE，一个还在成长中的开发者。想学更多东西，交更多朋友。',
   motto: 'FOR INFINITE',
   mottoSub: '星权穹顶 · 观测站',
+  avatar: 'avatar.jpg',
   status: '观测站运行中',
   statusNote: '正在学习 LLM 应用与 Agent',
   ghUser: 'kannalife',
