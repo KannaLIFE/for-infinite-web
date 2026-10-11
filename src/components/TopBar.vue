@@ -64,6 +64,18 @@ function toggle(key: string): void {
           主页
         </RouterLink>
 
+        <RouterLink
+          to="/friends"
+          class="mono px-3 py-1.5 text-xs transition"
+          :class="
+            route.path === '/friends'
+              ? 'bg-[var(--fi-panel-2)] text-[var(--fi-violet)]'
+              : 'text-[var(--fi-muted)] hover:text-[var(--fi-text)]'
+          "
+        >
+          友链
+        </RouterLink>
+
         <div
           v-for="g in groups"
           :key="g.key"

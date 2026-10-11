@@ -4,6 +4,7 @@ import BlogView from './views/BlogView.vue';
 import PersonalView from './views/PersonalView.vue';
 import MessagesView from './views/MessagesView.vue';
 import AdminView from './views/AdminView.vue';
+import FriendsView from './views/FriendsView.vue';
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -13,5 +14,6 @@ export const router = createRouter({
     { path: '/personal', name: 'personal', component: PersonalView },
     { path: '/messages', name: 'messages', component: MessagesView },
     { path: '/admin', name: 'admin', component: AdminView },
+    { path: '/friends', name: 'friends', component: FriendsView },
   ],
 });
