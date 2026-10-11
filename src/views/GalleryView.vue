@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { ref } from 'vue';
 import { gallery, type GalleryItem } from '../data/gallery';
 
@@ -8,12 +8,13 @@ const lightbox = ref<GalleryItem | null>(null);
 <template>
   <div class="w-full space-y-6 px-4">
     <header class="flex items-center gap-3">
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">鐢诲粖</h1>
+      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">画廊</h1>
       <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-violet)]">/gallery</span>
     </header>
 
     <div v-if="!gallery.length" class="mono fi-px-panel bg-[var(--fi-panel)] p-8 text-center text-sm text-[var(--fi-muted)]">
-      鐢诲粖杩樼┖鐫€锛屽湪 src/data/gallery.ts 娣诲姞鍥剧墖銆?    </div>
+      画廊还空着，在 src/data/gallery.ts 添加图片。
+    </div>
 
     <div v-else class="fi-stagger grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
       <button
@@ -35,7 +36,8 @@ const lightbox = ref<GalleryItem | null>(null);
         <img :src="lightbox.src" :alt="lightbox.alt" class="max-h-[70vh] w-auto object-contain" />
         <p v-if="lightbox.caption" class="mono mt-2 text-center text-xs text-[var(--fi-muted)]">{{ lightbox.caption }}</p>
         <button class="mono mt-2 block w-full text-xs text-[var(--fi-muted)] hover:text-[var(--fi-text)]" @click="lightbox = null">
-          鍏抽棴 鉁?        </button>
+          关闭 ✕
+        </button>
       </div>
     </div>
   </div>

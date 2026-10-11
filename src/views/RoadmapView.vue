@@ -1,11 +1,11 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { roadmap } from '../data/roadmap';
 </script>
 
 <template>
   <div class="w-full space-y-6 px-4">
     <header class="flex items-center gap-3">
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">璺嚎鍥?路 鏄熻建</h1>
+      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">路线图 · 星轨</h1>
       <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-blue)]">/roadmap</span>
     </header>
 
@@ -24,7 +24,7 @@ import { roadmap } from '../data/roadmap';
             <span
               v-if="i.status === 'now'"
               class="border border-[var(--fi-warm)]/60 px-1.5 py-0.5 text-[9px] text-[var(--fi-warm)]"
-            >杩涜涓?/span>
+            >进行中</span>
           </li>
         </ul>
       </section>

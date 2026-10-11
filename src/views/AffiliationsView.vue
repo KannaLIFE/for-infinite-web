@@ -1,16 +1,17 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { affiliations } from '../data/affiliations';
 </script>
 
 <template>
   <div class="w-full space-y-6 px-4">
     <header class="flex items-center gap-3">
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">闃佃惀 路 缁勭粐</h1>
+      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">阵营 · 组织</h1>
       <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-blue)]">/affiliations</span>
     </header>
 
     <div v-if="!affiliations.length" class="mono fi-px-panel bg-[var(--fi-panel)] p-8 text-center text-sm text-[var(--fi-muted)]">
-      杩樻病鏈夊姞鍏ヤ换浣曢樀钀ワ紝鍦?src/data/affiliations.ts 娣诲姞銆?    </div>
+      还没有加入任何阵营，在 src/data/affiliations.ts 添加。
+    </div>
 
     <div v-else class="fi-stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <article
@@ -33,7 +34,7 @@ import { affiliations } from '../data/affiliations';
           target="_blank"
           rel="noopener"
           class="mono mt-3 inline-block text-xs text-[var(--fi-blue)] hover:text-[var(--fi-warm)]"
-        >鍓嶅線 鈻?/a>
+        >前往 ▸</a>
       </article>
     </div>
   </div>

@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { ref, watch } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 
@@ -8,40 +8,40 @@ const open = ref<string | null>(null);
 const groups = [
   {
     key: 'map',
-    label: '鏄熷浘',
+    label: '星图',
     items: [
-      { to: '/blog', label: '鍗氬' },
-      { to: '/personal', label: '涓汉鏂囩珷' },
+      { to: '/blog', label: '博客' },
+      { to: '/personal', label: '个人文章' },
     ],
   },
   {
     key: 'workshop',
-    label: '宸ュ潑',
+    label: '工坊',
     items: [
-      { to: '/projects', label: '椤圭洰' },
-      { to: '/gallery', label: '鐢诲粖' },
-      { to: '/tech', label: '鎶€鏈爤' },
-      { to: '/roadmap', label: '璺嚎鍥? },
-      { to: '/services', label: '鏈嶅姟路濮旀墭' },
+      { to: '/projects', label: '项目' },
+      { to: '/gallery', label: '画廊' },
+      { to: '/tech', label: '技术栈' },
+      { to: '/roadmap', label: '路线图' },
+      { to: '/services', label: '服务·委托' },
     ],
   },
   {
     key: 'archive',
-    label: '妗ｆ',
+    label: '档案',
     items: [
-      { to: '/achievements', label: '鎴愬氨' },
-      { to: '/certificates', label: '璇佷功' },
-      { to: '/affiliations', label: '闃佃惀' },
-      { to: '/testimonials', label: '濂借瘎' },
+      { to: '/achievements', label: '成就' },
+      { to: '/certificates', label: '证书' },
+      { to: '/affiliations', label: '阵营' },
+      { to: '/testimonials', label: '好评' },
     ],
   },
   {
     key: 'link',
-    label: '鏄熻仈',
+    label: '星联',
     items: [
-      { to: '/messages', label: '娑堟伅' },
-      { to: '/guestbook', label: '鐣欒█鏉? },
-      { to: '/admin', label: '鍚庡彴' },
+      { to: '/messages', label: '消息' },
+      { to: '/guestbook', label: '留言板' },
+      { to: '/admin', label: '后台' },
     ],
   },
 ];
@@ -83,7 +83,7 @@ function toggle(key: string): void {
               : 'text-[var(--fi-muted)] hover:text-[var(--fi-text)]'
           "
         >
-          涓婚〉
+          主页
         </RouterLink>
 
         <RouterLink
@@ -95,7 +95,7 @@ function toggle(key: string): void {
               : 'text-[var(--fi-muted)] hover:text-[var(--fi-text)]'
           "
         >
-          鍙嬮摼
+          友链
         </RouterLink>
 
         <div
@@ -114,7 +114,7 @@ function toggle(key: string): void {
             "
             @click="toggle(g.key)"
           >
-            {{ g.label }} <span class="text-[10px]">鈻?/span>
+            {{ g.label }} <span class="text-[10px]">▾</span>
           </button>
 
           <div
