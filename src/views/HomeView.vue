@@ -28,10 +28,8 @@ const marqueeChips = computed(() => [
   ...profile.learning.map((t) => ({ name: t, kind: 'learning' as const })),
 ]);
 
-function thumbSlots(thumbs: string[]): (string | null)[] {
-  const slots = thumbs.slice(0, 10);
-  while (slots.length < 5) slots.push(null);
-  return slots;
+function isPoster(key: string): boolean {
+  return key === 'shows';
 }
 
 onMounted(async () => {
@@ -199,16 +197,19 @@ onMounted(async () => {
               <p class="mt-1.5 text-[11px] leading-relaxed text-[var(--fi-muted)]">
                 {{ s.items.length ? s.items.join(' · ') : '待补充' }}
               </p>
-              <div class="mt-2 grid grid-cols-5 gap-1.5">
+              <div
+                v-if="s.thumbs.length"
+                class="mt-2 grid gap-1.5"
+                :class="isPoster(s.key) ? 'grid-cols-5' : 'grid-cols-6'"
+              >
                 <div
-                  v-for="(t, i) in thumbSlots(s.thumbs)"
+                  v-for="(t, i) in s.thumbs.slice(0, 10)"
                   :key="i"
-                  class="relative aspect-square overflow-hidden"
-                  :class="t ? 'border border-[var(--fi-blue-dim)]' : 'border border-dashed border-[var(--fi-line-solid)]'"
+                  class="relative overflow-hidden border border-[var(--fi-blue-dim)]"
+                  :class="isPoster(s.key) ? 'aspect-[2/3]' : 'aspect-square'"
                   style="background: linear-gradient(135deg, rgba(121,184,255,0.14), rgba(183,140,255,0.1))"
                 >
-                  <img v-if="t" :src="t" :alt="s.key + i" class="h-full w-full object-cover" loading="lazy" />
-                  <span v-else class="mono absolute inset-0 flex items-center justify-center text-[10px] text-[var(--fi-muted)]">+</span>
+                  <img :src="t" :alt="s.key + i" class="h-full w-full object-cover" loading="lazy" />
                 </div>
               </div>
             </div>
