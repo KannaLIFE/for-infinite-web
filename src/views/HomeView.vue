@@ -11,14 +11,6 @@ type ApiState = 'checking' | 'online' | 'offline';
 const apiState = ref<ApiState>('checking');
 const latestPosts = ref<ArticleMeta[]>([]);
 
-const dock = [
-  { to: '/', glyph: '⌂', label: '主页' },
-  { to: '/blog', glyph: '▤', label: '博客' },
-  { to: '/messages', glyph: '✉', label: '消息' },
-  { to: '/friends', glyph: '◈', label: '友链' },
-  { to: '/guestbook', glyph: '✍', label: '留言板' },
-];
-
 const contentGrid = [
   { to: '/blog', glyph: '▤', label: '博客' },
   { to: '/projects', glyph: '✦', label: '项目' },
@@ -64,23 +56,8 @@ onMounted(async () => {
 <template>
   <div class="w-full">
     <div class="grid items-start lg:grid-cols-[8fr_6fr_5fr]">
-      <div class="flex min-w-0 lg:border-r-2 lg:border-[var(--fi-line-solid)]">
-        <aside class="hidden w-11 shrink-0 flex-col items-center gap-3 py-6 lg:flex">
-          <RouterLink
-            v-for="d in dock"
-            :key="d.to"
-            :to="d.to"
-            :title="d.label"
-            class="mono flex h-9 w-9 items-center justify-center border-2 text-sm transition"
-            :class="
-              $route.path === d.to
-                ? 'border-[var(--fi-warm)] bg-[var(--fi-warm)]/10 text-[var(--fi-warm)]'
-                : 'border-[var(--fi-line-solid)] bg-[var(--fi-panel)] text-[var(--fi-muted)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-text)]'
-            "
-          >{{ d.glyph }}</RouterLink>
-        </aside>
-
-        <div class="min-w-0 flex-1 space-y-4 px-3 py-4">
+      <div class="min-w-0 lg:border-r-2 lg:border-[var(--fi-line-solid)]">
+        <div class="space-y-4 px-3 py-4">
           <section class="fi-rise text-center">
             <p class="mono text-xs tracking-[0.4em] text-[var(--fi-muted)]">第 {{ nowWorldYear() }} 观测纪</p>
             <h1 class="mono mt-3 text-4xl font-bold tracking-widest text-[var(--fi-text)] md:text-6xl">
@@ -199,10 +176,6 @@ onMounted(async () => {
           <GhGrid />
 
           <WorldClock :clocks="profile.clocks" />
-
-          <footer class="mono py-2 text-center text-[10px] text-[var(--fi-muted)]">
-            © 2026 For Infinite · 星权穹顶 · 用 ❤ 与 ⌨ 构建
-          </footer>
         </div>
       </div>
 
