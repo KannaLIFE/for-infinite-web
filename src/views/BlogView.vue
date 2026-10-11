@@ -15,6 +15,9 @@ const sentinel = ref<HTMLElement | null>(null);
 const expanded = ref<Article | null>(null);
 
 const visible = computed(() => articles.value.slice(0, visibleCount.value));
+const featured = computed(() => visible.value[0] ?? null);
+const rest = computed(() => visible.value.slice(1));
+const filtered = computed(() => selectedTags.value.length > 0 || keyword.value.trim() !== '');
 
 function toggleTag(t: string): void {
   const i = selectedTags.value.indexOf(t);
@@ -102,47 +105,76 @@ onMounted(async () => {
       暂无记录。
     </div>
 
-    <div v-else class="fi-stagger space-y-4">
+    <div v-else class="space-y-6">
       <article
-        v-for="a in visible"
-        :key="a.slug"
-        class="group flex cursor-pointer overflow-hidden border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel)] transition hover:border-[var(--fi-blue)] hover:shadow-[0_0_20px_rgba(121,184,255,0.12)]"
-        @click="openArticle(a.slug)"
+        v-if="featured && !filtered"
+        class="group fi-px-panel relative cursor-pointer overflow-hidden bg-[var(--fi-panel)] transition hover:border-[var(--fi-blue)]"
+        @click="openArticle(featured.slug)"
       >
         <div
-          class="relative h-32 w-44 shrink-0 overflow-hidden"
-          style="background: linear-gradient(135deg, rgba(121, 184, 255, 0.18), rgba(183, 140, 255, 0.14))"
+          class="relative h-56 w-full"
+          style="background: linear-gradient(135deg, rgba(121, 184, 255, 0.25), rgba(183, 140, 255, 0.18))"
         >
           <img
-            v-if="a.cover"
-            :src="a.cover"
-            :alt="a.title"
+            v-if="featured.cover"
+            :src="featured.cover"
+            :alt="featured.title"
             class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-            loading="lazy"
           />
           <span
             v-else
-            class="mono absolute inset-0 flex items-center justify-center text-4xl text-[var(--fi-blue)]/50"
-          >{{ a.title.slice(0, 1) }}</span>
-        </div>
-
-        <div class="min-w-0 flex-1 p-4">
-          <div class="flex items-baseline justify-between gap-4">
-            <h2 class="mono truncate text-base text-[var(--fi-text)] transition group-hover:text-[var(--fi-blue)]">
-              {{ a.title }}
-            </h2>
-            <time class="mono shrink-0 text-[10px] text-[var(--fi-muted)]">{{ a.date || '' }}</time>
-          </div>
-          <p v-if="a.excerpt" class="mt-2 line-clamp-2 text-sm text-[var(--fi-muted)]">{{ a.excerpt }}</p>
-          <div v-if="a.tags.length" class="mt-3 flex flex-wrap gap-2">
-            <span
-              v-for="t in a.tags"
-              :key="t"
-              class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-2 py-0.5 text-[10px] text-[var(--fi-muted)]"
-            >{{ t }}</span>
+            class="mono absolute inset-0 flex items-center justify-center text-6xl text-[var(--fi-blue)]/40"
+          >{{ featured.title.slice(0, 1) }}</span>
+          <div class="absolute inset-0" style="background: linear-gradient(0deg, rgba(4, 6, 17, 0.92), transparent 65%)"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <span class="mono border border-[var(--fi-warm)]/60 bg-[var(--fi-bg)]/70 px-2 py-0.5 text-[10px] text-[var(--fi-warm)]">置顶</span>
+            <h2 class="mono mt-2 text-xl text-[var(--fi-text)] md:text-2xl">{{ featured.title }}</h2>
+            <time class="mono mt-1 block text-[10px] text-[var(--fi-muted)]">{{ featured.date || '' }}</time>
           </div>
         </div>
       </article>
+
+      <div class="fi-stagger grid gap-4 md:grid-cols-2">
+        <article
+          v-for="a in rest"
+          :key="a.slug"
+          class="group fi-px-panel flex cursor-pointer flex-col overflow-hidden bg-[var(--fi-panel)] transition hover:border-[var(--fi-blue)]"
+          @click="openArticle(a.slug)"
+        >
+          <div
+            class="relative h-36 w-full shrink-0 overflow-hidden"
+            style="background: linear-gradient(135deg, rgba(121, 184, 255, 0.18), rgba(183, 140, 255, 0.14))"
+          >
+            <img
+              v-if="a.cover"
+              :src="a.cover"
+              :alt="a.title"
+              class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+            <span
+              v-else
+              class="mono absolute inset-0 flex items-center justify-center text-4xl text-[var(--fi-blue)]/50"
+            >{{ a.title.slice(0, 1) }}</span>
+          </div>
+          <div class="flex min-w-0 flex-1 flex-col p-4">
+            <div class="flex items-baseline justify-between gap-3">
+              <h2 class="mono truncate text-sm text-[var(--fi-text)] transition group-hover:text-[var(--fi-blue)]">
+                {{ a.title }}
+              </h2>
+              <time class="mono shrink-0 text-[10px] text-[var(--fi-muted)]">{{ a.date || '' }}</time>
+            </div>
+            <p v-if="a.excerpt" class="mt-2 line-clamp-2 text-xs text-[var(--fi-muted)]">{{ a.excerpt }}</p>
+            <div v-if="a.tags.length" class="mt-auto flex flex-wrap gap-1.5 pt-3">
+              <span
+                v-for="t in a.tags"
+                :key="t"
+                class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[10px] text-[var(--fi-muted)]"
+              >{{ t }}</span>
+            </div>
+          </div>
+        </article>
+      </div>
 
       <div ref="sentinel" class="h-1"></div>
       <p v-if="visibleCount < articles.length" class="mono text-center text-xs text-[var(--fi-muted)]">

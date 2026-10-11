@@ -13,6 +13,7 @@ import TestimonialsView from './views/TestimonialsView.vue';
 import CertificatesView from './views/CertificatesView.vue';
 import AffiliationsView from './views/AffiliationsView.vue';
 import ServicesView from './views/ServicesView.vue';
+import GuestbookView from './views/GuestbookView.vue';
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -31,5 +32,6 @@ export const router = createRouter({
     { path: '/certificates', name: 'certificates', component: CertificatesView },
     { path: '/affiliations', name: 'affiliations', component: AffiliationsView },
     { path: '/services', name: 'services', component: ServicesView },
+    { path: '/guestbook', name: 'guestbook', component: GuestbookView },
   ],
 });

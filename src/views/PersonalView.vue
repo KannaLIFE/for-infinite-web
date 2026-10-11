@@ -167,11 +167,28 @@ onMounted(async () => {
         <div
           v-for="a in worldOfYear"
           :key="a.slug"
-          class="fi-px-panel cursor-pointer bg-[var(--fi-panel)] p-5 transition hover:border-[var(--fi-blue)]"
+          class="fi-px-panel group flex cursor-pointer overflow-hidden bg-[var(--fi-panel)] transition hover:border-[var(--fi-blue)]"
           @click="openArticle(a.slug, 'worldview')"
         >
-          <h3 class="mono text-lg text-[var(--fi-text)]">{{ a.title }}</h3>
-          <p v-if="a.excerpt" class="mt-1 text-sm text-[var(--fi-muted)]">{{ a.excerpt }}</p>
+          <div
+            class="relative h-20 w-28 shrink-0"
+            style="background: linear-gradient(135deg, rgba(121, 184, 255, 0.2), rgba(183, 140, 255, 0.16))"
+          >
+            <img
+              v-if="a.cover"
+              :src="a.cover"
+              :alt="a.title"
+              class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+            <span v-else class="mono absolute inset-0 flex items-center justify-center text-2xl text-[var(--fi-blue)]/40">
+              {{ a.title.slice(0, 1) }}
+            </span>
+          </div>
+          <div class="min-w-0 flex-1 p-4">
+            <h3 class="mono truncate text-sm text-[var(--fi-text)] transition group-hover:text-[var(--fi-blue)]">{{ a.title }}</h3>
+            <p v-if="a.excerpt" class="mt-1 line-clamp-2 text-xs text-[var(--fi-muted)]">{{ a.excerpt }}</p>
+          </div>
         </div>
         <div v-if="!worldOfYear.length && !realityOfYear.length" class="mono text-sm text-[var(--fi-muted)]">
           这一年没有记录。
