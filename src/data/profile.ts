@@ -9,6 +9,7 @@ export const profile = {
   status: '观测站运行中',
   statusNote: '正在学习 LLM 应用与 Agent',
   ghUser: 'kannalife',
+  discordId: '',
 
   socials: [
     { label: 'GitHub', url: 'https://github.com/kannalife' },
@@ -31,19 +32,43 @@ export const profile = {
     { label: '悉尼', offset: 10 },
   ],
 
-  about: {
-    anime: ['示例番剧 A', '示例番剧 B'],
-    games: ['Minecraft', '示例游戏 B'],
-    vtubers: ['示例主播 A'],
-    vocaloid: ['示例 P 主 A'],
-    others: ['示例爱好 A'],
-  },
-
-  music: [
-    'Ado',
-    'Roselia',
-    'Poppin\' Party',
-    'Yoasobi',
+  about: [
+    {
+      key: 'anime',
+      title: 'anime · 番剧',
+      items: ['示例番剧 A', '示例番剧 B'],
+      thumbs: [] as string[],
+    },
+    {
+      key: 'games',
+      title: 'games · 游戏',
+      items: ['Minecraft', '示例游戏 B'],
+      thumbs: [] as string[],
+    },
+    {
+      key: 'vtubers',
+      title: 'vtubers · 主播',
+      items: ['示例主播 A'],
+      thumbs: [] as string[],
+    },
+    {
+      key: 'vocaloid',
+      title: 'vocaloid · 术力口',
+      items: ['示例 P 主 A'],
+      thumbs: [] as string[],
+    },
+    {
+      key: 'music',
+      title: 'music · 音乐',
+      items: ['Ado', 'Roselia', 'Poppin\' Party', 'Yoasobi'],
+      thumbs: [] as string[],
+    },
+    {
+      key: 'others',
+      title: 'others · 其他',
+      items: ['示例爱好 A'],
+      thumbs: [] as string[],
+    },
   ],
 
   byf: [
