@@ -48,7 +48,7 @@ onMounted(async () => {
 <template>
   <div class="w-full px-4">
     <div class="grid items-start gap-4 lg:grid-cols-[1.15fr_1fr_0.85fr]">
-      <div class="space-y-4">
+      <div class="min-w-0 space-y-4">
         <section class="fi-rise text-center">
           <p class="mono text-xs tracking-[0.4em] text-[var(--fi-muted)]">第 {{ nowWorldYear() }} 观测纪</p>
           <h1 class="mono mt-3 text-4xl font-bold tracking-widest text-[var(--fi-text)] md:text-6xl">
@@ -166,7 +166,7 @@ onMounted(async () => {
         </section>
       </div>
 
-      <div class="space-y-4">
+      <div class="min-w-0 space-y-4">
         <section class="fi-px-panel bg-[var(--fi-panel)] p-4">
           <div class="mb-3 flex items-center justify-between">
             <h2 class="mono text-xs text-[var(--fi-warm)]">ABOUT · 档案</h2>
@@ -228,7 +228,7 @@ onMounted(async () => {
         </section>
       </div>
 
-      <div class="space-y-4">
+      <div class="min-w-0 space-y-4">
         <section class="fi-px-panel relative overflow-hidden bg-[var(--fi-panel)]">
           <img
             v-if="profile.bannerUrl"

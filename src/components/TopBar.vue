@@ -73,7 +73,7 @@ function toggle(key: string): void {
         </span>
       </RouterLink>
 
-      <nav class="ml-auto flex items-center gap-0.5">
+      <nav class="ml-auto flex flex-wrap items-center gap-0.5">
         <RouterLink
           to="/"
           class="mono px-3 py-1.5 text-xs transition"
