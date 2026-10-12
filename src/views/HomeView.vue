@@ -18,7 +18,6 @@ const base = import.meta.env.BASE_URL;
 
 const pcOnline = ref<'checking' | 'online' | 'offline'>('checking');
 const liveStatus = ref('');
-const statusMode = ref('');
 let statusTimer: ReturnType<typeof setInterval> | null = null;
 
 async function pollStatus(): Promise<void> {
@@ -31,7 +30,6 @@ async function pollStatus(): Promise<void> {
     const j = await r.json();
     pcOnline.value = 'online';
     liveStatus.value = j.status || '';
-    statusMode.value = j.mode || '';
   } catch {
     pcOnline.value = 'offline';
   }
@@ -494,9 +492,6 @@ onUnmounted(() => {
               ></span>
               <span :class="pcOnline === 'online' ? 'text-[var(--fi-blue)]' : pcOnline === 'offline' ? 'text-[#ff8a8a]' : 'text-[var(--fi-muted)]'">
                 {{ pcOnline === 'online' ? '在线' : pcOnline === 'offline' ? '离线' : '检测中' }}
-              </span>
-              <span v-if="pcOnline === 'online' && statusMode" class="mono text-[8px] text-[var(--fi-muted)]">
-                {{ statusMode === 'window' ? '· 窗口名' : '· 自定义' }}
               </span>
             </p>
           </div>
