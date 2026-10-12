@@ -53,8 +53,8 @@ export const profile = {
       title: 'shows · 影视',
       items: [
         { name: '神探夏洛克 第一季', img: '/covers/shows-sherlock-s1.webp', desc: 'BBC 出品的英剧：把福尔摩斯的故事从 19 世纪搬到 21 世纪的伦敦，本尼迪克特·康伯巴奇与马丁·弗瑞曼联袂出演。' },
-        { name: '是，大臣', img: '/covers/shows-ministry.png', desc: '' },
-        { name: '是，首相', img: '/covers/shows-prime.png', desc: '' },
+        { name: '是，大臣', img: '/covers/shows-ministry.webp', desc: 'Jim Hacker 在帮助本党大选获胜后出任行政事务部（DAA）大臣，从此开始面对以常务秘书 Sir Humphrey Appleby 为首的公务员体系。' },
+        { name: '是，首相', img: '/covers/shows-prime.webp', desc: 'Jim Hacker 升任首相后继续与 Sir Humphrey 周旋：权力越大责任越大，政治问题揭开总有个内幕。' },
         { name: 'Alan Becker 火柴人动画', img: '/covers/alanbecker.webp', desc: '' },
         { name: '星球大战', img: '/covers/shows-starwars.png', desc: '' },
         { name: 'Harry Potter', img: '/covers/shows-hp.png', desc: '' },
