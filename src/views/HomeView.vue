@@ -4,6 +4,7 @@ import { profile, type AboutItem, type AboutSection } from '../data/profile';
 import { API_BASE, api } from '../lib/api';
 import { nowWorldYear } from '../lib/time';
 import GhGrid from '../components/GhGrid.vue';
+import GhStats from '../components/GhStats.vue';
 import WorldClock from '../components/WorldClock.vue';
 import YtCard from '../components/YtCard.vue';
 import type { ArticleMeta } from '../types';
@@ -281,24 +282,7 @@ onUnmounted(() => {
                 class="mono text-[10px] text-[var(--fi-blue)] hover:text-[var(--fi-warm)]"
               >主页 ▸</a>
             </div>
-            <div class="space-y-2">
-              <a href="https://github.com/kannalife" target="_blank" rel="noopener" class="block">
-                <img
-                  src="https://github-stats-extended.vercel.app/api?username=kannalife&theme=dark_github"
-                  alt="GitHub stats"
-                  class="w-full"
-                  loading="lazy"
-                />
-              </a>
-              <a href="https://github.com/kannalife" target="_blank" rel="noopener" class="block">
-                <img
-                  src="https://github-stats-extended.vercel.app/api/top-langs/?username=kannalife&theme=dark_github"
-                  alt="Top languages"
-                  class="w-full"
-                  loading="lazy"
-                />
-              </a>
-            </div>
+            <GhStats username="kannalife" />
           </section>
 
           <WorldClock :clocks="profile.clocks" />
