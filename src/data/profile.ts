@@ -2,6 +2,7 @@ export interface AboutItem {
   name: string;
   img?: string;
   desc?: string;
+  yt?: string;
 }
 
 export interface AboutSection {
@@ -89,9 +90,9 @@ export const profile = {
       key: 'vocaloid',
       title: 'vocaloid · 术力口',
       items: [
-        { name: 'YES or NO（雨衣 × 重音テト）', img: '/covers/yesorno.jpg', desc: '' },
-        { name: 'Fake Dance（雨衣 × 重音テト）', img: '', desc: '' },
-        { name: 'MESMERIZER（Bao & Neuro 英语翻唱）', img: '', desc: '' },
+        { name: 'YES or NO（雨衣 × 重音テト）', img: '', desc: '', yt: 'IJoMYSNsgEo' },
+        { name: 'Fake Dance（雨衣 × 重音テト）', img: '', desc: '', yt: '2HRW4aNgx6U' },
+        { name: 'MESMERIZER（Bao & Neuro 英语翻唱）', img: '', desc: '', yt: 'qhmeWiZg3cA' },
       ],
     },
     {

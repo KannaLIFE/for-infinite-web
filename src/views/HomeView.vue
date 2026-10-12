@@ -5,6 +5,7 @@ import { API_BASE, api } from '../lib/api';
 import { nowWorldYear } from '../lib/time';
 import GhGrid from '../components/GhGrid.vue';
 import WorldClock from '../components/WorldClock.vue';
+import YtCard from '../components/YtCard.vue';
 import type { ArticleMeta } from '../types';
 
 type ApiState = 'checking' | 'online' | 'offline';
@@ -315,6 +316,14 @@ onUnmounted(() => {
                     </div>
                   </div>
                 </div>
+              </div>
+              <div v-else-if="s.key === 'vocaloid'" class="mt-2 grid grid-cols-3 gap-2">
+                <YtCard
+                  v-for="it in s.items"
+                  :key="it.name"
+                  :video-id="it.yt || ''"
+                  :name="it.name"
+                />
               </div>
               <div v-else-if="s.key === 'vtubers'" class="mt-2">
                 <img
