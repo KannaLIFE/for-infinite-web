@@ -103,16 +103,6 @@ export const profile = {
         { name: '按精选集听歌', img: '', desc: '' },
       ],
     },
-    {
-      key: 'others',
-      title: 'others · 其他',
-      items: [
-        { name: '写作（世界观创作）', img: '', desc: '' },
-        { name: '板绘（数位板）', img: '', desc: '' },
-        { name: '乐曲创作', img: '', desc: '' },
-        { name: '学日语（想开始）', img: '', desc: '' },
-      ],
-    },
   ] as AboutSection[],
 
   byf: [
