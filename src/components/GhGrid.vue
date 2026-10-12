@@ -20,7 +20,7 @@ const colors = [
   'rgba(121,184,255,1)',
 ];
 
-const WEEKS = 26;
+const WEEKS = 53;
 const DAYS = 7;
 
 onMounted(async () => {
@@ -51,7 +51,7 @@ onMounted(async () => {
       <span class="mono text-[10px] text-[var(--fi-muted)]">
         <template v-if="loading">加载中…</template>
         <template v-else-if="failed">信号不可达</template>
-        <template v-else>近半年 {{ total }} 次提交</template>
+        <template v-else>近一年 {{ total }} 次提交</template>
       </span>
     </div>
 
@@ -62,7 +62,7 @@ onMounted(async () => {
     <div
       v-else
       class="mt-3 grid gap-[3px]"
-      style="grid-auto-flow: column; grid-template-columns: repeat(26, minmax(0, 1fr)); grid-template-rows: repeat(7, 10px)"
+      style="grid-auto-flow: column; grid-template-columns: repeat(53, minmax(0, 1fr)); grid-template-rows: repeat(7, 10px)"
     >
       <span
         v-for="c in cells"

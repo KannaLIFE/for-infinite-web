@@ -17,6 +17,7 @@ interface User {
 
 const user = ref<User | null>(null);
 const repos = ref<Repo[]>([]);
+const contributions = ref<number | null>(null);
 const state = ref<'loading' | 'online' | 'offline'>('loading');
 
 const langColors: Record<string, string> = {
@@ -65,13 +66,16 @@ onMounted(async () => {
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 8000);
-    const [u, r] = await Promise.all([
+    const [u, r, c] = await Promise.all([
       fetch(`https://api.github.com/users/${props.username}`, { signal: ctrl.signal }).then((x) => (x.ok ? x.json() : Promise.reject(new Error()))),
       fetch(`https://api.github.com/users/${props.username}/repos?per_page=100&sort=pushed`, { signal: ctrl.signal }).then((x) => (x.ok ? x.json() : Promise.reject(new Error()))),
+      fetch(`https://github-contributions-api.jogruber.de/v4/${props.username}`, { signal: ctrl.signal }).then((x) => (x.ok ? x.json() : Promise.reject(new Error()))),
     ]);
     clearTimeout(t);
     user.value = u;
     repos.value = r;
+    const list = (c.contributions ?? []) as { count: number }[];
+    contributions.value = list.slice(-365).reduce((s, d) => s + d.count, 0);
     state.value = 'online';
   } catch {
     state.value = 'offline';
@@ -83,10 +87,11 @@ onMounted(async () => {
   <div v-if="state === 'offline'" class="mono text-[10px] text-[var(--fi-muted)]">星联离线，统计暂不可读。</div>
   <div v-else-if="state === 'loading'" class="mono animate-pulse text-[10px] text-[var(--fi-muted)]">统计接收中…</div>
   <div v-else class="space-y-2">
-    <div class="grid grid-cols-4 gap-1.5 text-center">
+    <div class="grid grid-cols-5 gap-1.5 text-center">
       <div
         v-for="cell in [
           { label: '仓库', value: user ? user.public_repos : 0 },
+          { label: '贡献', value: contributions !== null ? contributions : '…' },
           { label: '星标', value: totals.stars },
           { label: 'Fork', value: totals.forks },
           { label: '粉丝', value: user ? user.followers : 0 },
