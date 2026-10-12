@@ -27,7 +27,7 @@ onMounted(async () => {
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 8000);
-    const res = await fetch('https://github-contributions-api.jogruber.de/v4/kannalife', {
+    const res = await fetch('https://github-contributions-api.jogruber.de/v4/kannalife?y=last', {
       signal: ctrl.signal,
     });
     clearTimeout(t);

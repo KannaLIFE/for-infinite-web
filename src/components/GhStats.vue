@@ -55,7 +55,9 @@ const totals = computed(() => {
 const langs = computed(() => {
   const m = new Map<string, number>();
   for (const r of repos.value) {
-    if (!r.fork && r.language) m.set(r.language, (m.get(r.language) || 0) + 1);
+    if (!r.fork && r.language) {
+      m.set(r.language, (m.get(r.language) || 0) + (r.stargazers_count > 0 ? r.stargazers_count : 1));
+    }
   }
   const arr = [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
   const max = arr.length ? arr[0][1] : 1;
@@ -69,13 +71,13 @@ onMounted(async () => {
     const [u, r, c] = await Promise.all([
       fetch(`https://api.github.com/users/${props.username}`, { signal: ctrl.signal }).then((x) => (x.ok ? x.json() : Promise.reject(new Error()))),
       fetch(`https://api.github.com/users/${props.username}/repos?per_page=100&sort=pushed`, { signal: ctrl.signal }).then((x) => (x.ok ? x.json() : Promise.reject(new Error()))),
-      fetch(`https://github-contributions-api.jogruber.de/v4/${props.username}`, { signal: ctrl.signal }).then((x) => (x.ok ? x.json() : Promise.reject(new Error()))),
+      fetch(`https://github-contributions-api.jogruber.de/v4/${props.username}?y=last`, { signal: ctrl.signal }).then((x) => (x.ok ? x.json() : Promise.reject(new Error()))),
     ]);
     clearTimeout(t);
     user.value = u;
     repos.value = r;
     const list = (c.contributions ?? []) as { count: number }[];
-    contributions.value = list.slice(-365).reduce((s, d) => s + d.count, 0);
+    contributions.value = list.reduce((s, d) => s + d.count, 0);
     state.value = 'online';
   } catch {
     state.value = 'offline';
