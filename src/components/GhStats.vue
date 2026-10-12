@@ -143,7 +143,7 @@ onMounted(async () => {
         <div class="h-1.5 flex-1 bg-[var(--fi-bg)]">
           <div class="h-full" :style="{ width: l.pct + '%', background: langColors[l.name] || 'var(--fi-blue)' }"></div>
         </div>
-        <span class="mono w-4 shrink-0 text-right text-[8px] text-[var(--fi-muted)]">{{ l.n }}</span>
+        <span class="mono w-6 shrink-0 text-right text-[8px] text-[var(--fi-muted)]">{{ l.pct }}%</span>
       </div>
       <p v-if="!langs.length" class="mono text-[9px] text-[var(--fi-muted)]">暂无数据</p>
     </div>
