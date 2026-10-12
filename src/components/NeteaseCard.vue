@@ -1,24 +1,28 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { API_BASE } from '../lib/api';
 
 interface RankItem {
   name: string;
   artist: string;
   play: number;
 }
+interface Snapshot {
+  updatedAt?: string;
+  week: RankItem[];
+}
 
+const base = import.meta.env.BASE_URL;
 const state = ref<'loading' | 'online' | 'offline'>('loading');
 const list = ref<RankItem[]>([]);
+const updatedAt = ref('');
 
 onMounted(async () => {
   try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 8000);
-    const r = await fetch(`${API_BASE}/api/netease/rank`, { signal: ctrl.signal });
-    clearTimeout(t);
+    const r = await fetch(`${base}data/netease.json`, { cache: 'no-store' });
     if (!r.ok) throw new Error();
-    list.value = await r.json();
+    const j = (await r.json()) as Snapshot;
+    list.value = j.week || [];
+    updatedAt.value = j.updatedAt || '';
     state.value = 'online';
   } catch {
     state.value = 'offline';
@@ -30,7 +34,7 @@ onMounted(async () => {
   <div class="mt-2">
     <p v-if="state === 'loading'" class="mono animate-pulse text-[10px] text-[var(--fi-muted)]">听歌记录接收中…</p>
     <p v-else-if="state === 'offline'" class="text-[10px] text-[var(--fi-muted)]">
-      暂不可读（后端未运行，或未配置网易云 Cookie）。
+      暂无快照数据（开机快照未运行或抓取失败）。
     </p>
     <div v-else class="space-y-1.5">
       <div v-for="(s, i) in list" :key="s.name + i" class="flex items-baseline gap-2 border-l-2 border-[var(--fi-blue-dim)] py-0.5 pl-2">
@@ -44,6 +48,9 @@ onMounted(async () => {
         <span class="mono shrink-0 text-[9px] text-[var(--fi-muted)]">{{ s.play }} 次</span>
       </div>
       <p v-if="!list.length" class="mono text-[10px] text-[var(--fi-muted)]">本周暂无记录。</p>
+      <p v-if="updatedAt" class="mono text-right text-[8px] text-[var(--fi-muted)]">
+        更新于 {{ updatedAt.slice(5, 10) }} {{ updatedAt.slice(11, 16) }}
+      </p>
     </div>
   </div>
 </template>

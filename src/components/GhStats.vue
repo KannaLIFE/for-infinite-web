@@ -14,10 +14,20 @@ interface User {
   followers: number;
   following: number;
 }
+interface Snapshot {
+  repos?: number;
+  followers?: number;
+  stars?: number;
+  forks?: number;
+  contributions?: number;
+  langs?: { name: string; n: number }[];
+}
 
+const base = import.meta.env.BASE_URL;
 const user = ref<User | null>(null);
 const repos = ref<Repo[]>([]);
 const contributions = ref<number | null>(null);
+const snap = ref<Snapshot | null>(null);
 const state = ref<'loading' | 'online' | 'offline'>('loading');
 
 const langColors: Record<string, string> = {
@@ -45,6 +55,9 @@ const langColors: Record<string, string> = {
 };
 
 const totals = computed(() => {
+  if (snap.value && snap.value.stars !== undefined) {
+    return { stars: snap.value.stars, forks: snap.value.forks || 0 };
+  }
   const own = repos.value.filter((r) => !r.fork);
   return {
     stars: own.reduce((a, r) => a + r.stargazers_count, 0),
@@ -53,6 +66,10 @@ const totals = computed(() => {
 });
 
 const langs = computed(() => {
+  if (snap.value && snap.value.langs) {
+    const max = snap.value.langs.length ? snap.value.langs[0].n : 1;
+    return snap.value.langs.map((l) => ({ name: l.name, n: l.n, pct: Math.round((l.n / max) * 100) }));
+  }
   const m = new Map<string, number>();
   for (const r of repos.value) {
     if (!r.fork && r.language) {
@@ -64,7 +81,7 @@ const langs = computed(() => {
   return arr.map(([name, n]) => ({ name, n, pct: Math.round((n / max) * 100) }));
 });
 
-onMounted(async () => {
+async function loadLive(): Promise<void> {
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 8000);
@@ -82,6 +99,19 @@ onMounted(async () => {
   } catch {
     state.value = 'offline';
   }
+}
+
+onMounted(async () => {
+  try {
+    const r = await fetch(`${base}data/github.json`, { cache: 'no-store' });
+    if (!r.ok) throw new Error();
+    const j = (await r.json()) as Snapshot;
+    if (!j || j.repos === undefined || (j as { error?: string }).error) throw new Error();
+    snap.value = j;
+    state.value = 'online';
+  } catch {
+    await loadLive();
+  }
 });
 </script>
 
@@ -92,11 +122,11 @@ onMounted(async () => {
     <div class="grid grid-cols-5 gap-1.5 text-center">
       <div
         v-for="cell in [
-          { label: '仓库', value: user ? user.public_repos : 0 },
-          { label: '贡献', value: contributions !== null ? contributions : '…' },
+          { label: '仓库', value: snap && snap.repos !== undefined ? snap.repos : (user ? user.public_repos : 0) },
+          { label: '贡献', value: snap && snap.contributions !== undefined ? snap.contributions : (contributions !== null ? contributions : '…') },
           { label: '星标', value: totals.stars },
           { label: 'Fork', value: totals.forks },
-          { label: '粉丝', value: user ? user.followers : 0 },
+          { label: '粉丝', value: snap && snap.followers !== undefined ? snap.followers : (user ? user.followers : 0) },
         ]"
         :key="cell.label"
         class="border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] py-1"
