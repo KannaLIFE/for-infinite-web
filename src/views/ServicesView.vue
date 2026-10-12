@@ -13,7 +13,7 @@ import { services } from '../data/services';
 
     <p class="mono text-xs text-[var(--fi-muted)]">{{ services.tagline }}</p>
 
-    <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
+    <section v-if="services.rows.length" class="fi-px-panel bg-[var(--fi-panel)] p-5">
       <div class="mb-3 flex items-center justify-between">
         <h2 class="mono text-sm text-[var(--fi-warm)]">价格 · 服务类型</h2>
         <span class="mono text-[10px] text-[var(--fi-blue)]">{{ services.discountNote }}</span>
@@ -43,7 +43,7 @@ import { services } from '../data/services';
       </p>
     </section>
 
-    <div class="grid gap-6 md:grid-cols-2">
+    <div v-if="services.dos.length || services.donts.length" class="grid gap-6 md:grid-cols-2">
       <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
         <h2 class="mono mb-3 text-sm text-[var(--fi-blue)]">可接</h2>
         <ul class="space-y-2 text-sm text-[var(--fi-text)]">
@@ -62,14 +62,14 @@ import { services } from '../data/services';
       </section>
     </div>
 
-    <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
+    <section v-if="services.terms.length" class="fi-px-panel bg-[var(--fi-panel)] p-5">
       <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">条款</h2>
       <ol class="list-inside list-decimal space-y-1.5 text-sm text-[var(--fi-muted)]">
         <li v-for="t in services.terms" :key="t">{{ t }}</li>
       </ol>
     </section>
 
-    <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
+    <section v-if="services.faq.length" class="fi-px-panel bg-[var(--fi-panel)] p-5">
       <h2 class="mono mb-3 text-sm text-[var(--fi-violet)]">FAQ</h2>
       <div v-for="f in services.faq" :key="f.question" class="mb-3 last:mb-0">
         <p class="mono text-sm text-[var(--fi-text)]">Q：{{ f.question }}</p>

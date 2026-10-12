@@ -203,11 +203,6 @@ onUnmounted(() => {
                   :key="p"
                   class="mono border border-[var(--fi-violet-dim)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[9px] text-[var(--fi-violet)]"
                 >{{ p }}</span>
-                <span
-                  v-for="i in profile.interests"
-                  :key="i"
-                  class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[9px] text-[var(--fi-muted)]"
-                >{{ i }}</span>
               </div>
             </div>
           </section>
@@ -562,7 +557,7 @@ onUnmounted(() => {
           查看完整服务 ▸
         </RouterLink>
       </div>
-      <p class="text-xs text-[var(--fi-muted)]">脚本 · 静态网页 · 网页改版 —— 详情与价格见服务页。</p>
+      <p class="text-xs text-[var(--fi-muted)]">服务内容整理中，敬请期待。</p>
     </section>
 
     <div
