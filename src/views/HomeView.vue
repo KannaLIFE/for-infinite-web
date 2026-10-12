@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { profile, type AboutItem, type AboutSection } from '../data/profile';
 import { API_BASE, api } from '../lib/api';
 import { nowWorldYear } from '../lib/time';
@@ -49,6 +49,30 @@ function stripItems(s: AboutSection): AboutItem[] {
   return s.items.length >= 4 ? [...s.items, ...s.items] : s.items;
 }
 
+const shows = computed(() => profile.about.find((s) => s.key === 'shows')?.items ?? []);
+const showIdx = ref(0);
+const showPaused = ref(false);
+let showTimer: ReturnType<typeof setInterval> | null = null;
+
+function restartShowTimer(): void {
+  if (showTimer) clearInterval(showTimer);
+  showTimer = setInterval(() => {
+    if (showPaused.value || shows.value.length < 2) return;
+    showIdx.value = (showIdx.value + 1) % shows.value.length;
+  }, 4000);
+}
+
+function stepShow(dir: number): void {
+  if (!shows.value.length) return;
+  showIdx.value = (showIdx.value + dir + shows.value.length) % shows.value.length;
+  restartShowTimer();
+}
+
+function jumpShow(i: number): void {
+  showIdx.value = i;
+  restartShowTimer();
+}
+
 const contentGrid = [
   { to: '/blog', glyph: '▤', label: '博客' },
   { to: '/projects', glyph: '✦', label: '项目' },
@@ -66,6 +90,8 @@ const marqueeChips = computed(() => [
 ]);
 
 onMounted(async () => {
+  restartShowTimer();
+
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 5000);
@@ -82,6 +108,10 @@ onMounted(async () => {
   } catch {
 
   }
+});
+
+onUnmounted(() => {
+  if (showTimer) clearInterval(showTimer);
 });
 </script>
 
@@ -228,6 +258,64 @@ onMounted(async () => {
             <div v-for="s in profile.about" :key="s.key" class="border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] p-3">
               <h3 class="mono text-[10px] text-[var(--fi-violet)]">{{ s.title }}</h3>
               <div
+                v-if="s.key === 'shows'"
+                class="mt-2 flex gap-3"
+                @mouseenter="showPaused = true"
+                @mouseleave="showPaused = false"
+              >
+                <div class="relative w-32 shrink-0 sm:w-36">
+                  <div
+                    class="relative overflow-hidden border-2 border-[var(--fi-line-solid)]"
+                    style="background: linear-gradient(135deg, rgba(121,184,255,0.16), rgba(183,140,255,0.12))"
+                  >
+                    <transition name="fi-slide" mode="out-in">
+                      <img
+                        v-if="shows[showIdx] && shows[showIdx].img"
+                        :key="'slide-' + showIdx"
+                        :src="imgUrl(shows[showIdx].img)"
+                        :alt="shows[showIdx].name"
+                        class="aspect-[2/3] w-full object-cover"
+                      />
+                      <div v-else :key="'slide-empty-' + showIdx" class="aspect-[2/3] w-full"></div>
+                    </transition>
+                  </div>
+                  <button
+                    class="mono absolute left-1 top-1/2 -translate-y-1/2 border border-[var(--fi-line-solid)] bg-[var(--fi-bg)]/80 px-1 py-0.5 text-[10px] text-[var(--fi-text)] hover:text-[var(--fi-blue)]"
+                    aria-label="上一部"
+                    @click="stepShow(-1)"
+                  >◀</button>
+                  <button
+                    class="mono absolute right-1 top-1/2 -translate-y-1/2 border border-[var(--fi-line-solid)] bg-[var(--fi-bg)]/80 px-1 py-0.5 text-[10px] text-[var(--fi-text)] hover:text-[var(--fi-blue)]"
+                    aria-label="下一部"
+                    @click="stepShow(1)"
+                  >▶</button>
+                  <span class="mono absolute bottom-1 right-1 border border-[var(--fi-line-solid)] bg-[var(--fi-bg)]/80 px-1 text-[9px] text-[var(--fi-muted)]">
+                    {{ showIdx + 1 }}/{{ shows.length }}
+                  </span>
+                </div>
+                <div class="flex min-w-0 flex-1 flex-col">
+                  <transition name="fi-fade" mode="out-in">
+                    <div v-if="shows[showIdx]" :key="'info-' + showIdx">
+                      <h4 class="mono text-sm text-[var(--fi-text)]">{{ shows[showIdx].name }}</h4>
+                      <p class="mt-1.5 text-xs leading-relaxed text-[var(--fi-muted)]">
+                        {{ shows[showIdx].desc || '（暂无简述）' }}
+                      </p>
+                    </div>
+                  </transition>
+                  <div class="mt-auto flex items-center gap-1 pt-2">
+                    <button
+                      v-for="(it, i) in shows"
+                      :key="it.name"
+                      class="h-1.5 transition-all"
+                      :class="i === showIdx ? 'w-4 bg-[var(--fi-blue)]' : 'w-1.5 bg-[var(--fi-line-solid)] hover:bg-[var(--fi-muted)]'"
+                      :aria-label="it.name"
+                      @click="jumpShow(i)"
+                    ></button>
+                  </div>
+                </div>
+              </div>
+              <div
+                v-else
                 class="mt-2"
                 :class="s.items.length >= 4 ? 'fi-marquee' : 'flex gap-2 overflow-x-auto pb-1'"
                 @scroll="hoverCard = null"
@@ -417,3 +505,26 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.fi-slide-enter-active,
+.fi-slide-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.fi-slide-enter-from {
+  opacity: 0;
+  transform: translateX(16px);
+}
+.fi-slide-leave-to {
+  opacity: 0;
+  transform: translateX(-16px);
+}
+.fi-fade-enter-active,
+.fi-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fi-fade-enter-from,
+.fi-fade-leave-to {
+  opacity: 0;
+}
+</style>
