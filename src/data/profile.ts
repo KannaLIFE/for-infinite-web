@@ -65,13 +65,14 @@ export const profile = {
       title: 'games · 游戏',
       items: [
         { name: 'Minecraft', img: '/covers/minecraft.png', desc: '微软旗下 Mojang Studios 开发的沙盒游戏：在方块世界里探索、采集、建造与生存冒险。' },
-        { name: 'Mindustry', img: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1127400/library_600x900.jpg', desc: '一款结合即时战略与塔防要素的开放式工厂管理游戏。' },
-        { name: 'Stellaris', img: 'https://cdn.cloudflare.steamstatic.com/steam/apps/281990/library_600x900.jpg', desc: 'Paradox 出品的科幻大型战略游戏：探索浩瀚银河，与外星种族互动，扩大你帝国的影响力。' },
-        { name: 'Dancing Line', img: 'https://cdn.cloudflare.steamstatic.com/steam/apps/4395300/header.jpg', desc: '随着音乐引导一条无限延伸的线条穿过不同环境，点一下屏幕以转弯，避开障碍物。' },
-        { name: 'Among Us', img: 'https://cdn.cloudflare.steamstatic.com/steam/apps/945360/library_600x900.jpg', desc: '4 到 15 名玩家的派对游戏，相互合作与背叛……一切都发生在太空之中！' },
+        { name: 'Mindustry', img: '/covers/mindustry.jpg', desc: '一款结合即时战略与塔防要素的开放式工厂管理游戏。' },
+        { name: 'Stellaris', img: '/covers/stellaris.jpg', desc: 'Paradox 出品的科幻大型战略游戏：探索浩瀚银河，与外星种族互动，扩大你帝国的影响力。' },
+        { name: 'Dancing Line', img: '/covers/dancingline.jpg', desc: '随着音乐引导一条无限延伸的线条穿过不同环境，点一下屏幕以转弯，避开障碍物。' },
+        { name: 'Among Us', img: '/covers/amongus.jpg', desc: '4 到 15 名玩家的派对游戏，相互合作与背叛……一切都发生在太空之中！' },
         { name: 'Phigros', img: '/covers/phigros.png', desc: '鸽游开发发行的非商业音乐游戏，带有收集和解谜要素。' },
         { name: 'Clash Royale', img: '/covers/clashroyale.png', desc: 'Supercell 开发的即时战略手游：收集卡牌组建牌组，在几分钟的对战中攻守对决。' },
         { name: 'Seven years later', img: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1562920/library_600x900.jpg', desc: '生活片段故事风格的冒险游戏，3D 像素画面与时间跳跃元素，陪伴 Haruto 寻找七年前失去的记忆。' },
+        { name: '魔法少女的魔女审判', img: '/covers/witchtrial.jpg', desc: '魔法辩论×悬疑 ADV：在残酷的死亡游戏中击破魔法与谎言的幻影，揪出混入少女之中的“魔女”。' },
       ],
     },
     {
