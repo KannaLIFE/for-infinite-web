@@ -447,6 +447,31 @@ onUnmounted(() => {
       </div>
 
       <div class="min-w-0 space-y-4 px-3 py-4">
+        <section>
+          <div
+            class="relative w-full border-[3px] border-[var(--fi-warm)]"
+            style="box-shadow: inset 0 0 0 2px rgba(242,203,121,0.28)"
+          >
+            <img
+              v-if="profile.bannerUrl"
+              :src="profile.bannerUrl"
+              alt="banner"
+              class="block w-full"
+            />
+            <span
+              class="pointer-events-none absolute -left-[5px] -top-[5px] z-10 h-[30px] w-[30px]"
+              style="background-image: linear-gradient(135deg, #8a5a1f 0%, #d2a14a 25%, #f2cb79 50%, #d2a14a 75%, #8a5a1f 100%); clip-path: polygon(0 0, 100% 0, 100% 32%, 32% 32%, 32% 100%, 0 100%); filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5))"
+            ></span>
+            <span
+              class="pointer-events-none absolute -bottom-[5px] -right-[5px] z-10 h-[30px] w-[30px]"
+              style="background-image: linear-gradient(135deg, #8a5a1f 0%, #d2a14a 25%, #f2cb79 50%, #d2a14a 75%, #8a5a1f 100%); clip-path: polygon(100% 100%, 0 100%, 0 68%, 68% 68%, 68% 0, 100% 0); filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5))"
+            ></span>
+          </div>
+          <p class="mono mt-1.5 truncate text-right text-[8px] text-[var(--fi-muted)]">
+            友链横幅 · kannalife.github.io/for-infinite-web/banner.webp
+          </p>
+        </section>
+
         <section class="fi-px-panel space-y-3 bg-[var(--fi-panel)] p-4">
           <h3 class="mono text-xs text-[var(--fi-warm)]">STATION · 观测站状态</h3>
           <div>
@@ -539,22 +564,6 @@ onUnmounted(() => {
         </section>
       </div>
     </div>
-
-    <section class="fi-px-panel mx-3 mb-6 bg-[var(--fi-panel)] p-4">
-      <div class="mb-2 flex items-center justify-between">
-        <h2 class="mono text-xs text-[var(--fi-warm)]">BANNER · 友链横幅</h2>
-        <span class="mono text-[9px] text-[var(--fi-muted)]">引用地址见下方</span>
-      </div>
-      <img
-        v-if="profile.bannerUrl"
-        :src="profile.bannerUrl"
-        alt="banner"
-        class="w-full border-2 border-[var(--fi-line-solid)]"
-      />
-      <p class="mono mt-2 break-all text-[9px] text-[var(--fi-muted)]">
-        https://kannalife.github.io/for-infinite-web/banner.webp
-      </p>
-    </section>
 
     <section class="fi-px-panel mx-3 mb-6 bg-[var(--fi-panel)] p-4">
       <div class="mb-2 flex items-center justify-between">
