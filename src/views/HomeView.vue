@@ -35,8 +35,7 @@ function leaveCard(): void {
 }
 
 function ratioClass(key: string): string {
-  if (key === 'shows') return 'aspect-[2/3]';
-  if (key === 'games') return 'aspect-[16/9]';
+  if (key === 'shows' || key === 'games') return 'aspect-[2/3]';
   return 'aspect-square';
 }
 
@@ -377,31 +376,31 @@ onMounted(async () => {
 
     <div
       v-if="hoverCard"
-      class="fi-px-panel fixed z-40 w-72 bg-[var(--fi-panel)] p-3"
+      class="fi-px-panel fixed z-40 w-80 bg-[var(--fi-panel)] p-3"
       :style="{ left: hoverCard.x + 'px', top: hoverCard.y + 'px' }"
       @mouseenter="() => { if (hoverTimer) clearTimeout(hoverTimer); }"
       @mouseleave="leaveCard"
     >
-      <div
-        class="relative flex h-44 items-center justify-center overflow-hidden border-2 border-[var(--fi-line-solid)]"
-        style="background: linear-gradient(135deg, rgba(121,184,255,0.16), rgba(183,140,255,0.12))"
-      >
-        <img
+      <div class="flex gap-3">
+        <div
           v-if="hoverCard.item.img"
-          :src="imgUrl(hoverCard.item.img)"
-          :alt="hoverCard.item.name"
-          class="h-full w-full object-cover"
-        />
-        <span
-          v-else
-          class="mono text-4xl text-[var(--fi-violet)]/40"
-        >{{ hoverCard.item.name.slice(0, 1) }}</span>
+          class="w-20 shrink-0 overflow-hidden border-2 border-[var(--fi-line-solid)]"
+          style="background: linear-gradient(135deg, rgba(121,184,255,0.16), rgba(183,140,255,0.12))"
+        >
+          <img
+            :src="imgUrl(hoverCard.item.img)"
+            :alt="hoverCard.item.name"
+            class="aspect-[2/3] w-full object-cover"
+          />
+        </div>
+        <div class="min-w-0 flex-1">
+          <h4 class="mono truncate text-sm text-[var(--fi-text)]">{{ hoverCard.item.name }}</h4>
+          <p class="mono text-[10px] text-[var(--fi-violet)]">{{ hoverCard.section.title }}</p>
+          <p class="mt-1.5 text-xs leading-relaxed text-[var(--fi-muted)]">
+            {{ hoverCard.item.desc || '（暂无简述）' }}
+          </p>
+        </div>
       </div>
-      <h4 class="mono mt-2 truncate text-sm text-[var(--fi-text)]">{{ hoverCard.item.name }}</h4>
-      <p class="mono text-[10px] text-[var(--fi-violet)]">{{ hoverCard.section.title }}</p>
-      <p v-if="hoverCard.item.desc" class="mt-1.5 text-xs leading-relaxed text-[var(--fi-muted)]">
-        {{ hoverCard.item.desc }}
-      </p>
     </div>
   </div>
 </template>
