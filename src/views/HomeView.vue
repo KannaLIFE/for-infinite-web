@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { profile } from '../data/profile';
+import { profile, type AboutItem, type AboutSection } from '../data/profile';
 import { API_BASE, api } from '../lib/api';
 import { nowWorldYear } from '../lib/time';
 import GhGrid from '../components/GhGrid.vue';
@@ -11,6 +11,34 @@ type ApiState = 'checking' | 'online' | 'offline';
 const apiState = ref<ApiState>('checking');
 const latestPosts = ref<ArticleMeta[]>([]);
 const base = import.meta.env.BASE_URL;
+
+const hoverCard = ref<{ x: number; y: number; section: AboutSection; item: AboutItem } | null>(null);
+let hoverTimer: ReturnType<typeof setTimeout> | null = null;
+
+function enterCard(e: MouseEvent, s: AboutSection, it: AboutItem): void {
+  if (hoverTimer) clearTimeout(hoverTimer);
+  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+  const panelW = 288;
+  let x = rect.right + 10;
+  if (x + panelW > window.innerWidth - 8) x = rect.left - panelW - 10;
+  let y = rect.top;
+  const panelH = 340;
+  if (y + panelH > window.innerHeight - 8) y = Math.max(8, window.innerHeight - panelH - 8);
+  hoverCard.value = { x, y, section: s, item: it };
+}
+
+function leaveCard(): void {
+  if (hoverTimer) clearTimeout(hoverTimer);
+  hoverTimer = setTimeout(() => {
+    hoverCard.value = null;
+  }, 140);
+}
+
+function ratioClass(key: string): string {
+  if (key === 'shows') return 'aspect-[2/3]';
+  if (key === 'games') return 'aspect-[16/9]';
+  return 'aspect-square';
+}
 
 const contentGrid = [
   { to: '/blog', glyph: '▤', label: '博客' },
@@ -27,10 +55,6 @@ const marqueeChips = computed(() => [
   ...profile.techStack.map((t) => ({ name: t, kind: 'using' as const })),
   ...profile.learning.map((t) => ({ name: t, kind: 'learning' as const })),
 ]);
-
-function isPoster(key: string): boolean {
-  return key === 'shows';
-}
 
 onMounted(async () => {
   try {
@@ -194,22 +218,34 @@ onMounted(async () => {
           <div class="space-y-3">
             <div v-for="s in profile.about" :key="s.key" class="border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] p-3">
               <h3 class="mono text-[10px] text-[var(--fi-violet)]">{{ s.title }}</h3>
-              <p class="mt-1.5 text-[11px] leading-relaxed text-[var(--fi-muted)]">
-                {{ s.items.length ? s.items.join(' · ') : '待补充' }}
-              </p>
-              <div
-                v-if="s.thumbs.length"
-                class="mt-2 grid gap-1.5"
-                :class="isPoster(s.key) ? 'grid-cols-5' : 'grid-cols-6'"
-              >
+              <div class="mt-2 flex gap-2 overflow-x-auto pb-1" @scroll="hoverCard = null">
                 <div
-                  v-for="(t, i) in s.thumbs.slice(0, 10)"
+                  v-for="(it, i) in s.items"
                   :key="i"
-                  class="relative overflow-hidden border border-[var(--fi-blue-dim)]"
-                  :class="isPoster(s.key) ? 'aspect-[2/3]' : 'aspect-square'"
-                  style="background: linear-gradient(135deg, rgba(121,184,255,0.14), rgba(183,140,255,0.1))"
+                  class="group relative w-28 shrink-0 cursor-pointer"
+                  @mouseenter="enterCard($event, s, it)"
+                  @mouseleave="leaveCard"
                 >
-                  <img :src="t" :alt="s.key + i" class="h-full w-full object-cover" loading="lazy" />
+                  <div
+                    class="relative overflow-hidden border-2 transition duration-200 group-hover:scale-[1.04] group-hover:border-[var(--fi-blue)]"
+                    :class="ratioClass(s.key)"
+                    style="background: linear-gradient(135deg, rgba(121,184,255,0.16), rgba(183,140,255,0.12))"
+                  >
+                    <img
+                      v-if="it.img"
+                      :src="it.img"
+                      :alt="it.name"
+                      class="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                    <span
+                      v-else
+                      class="mono absolute inset-0 flex items-center justify-center text-3xl text-[var(--fi-violet)]/40"
+                    >{{ it.name.slice(0, 1) }}</span>
+                  </div>
+                  <p class="mono mt-1 truncate text-center text-[10px] text-[var(--fi-muted)] group-hover:text-[var(--fi-text)]">
+                    {{ it.name }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -332,5 +368,34 @@ onMounted(async () => {
       </div>
       <p class="text-xs text-[var(--fi-muted)]">脚本 · 静态网页 · 网页改版 —— 详情与价格见服务页。</p>
     </section>
+
+    <div
+      v-if="hoverCard"
+      class="fi-px-panel fixed z-40 w-72 bg-[var(--fi-panel)] p-3"
+      :style="{ left: hoverCard.x + 'px', top: hoverCard.y + 'px' }"
+      @mouseenter="() => { if (hoverTimer) clearTimeout(hoverTimer); }"
+      @mouseleave="leaveCard"
+    >
+      <div
+        class="relative flex h-44 items-center justify-center overflow-hidden border-2 border-[var(--fi-line-solid)]"
+        style="background: linear-gradient(135deg, rgba(121,184,255,0.16), rgba(183,140,255,0.12))"
+      >
+        <img
+          v-if="hoverCard.item.img"
+          :src="hoverCard.item.img"
+          :alt="hoverCard.item.name"
+          class="h-full w-full object-cover"
+        />
+        <span
+          v-else
+          class="mono text-4xl text-[var(--fi-violet)]/40"
+        >{{ hoverCard.item.name.slice(0, 1) }}</span>
+      </div>
+      <h4 class="mono mt-2 truncate text-sm text-[var(--fi-text)]">{{ hoverCard.item.name }}</h4>
+      <p class="mono text-[10px] text-[var(--fi-violet)]">{{ hoverCard.section.title }}</p>
+      <p v-if="hoverCard.item.desc" class="mt-1.5 text-xs leading-relaxed text-[var(--fi-muted)]">
+        {{ hoverCard.item.desc }}
+      </p>
+    </div>
   </div>
 </template>

@@ -1,3 +1,15 @@
+export interface AboutItem {
+  name: string;
+  img?: string;
+  desc?: string;
+}
+
+export interface AboutSection {
+  key: string;
+  title: string;
+  items: AboutItem[];
+}
+
 export const profile = {
   name: 'KannaLIFE',
   handle: '@kannalife',
@@ -39,40 +51,66 @@ export const profile = {
     {
       key: 'shows',
       title: 'shows · 影视',
-      items: ['神探夏洛克', '是，大臣', '是，首相', 'Alan Becker 火柴人动画', '星球大战', 'Harry Potter'],
-      thumbs: [] as string[],
+      items: [
+        { name: '神探夏洛克', img: '', desc: '' },
+        { name: '是，大臣', img: '', desc: '' },
+        { name: '是，首相', img: '', desc: '' },
+        { name: 'Alan Becker 火柴人动画', img: '', desc: '' },
+        { name: '星球大战', img: '', desc: '' },
+        { name: 'Harry Potter', img: '', desc: '' },
+      ],
     },
     {
       key: 'games',
       title: 'games · 游戏',
-      items: ['Minecraft', 'Mindustry', 'Stellaris', 'Dancing Line', 'Among Us', 'Phigros', 'Clash Royale', 'Seven years later'],
-      thumbs: [] as string[],
+      items: [
+        { name: 'Minecraft', img: '', desc: '' },
+        { name: 'Mindustry', img: '', desc: '' },
+        { name: 'Stellaris', img: '', desc: '' },
+        { name: 'Dancing Line', img: '', desc: '' },
+        { name: 'Among Us', img: '', desc: '' },
+        { name: 'Phigros', img: '', desc: '' },
+        { name: 'Clash Royale', img: '', desc: '' },
+        { name: 'Seven years later', img: '', desc: '' },
+      ],
     },
     {
       key: 'vtubers',
       title: 'vtubers · 主播',
-      items: ['vedal987（Neuro-sama）', '各类切片（英文圈为主）'],
-      thumbs: [] as string[],
+      items: [
+        { name: 'vedal987（Neuro-sama）', img: '', desc: '' },
+        { name: '各类切片（英文圈为主）', img: '', desc: '' },
+      ],
     },
     {
       key: 'vocaloid',
       title: 'vocaloid · 术力口',
-      items: ['YES or NO（雨衣 × 重音テト）', 'Fake Dance（雨衣 × 重音テト）', 'MESMERIZER（Bao & Neuro 英语翻唱）'],
-      thumbs: [] as string[],
+      items: [
+        { name: 'YES or NO（雨衣 × 重音テト）', img: '', desc: '' },
+        { name: 'Fake Dance（雨衣 × 重音テト）', img: '', desc: '' },
+        { name: 'MESMERIZER（Bao & Neuro 英语翻唱）', img: '', desc: '' },
+      ],
     },
     {
       key: 'music',
       title: 'music · 音乐',
-      items: ['Hans Zimmer（汉斯·季默）', 'Ludwig Göransson（信条 Tenet 配乐）', '按精选集听歌'],
-      thumbs: [] as string[],
+      items: [
+        { name: 'Hans Zimmer（汉斯·季默）', img: '', desc: '' },
+        { name: 'Ludwig Göransson（信条 Tenet 配乐）', img: '', desc: '' },
+        { name: '按精选集听歌', img: '', desc: '' },
+      ],
     },
     {
       key: 'others',
       title: 'others · 其他',
-      items: ['写作（世界观创作）', '板绘（数位板）', '乐曲创作', '学日语（想开始）'],
-      thumbs: [] as string[],
+      items: [
+        { name: '写作（世界观创作）', img: '', desc: '' },
+        { name: '板绘（数位板）', img: '', desc: '' },
+        { name: '乐曲创作', img: '', desc: '' },
+        { name: '学日语（想开始）', img: '', desc: '' },
+      ],
     },
-  ],
+  ] as AboutSection[],
 
   byf: [
     '目前忙于学业，回复可能较慢。',
