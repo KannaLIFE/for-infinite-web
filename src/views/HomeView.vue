@@ -349,14 +349,12 @@ onUnmounted(() => {
                 @mouseenter="vocPaused = true"
                 @mouseleave="vocPaused = false"
               >
-                <div class="mx-auto w-36 sm:w-40">
-                  <YtCard
-                    v-if="vocaloid[vocIdx]"
-                    :key="vocaloid[vocIdx].name"
-                    :video-id="vocaloid[vocIdx].yt || ''"
-                    :name="vocaloid[vocIdx].name"
-                  />
-                </div>
+                <YtCard
+                  v-if="vocaloid[vocIdx]"
+                  :key="vocaloid[vocIdx].name"
+                  :video-id="vocaloid[vocIdx].yt || ''"
+                  :name="vocaloid[vocIdx].name"
+                />
                 <div class="mt-2 flex items-center justify-between gap-2">
                   <div class="flex items-center gap-1">
                     <button

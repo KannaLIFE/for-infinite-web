@@ -69,10 +69,10 @@ onBeforeUnmount(() => {
       v-show="!playing"
       :src="thumb"
       :alt="name"
-      class="aspect-square w-full object-cover"
+      class="aspect-video w-full object-cover"
       loading="lazy"
     />
-    <div v-show="playing" ref="holder" class="aspect-square w-full"></div>
+    <div v-show="playing" ref="holder" class="aspect-video w-full"></div>
     <button
       v-show="playing"
       class="mono absolute right-1 top-1 border border-[var(--fi-line-solid)] bg-[var(--fi-bg)]/85 px-1 py-0.5 text-[10px] leading-none text-[var(--fi-text)] hover:text-[var(--fi-blue)]"
