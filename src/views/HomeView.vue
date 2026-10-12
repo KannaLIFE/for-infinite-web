@@ -448,25 +448,12 @@ onUnmounted(() => {
 
       <div class="min-w-0 space-y-4 px-3 py-4">
         <section>
-          <div
-            class="relative w-full border-[3px] border-[var(--fi-warm)]"
-            style="box-shadow: inset 0 0 0 2px rgba(242,203,121,0.28)"
-          >
-            <img
-              v-if="profile.bannerUrl"
-              :src="profile.bannerUrl"
-              alt="banner"
-              class="block w-full"
-            />
-            <span
-              class="pointer-events-none absolute -left-[5px] -top-[5px] z-10 h-[30px] w-[30px]"
-              style="background-image: linear-gradient(135deg, #8a5a1f 0%, #d2a14a 25%, #f2cb79 50%, #d2a14a 75%, #8a5a1f 100%); clip-path: polygon(0 0, 100% 0, 100% 32%, 32% 32%, 32% 100%, 0 100%); filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5))"
-            ></span>
-            <span
-              class="pointer-events-none absolute -bottom-[5px] -right-[5px] z-10 h-[30px] w-[30px]"
-              style="background-image: linear-gradient(135deg, #8a5a1f 0%, #d2a14a 25%, #f2cb79 50%, #d2a14a 75%, #8a5a1f 100%); clip-path: polygon(100% 100%, 0 100%, 0 68%, 68% 68%, 68% 0, 100% 0); filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5))"
-            ></span>
-          </div>
+          <img
+            v-if="profile.bannerUrl"
+            :src="profile.bannerUrl"
+            alt="banner"
+            class="block w-full"
+          />
           <p class="mono mt-1.5 truncate text-right text-[8px] text-[var(--fi-muted)]">
             友链横幅 · kannalife.github.io/for-infinite-web/banner.webp
           </p>
