@@ -316,6 +316,15 @@ onUnmounted(() => {
                   </div>
                 </div>
               </div>
+              <div v-else-if="s.key === 'vtubers'" class="mt-2">
+                <img
+                  v-if="s.items[0] && s.items[0].img"
+                  :src="imgUrl(s.items[0].img)"
+                  :alt="s.items[0].name"
+                  class="w-full border-2 border-[var(--fi-line-solid)] object-cover"
+                />
+                <p class="mono mt-1.5 truncate text-[10px] text-[var(--fi-muted)]">{{ s.items[0] ? s.items[0].name : '' }}</p>
+              </div>
               <div
                 v-else
                 class="mt-2"

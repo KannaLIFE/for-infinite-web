@@ -82,8 +82,7 @@ export const profile = {
       key: 'vtubers',
       title: 'vtubers · 主播',
       items: [
-        { name: 'vedal987（Neuro-sama）', img: '/covers/neurosama.png', desc: '' },
-        { name: '各类切片（英文圈为主）', img: '', desc: '' },
+        { name: 'vedal987（Neuro-sama）', img: '/covers/neurosama-banner.webp', desc: '' },
       ],
     },
     {
