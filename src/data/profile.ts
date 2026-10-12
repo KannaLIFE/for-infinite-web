@@ -57,7 +57,7 @@ export const profile = {
         { name: '是，首相', img: '/covers/shows-prime.webp', desc: '理论告诉我们权力越大责任越大，事情越多麻烦越多——老熟人吉姆·哈克终于入主唐宁街十号，成为英国首相！在内阁秘书汉弗莱·阿普比爵士与私人秘书伯纳·伍利的辅佐下，明暗之间棋逢对手，首相的政治生涯注定不亚于大臣。' },
         { name: 'Alan Becker 火柴人动画', img: '/covers/alanbecker-banner.webp', desc: 'Alan Becker 和他的团队制作火柴人动画：故事就发生在电脑的桌面屏幕上，全程没有对白，却充满幽默与情感；成名作《Animator vs. Animation》系列让「电脑里的火柴人」成为一代网络经典。' },
         { name: '星球大战前传3：西斯的复仇', img: '/covers/shows-starwars.webp', desc: '星球大战前传终章：克隆战争三年后共和国即将胜利，欧比-旺与阿纳金奉命营救被劫持的帕尔帕庭议长；阿纳金因预见妻子之死而逐渐倒向黑暗面，一场针对绝地武士与共和国的阴谋就此展开。' },
-        { name: 'Harry Potter', img: '/covers/shows-hp.png', desc: '' },
+        { name: '哈利·波特与死亡圣器（上）', img: '/covers/shows-hp.webp', desc: '邓布利多死后，伏地魔与食死徒入侵魔法学校，邪恶阴云笼罩魔法世界。17 岁的哈利与罗恩、赫敏在逃亡中按邓布利多的嘱托寻找魂器；死亡圣器的面纱渐渐揭开，最后的决战即将到来。' },
       ],
     },
     {
