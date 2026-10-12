@@ -263,7 +263,7 @@ onUnmounted(() => {
                 @mouseenter="showPaused = true"
                 @mouseleave="showPaused = false"
               >
-                <div class="relative w-32 shrink-0 sm:w-36">
+                <div class="w-32 shrink-0 sm:w-36">
                   <div
                     class="relative overflow-hidden border-2 border-[var(--fi-line-solid)]"
                     style="background: linear-gradient(135deg, rgba(121,184,255,0.16), rgba(183,140,255,0.12))"
@@ -279,19 +279,6 @@ onUnmounted(() => {
                       <div v-else :key="'slide-empty-' + showIdx" class="aspect-[2/3] w-full"></div>
                     </transition>
                   </div>
-                  <button
-                    class="mono absolute left-1 top-1/2 -translate-y-1/2 border border-[var(--fi-line-solid)] bg-[var(--fi-bg)]/80 px-1 py-0.5 text-[10px] text-[var(--fi-text)] hover:text-[var(--fi-blue)]"
-                    aria-label="上一部"
-                    @click="stepShow(-1)"
-                  >◀</button>
-                  <button
-                    class="mono absolute right-1 top-1/2 -translate-y-1/2 border border-[var(--fi-line-solid)] bg-[var(--fi-bg)]/80 px-1 py-0.5 text-[10px] text-[var(--fi-text)] hover:text-[var(--fi-blue)]"
-                    aria-label="下一部"
-                    @click="stepShow(1)"
-                  >▶</button>
-                  <span class="mono absolute bottom-1 right-1 border border-[var(--fi-line-solid)] bg-[var(--fi-bg)]/80 px-1 text-[9px] text-[var(--fi-muted)]">
-                    {{ showIdx + 1 }}/{{ shows.length }}
-                  </span>
                 </div>
                 <div class="flex min-w-0 flex-1 flex-col">
                   <transition name="fi-fade" mode="out-in">
@@ -302,15 +289,30 @@ onUnmounted(() => {
                       </p>
                     </div>
                   </transition>
-                  <div class="mt-auto flex items-center gap-1 pt-2">
-                    <button
-                      v-for="(it, i) in shows"
-                      :key="it.name"
-                      class="h-1.5 transition-all"
-                      :class="i === showIdx ? 'w-4 bg-[var(--fi-blue)]' : 'w-1.5 bg-[var(--fi-line-solid)] hover:bg-[var(--fi-muted)]'"
-                      :aria-label="it.name"
-                      @click="jumpShow(i)"
-                    ></button>
+                  <div class="mt-auto flex items-center justify-between gap-2 pt-2">
+                    <div class="flex items-center gap-1">
+                      <button
+                        v-for="(it, i) in shows"
+                        :key="it.name"
+                        class="h-1.5 transition-all"
+                        :class="i === showIdx ? 'w-4 bg-[var(--fi-blue)]' : 'w-1.5 bg-[var(--fi-line-solid)] hover:bg-[var(--fi-muted)]'"
+                        :aria-label="it.name"
+                        @click="jumpShow(i)"
+                      ></button>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="mono text-[9px] text-[var(--fi-muted)]">{{ showIdx + 1 }}/{{ shows.length }}</span>
+                      <button
+                        class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[10px] text-[var(--fi-text)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-blue)]"
+                        aria-label="上一部"
+                        @click="stepShow(-1)"
+                      >◀</button>
+                      <button
+                        class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[10px] text-[var(--fi-text)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-blue)]"
+                        aria-label="下一部"
+                        @click="stepShow(1)"
+                      >▶</button>
+                    </div>
                   </div>
                 </div>
               </div>
