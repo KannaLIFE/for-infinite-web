@@ -53,8 +53,8 @@ export const profile = {
       title: 'shows · 影视',
       items: [
         { name: '神探夏洛克 第一季', img: '/covers/shows-sherlock-s1.webp', desc: 'BBC 出品的英剧：把福尔摩斯的故事从 19 世纪搬到 21 世纪的伦敦，本尼迪克特·康伯巴奇与马丁·弗瑞曼联袂出演。' },
-        { name: '是，大臣', img: '/covers/shows-ministry.webp', desc: 'Jim Hacker 在帮助本党大选获胜后出任行政事务部（DAA）大臣，从此开始面对以常务秘书 Sir Humphrey Appleby 为首的公务员体系。' },
-        { name: '是，首相', img: '/covers/shows-prime.webp', desc: 'Jim Hacker 升任首相后继续与 Sir Humphrey 周旋：权力越大责任越大，政治问题揭开总有个内幕。' },
+        { name: '是，大臣', img: '/covers/shows-ministry.webp', desc: '本剧叙述在野党影子内阁成员Jim Hacker在帮助本党大选获胜之后得到行政事务部（DAA）部长的职务，从此开始面对以部秘书Sir Humphrey Appleby为首的公务员体系，而他的公派私人秘书、同属公务员的Bernard则夹在了当中。在Hacker所代表的政客以及Appleby所代表的公务员之间因施政而发生的种种冲突之中，两人的关系不停地发生变化，既有互相捂盖子，也有互相揭老底。与此同时，英国政治体制（包括政党体制和公务员体制）中的种种不为外人所知弊端和黑幕也展现在观众眼前。当然所有这些都是通过大量喜剧情节和台词展开。' },
+        { name: '是，首相', img: '/covers/shows-prime.webp', desc: '理论告诉我们权力越大,责任也越大;常识告诉我们事情越多,麻烦也越多;经验则告诉我们政治问题揭开总有个内幕,内幕揭开还有个黑幕...我们的老熟人, 行政事务部（DAA）大臣吉姆哈克上位成功了! 在公务员体系的化身, 内阁秘书汉弗莱阿普比爵士和走钢丝大师, 私人秘书伯纳伍利同学辅佐下, 经过三年艰苦磨练, 哈克终于入主唐宁街十号, 成为英国首相!明暗之间棋逢对手, 新老问题此起彼伏, 首相的政治生涯之精彩, 注定不亚于大臣。于是, 让我们紧密团结在这三位老朋友周围, 走进白厅这一变幻莫测的舞台吧！' },
         { name: 'Alan Becker 火柴人动画', img: '/covers/alanbecker.webp', desc: '' },
         { name: '星球大战', img: '/covers/shows-starwars.png', desc: '' },
         { name: 'Harry Potter', img: '/covers/shows-hp.png', desc: '' },
