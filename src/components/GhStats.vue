@@ -21,6 +21,7 @@ interface Snapshot {
   forks?: number;
   contributions?: number;
   langs?: { name: string; n: number }[];
+  langTotal?: number;
 }
 
 const base = import.meta.env.BASE_URL;
@@ -67,8 +68,8 @@ const totals = computed(() => {
 
 const langs = computed(() => {
   if (snap.value && snap.value.langs) {
-    const max = snap.value.langs.length ? snap.value.langs[0].n : 1;
-    return snap.value.langs.map((l) => ({ name: l.name, n: l.n, pct: Math.round((l.n / max) * 100) }));
+    const total = snap.value.langTotal || snap.value.langs.reduce((a, l) => a + l.n, 0) || 1;
+    return snap.value.langs.map((l) => ({ name: l.name, n: l.n, pct: Math.round((l.n / total) * 100) }));
   }
   const m = new Map<string, number>();
   for (const r of repos.value) {

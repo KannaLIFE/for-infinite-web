@@ -16,6 +16,27 @@ const apiState = ref<ApiState>('checking');
 const latestPosts = ref<ArticleMeta[]>([]);
 const base = import.meta.env.BASE_URL;
 
+const pcOnline = ref<'checking' | 'online' | 'offline'>('checking');
+const liveStatus = ref('');
+const statusMode = ref('');
+let statusTimer: ReturnType<typeof setInterval> | null = null;
+
+async function pollStatus(): Promise<void> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 5000);
+    const r = await fetch(`${API_BASE}/status`, { signal: ctrl.signal, cache: 'no-store' });
+    clearTimeout(t);
+    if (!r.ok) throw new Error();
+    const j = await r.json();
+    pcOnline.value = 'online';
+    liveStatus.value = j.status || '';
+    statusMode.value = j.mode || '';
+  } catch {
+    pcOnline.value = 'offline';
+  }
+}
+
 const hoverCard = ref<{ x: number; y: number; section: AboutSection; item: AboutItem } | null>(null);
 let hoverTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -120,6 +141,8 @@ const marqueeChips = computed(() => [
 onMounted(async () => {
   restartShowTimer();
   restartVocTimer();
+  pollStatus();
+  statusTimer = setInterval(pollStatus, 30000);
 
   try {
     const ctrl = new AbortController();
@@ -142,6 +165,7 @@ onMounted(async () => {
 onUnmounted(() => {
   if (showTimer) clearInterval(showTimer);
   if (vocTimer) clearInterval(vocTimer);
+  if (statusTimer) clearInterval(statusTimer);
 });
 </script>
 
@@ -462,20 +486,25 @@ onUnmounted(() => {
         <section class="fi-px-panel space-y-3 bg-[var(--fi-panel)] p-4">
           <h3 class="mono text-xs text-[var(--fi-warm)]">STATION · 观测站状态</h3>
           <div>
-            <p class="mono text-[9px] text-[var(--fi-muted)]">星联状态</p>
+            <p class="mono text-[9px] text-[var(--fi-muted)]">电脑在线</p>
             <p class="mono mt-1 flex items-center gap-1.5 text-xs">
               <span
                 class="inline-block h-2 w-2"
-                :class="apiState === 'online' ? 'bg-[var(--fi-blue)]' : apiState === 'offline' ? 'bg-[#ff6b6b]' : 'bg-[var(--fi-muted)] animate-pulse'"
+                :class="pcOnline === 'online' ? 'bg-[var(--fi-blue)]' : pcOnline === 'offline' ? 'bg-[#ff6b6b]' : 'bg-[var(--fi-muted)] animate-pulse'"
               ></span>
-              <span :class="apiState === 'online' ? 'text-[var(--fi-blue)]' : apiState === 'offline' ? 'text-[#ff8a8a]' : 'text-[var(--fi-muted)]'">
-                {{ apiState === 'online' ? '在线' : apiState === 'offline' ? '离线' : '检测中' }}
+              <span :class="pcOnline === 'online' ? 'text-[var(--fi-blue)]' : pcOnline === 'offline' ? 'text-[#ff8a8a]' : 'text-[var(--fi-muted)]'">
+                {{ pcOnline === 'online' ? '在线' : pcOnline === 'offline' ? '离线' : '检测中' }}
+              </span>
+              <span v-if="pcOnline === 'online' && statusMode" class="mono text-[8px] text-[var(--fi-muted)]">
+                {{ statusMode === 'window' ? '· 窗口名' : '· 自定义' }}
               </span>
             </p>
           </div>
           <div>
             <p class="mono text-[9px] text-[var(--fi-muted)]">当前状态</p>
-            <p class="mono mt-1 text-xs text-[var(--fi-violet)]">{{ profile.statusNote }}</p>
+            <p class="mono mt-1 text-xs text-[var(--fi-violet)]">
+              {{ pcOnline === 'online' && liveStatus ? liveStatus : profile.statusNote }}
+            </p>
           </div>
           <div>
             <p class="mono text-[9px] text-[var(--fi-muted)]">观测站版本</p>
