@@ -140,7 +140,7 @@ onMounted(async () => {
   restartShowTimer();
   restartVocTimer();
   pollStatus();
-  statusTimer = setInterval(pollStatus, 30000);
+  statusTimer = setInterval(pollStatus, 15000);
 
   try {
     const ctrl = new AbortController();
