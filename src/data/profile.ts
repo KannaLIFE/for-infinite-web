@@ -52,7 +52,7 @@ export const profile = {
       key: 'shows',
       title: 'shows · 影视',
       items: [
-        { name: '神探夏洛克', img: '/covers/shows-sherlock.png', desc: '' },
+        { name: '神探夏洛克 第一季', img: '/covers/shows-sherlock-s1.webp', desc: 'BBC 出品的英剧：把福尔摩斯的故事从 19 世纪搬到 21 世纪的伦敦，本尼迪克特·康伯巴奇与马丁·弗瑞曼联袂出演。' },
         { name: '是，大臣', img: '/covers/shows-ministry.png', desc: '' },
         { name: '是，首相', img: '/covers/shows-prime.png', desc: '' },
         { name: 'Alan Becker 火柴人动画', img: '/covers/alanbecker.webp', desc: '' },
