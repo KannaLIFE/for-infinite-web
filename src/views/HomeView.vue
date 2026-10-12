@@ -45,6 +45,10 @@ function imgUrl(img?: string): string {
   return img;
 }
 
+function stripItems(s: AboutSection): AboutItem[] {
+  return s.items.length >= 4 ? [...s.items, ...s.items] : s.items;
+}
+
 const contentGrid = [
   { to: '/blog', glyph: '▤', label: '博客' },
   { to: '/projects', glyph: '✦', label: '项目' },
@@ -223,34 +227,43 @@ onMounted(async () => {
           <div class="space-y-3">
             <div v-for="s in profile.about" :key="s.key" class="border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] p-3">
               <h3 class="mono text-[10px] text-[var(--fi-violet)]">{{ s.title }}</h3>
-              <div class="mt-2 flex gap-2 overflow-x-auto pb-1" @scroll="hoverCard = null">
+              <div
+                class="mt-2"
+                :class="s.items.length >= 4 ? 'fi-marquee' : 'flex gap-2 overflow-x-auto pb-1'"
+                @scroll="hoverCard = null"
+              >
                 <div
-                  v-for="(it, i) in s.items"
-                  :key="i"
-                  class="group relative w-28 shrink-0 cursor-pointer"
-                  @mouseenter="enterCard($event, s, it)"
-                  @mouseleave="leaveCard"
+                  :class="s.items.length >= 4 ? 'fi-marquee-track' : 'flex gap-2'"
+                  :style="s.items.length >= 4 ? { animationDuration: '30s' } : undefined"
                 >
                   <div
-                    class="relative overflow-hidden border-2 transition duration-200 group-hover:scale-[1.04] group-hover:border-[var(--fi-blue)]"
-                    :class="ratioClass(s.key)"
-                    style="background: linear-gradient(135deg, rgba(121,184,255,0.16), rgba(183,140,255,0.12))"
+                    v-for="(it, i) in stripItems(s)"
+                    :key="i"
+                    class="group relative w-28 shrink-0 cursor-pointer"
+                    @mouseenter="enterCard($event, s, it)"
+                    @mouseleave="leaveCard"
                   >
-                    <img
-                      v-if="it.img"
-                      :src="imgUrl(it.img)"
-                      :alt="it.name"
-                      class="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                    <span
-                      v-else
-                      class="mono absolute inset-0 flex items-center justify-center text-3xl text-[var(--fi-violet)]/40"
-                    >{{ it.name.slice(0, 1) }}</span>
+                    <div
+                      class="relative overflow-hidden border-2 transition duration-200 group-hover:scale-[1.04] group-hover:border-[var(--fi-blue)]"
+                      :class="ratioClass(s.key)"
+                      style="background: linear-gradient(135deg, rgba(121,184,255,0.16), rgba(183,140,255,0.12))"
+                    >
+                      <img
+                        v-if="it.img"
+                        :src="imgUrl(it.img)"
+                        :alt="it.name"
+                        class="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                      <span
+                        v-else
+                        class="mono absolute inset-0 flex items-center justify-center text-3xl text-[var(--fi-violet)]/40"
+                      >{{ it.name.slice(0, 1) }}</span>
+                    </div>
+                    <p class="mono mt-1 truncate text-center text-[10px] text-[var(--fi-muted)] group-hover:text-[var(--fi-text)]">
+                      {{ it.name }}
+                    </p>
                   </div>
-                  <p class="mono mt-1 truncate text-center text-[10px] text-[var(--fi-muted)] group-hover:text-[var(--fi-text)]">
-                    {{ it.name }}
-                  </p>
                 </div>
               </div>
             </div>
