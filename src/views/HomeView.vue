@@ -74,6 +74,30 @@ function jumpShow(i: number): void {
   restartShowTimer();
 }
 
+const vocaloid = computed(() => profile.about.find((s) => s.key === 'vocaloid')?.items ?? []);
+const vocIdx = ref(0);
+const vocPaused = ref(false);
+let vocTimer: ReturnType<typeof setInterval> | null = null;
+
+function restartVocTimer(): void {
+  if (vocTimer) clearInterval(vocTimer);
+  vocTimer = setInterval(() => {
+    if (vocPaused.value || vocaloid.value.length < 2) return;
+    vocIdx.value = (vocIdx.value + 1) % vocaloid.value.length;
+  }, 5000);
+}
+
+function stepVoc(dir: number): void {
+  if (!vocaloid.value.length) return;
+  vocIdx.value = (vocIdx.value + dir + vocaloid.value.length) % vocaloid.value.length;
+  restartVocTimer();
+}
+
+function jumpVoc(i: number): void {
+  vocIdx.value = i;
+  restartVocTimer();
+}
+
 const contentGrid = [
   { to: '/blog', glyph: '▤', label: '博客' },
   { to: '/projects', glyph: '✦', label: '项目' },
@@ -92,6 +116,7 @@ const marqueeChips = computed(() => [
 
 onMounted(async () => {
   restartShowTimer();
+  restartVocTimer();
 
   try {
     const ctrl = new AbortController();
@@ -113,6 +138,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   if (showTimer) clearInterval(showTimer);
+  if (vocTimer) clearInterval(vocTimer);
 });
 </script>
 
@@ -317,13 +343,45 @@ onUnmounted(() => {
                   </div>
                 </div>
               </div>
-              <div v-else-if="s.key === 'vocaloid'" class="mt-2 grid grid-cols-3 gap-2">
-                <YtCard
-                  v-for="it in s.items"
-                  :key="it.name"
-                  :video-id="it.yt || ''"
-                  :name="it.name"
-                />
+              <div
+                v-else-if="s.key === 'vocaloid'"
+                class="mt-2"
+                @mouseenter="vocPaused = true"
+                @mouseleave="vocPaused = false"
+              >
+                <div class="mx-auto w-36 sm:w-40">
+                  <YtCard
+                    v-if="vocaloid[vocIdx]"
+                    :key="vocaloid[vocIdx].name"
+                    :video-id="vocaloid[vocIdx].yt || ''"
+                    :name="vocaloid[vocIdx].name"
+                  />
+                </div>
+                <div class="mt-2 flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-1">
+                    <button
+                      v-for="(it, i) in vocaloid"
+                      :key="it.name"
+                      class="h-1.5 transition-all"
+                      :class="i === vocIdx ? 'w-4 bg-[var(--fi-blue)]' : 'w-1.5 bg-[var(--fi-line-solid)] hover:bg-[var(--fi-muted)]'"
+                      :aria-label="it.name"
+                      @click="jumpVoc(i)"
+                    ></button>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="mono text-[9px] text-[var(--fi-muted)]">{{ vocIdx + 1 }}/{{ vocaloid.length }}</span>
+                    <button
+                      class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[10px] text-[var(--fi-text)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-blue)]"
+                      aria-label="上一首"
+                      @click="stepVoc(-1)"
+                    >◀</button>
+                    <button
+                      class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[10px] text-[var(--fi-text)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-blue)]"
+                      aria-label="下一首"
+                      @click="stepVoc(1)"
+                    >▶</button>
+                  </div>
+                </div>
               </div>
               <div v-else-if="s.key === 'vtubers'" class="mt-2">
                 <img
