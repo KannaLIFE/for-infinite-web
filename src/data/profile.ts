@@ -52,12 +52,12 @@ export const profile = {
       key: 'shows',
       title: 'shows · 影视',
       items: [
-        { name: '神探夏洛克', img: '/covers/sherlock.jpg', desc: '' },
-        { name: '是，大臣', img: '/covers/yesminister.jpg', desc: '' },
-        { name: '是，首相', img: '/covers/yesprimeminister.jpg', desc: '' },
-        { name: 'Alan Becker 火柴人动画', img: '/covers/alanbecker.jpg', desc: '' },
-        { name: '星球大战', img: '/covers/starwars.jpg', desc: '' },
-        { name: 'Harry Potter', img: '/covers/harrypotter.png', desc: '' },
+        { name: '神探夏洛克', img: '/covers/shows-sherlock.png', desc: '' },
+        { name: '是，大臣', img: '/covers/shows-ministry.png', desc: '' },
+        { name: '是，首相', img: '/covers/shows-prime.png', desc: '' },
+        { name: 'Alan Becker 火柴人动画', img: '/covers/alanbecker.webp', desc: '' },
+        { name: '星球大战', img: '/covers/shows-starwars.png', desc: '' },
+        { name: 'Harry Potter', img: '/covers/shows-hp.png', desc: '' },
       ],
     },
     {
