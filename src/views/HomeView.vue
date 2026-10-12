@@ -40,6 +40,12 @@ function ratioClass(key: string): string {
   return 'aspect-square';
 }
 
+function imgUrl(img?: string): string {
+  if (!img) return '';
+  if (img.startsWith('/')) return base + img;
+  return img;
+}
+
 const contentGrid = [
   { to: '/blog', glyph: '▤', label: '博客' },
   { to: '/projects', glyph: '✦', label: '项目' },
@@ -233,7 +239,7 @@ onMounted(async () => {
                   >
                     <img
                       v-if="it.img"
-                      :src="it.img"
+                      :src="imgUrl(it.img)"
                       :alt="it.name"
                       class="h-full w-full object-cover"
                       loading="lazy"
@@ -382,7 +388,7 @@ onMounted(async () => {
       >
         <img
           v-if="hoverCard.item.img"
-          :src="hoverCard.item.img"
+          :src="imgUrl(hoverCard.item.img)"
           :alt="hoverCard.item.name"
           class="h-full w-full object-cover"
         />
