@@ -271,6 +271,36 @@ onUnmounted(() => {
 
           <GhGrid />
 
+          <section class="fi-px-panel bg-[var(--fi-panel)] p-3">
+            <div class="mb-2 flex items-center justify-between">
+              <h2 class="mono text-xs text-[var(--fi-violet)]">GITHUB · 统计</h2>
+              <a
+                href="https://github.com/kannalife"
+                target="_blank"
+                rel="noopener"
+                class="mono text-[10px] text-[var(--fi-blue)] hover:text-[var(--fi-warm)]"
+              >主页 ▸</a>
+            </div>
+            <div class="space-y-2">
+              <a href="https://github.com/kannalife" target="_blank" rel="noopener" class="block">
+                <img
+                  src="https://github-stats-extended.vercel.app/api?username=kannalife&theme=dark_github"
+                  alt="GitHub stats"
+                  class="w-full"
+                  loading="lazy"
+                />
+              </a>
+              <a href="https://github.com/kannalife" target="_blank" rel="noopener" class="block">
+                <img
+                  src="https://github-stats-extended.vercel.app/api/top-langs/?username=kannalife&theme=dark_github"
+                  alt="Top languages"
+                  class="w-full"
+                  loading="lazy"
+                />
+              </a>
+            </div>
+          </section>
+
           <WorldClock :clocks="profile.clocks" />
         </div>
       </div>
