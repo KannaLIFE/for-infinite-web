@@ -447,22 +447,6 @@ onUnmounted(() => {
       </div>
 
       <div class="min-w-0 space-y-4 px-3 py-4">
-        <section class="fi-px-panel relative overflow-hidden bg-[var(--fi-panel)]">
-          <img
-            v-if="profile.bannerUrl"
-            :src="profile.bannerUrl"
-            alt="banner"
-            class="h-36 w-full object-cover"
-          />
-          <div v-else class="relative flex h-36 items-center justify-center">
-            <span
-              class="fi-breathe inline-block h-8 w-8"
-              style="background: var(--fi-warm); box-shadow: 0 0 18px var(--fi-warm)"
-            ></span>
-            <span class="mono absolute bottom-2 right-2 text-[9px] text-[var(--fi-muted)]">KL · PORTRAIT</span>
-          </div>
-        </section>
-
         <section class="fi-px-panel space-y-3 bg-[var(--fi-panel)] p-4">
           <h3 class="mono text-xs text-[var(--fi-warm)]">STATION · 观测站状态</h3>
           <div>
@@ -555,6 +539,22 @@ onUnmounted(() => {
         </section>
       </div>
     </div>
+
+    <section class="fi-px-panel mx-3 mb-6 bg-[var(--fi-panel)] p-4">
+      <div class="mb-2 flex items-center justify-between">
+        <h2 class="mono text-xs text-[var(--fi-warm)]">BANNER · 友链横幅</h2>
+        <span class="mono text-[9px] text-[var(--fi-muted)]">引用地址见下方</span>
+      </div>
+      <img
+        v-if="profile.bannerUrl"
+        :src="profile.bannerUrl"
+        alt="banner"
+        class="w-full border-2 border-[var(--fi-line-solid)]"
+      />
+      <p class="mono mt-2 break-all text-[9px] text-[var(--fi-muted)]">
+        https://kannalife.github.io/for-infinite-web/banner.webp
+      </p>
+    </section>
 
     <section class="fi-px-panel mx-3 mb-6 bg-[var(--fi-panel)] p-4">
       <div class="mb-2 flex items-center justify-between">
