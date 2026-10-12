@@ -7,6 +7,8 @@ import GhGrid from '../components/GhGrid.vue';
 import GhStats from '../components/GhStats.vue';
 import WorldClock from '../components/WorldClock.vue';
 import YtCard from '../components/YtCard.vue';
+import DiscordStatus from '../components/DiscordStatus.vue';
+import NeteaseCard from '../components/NeteaseCard.vue';
 import type { ArticleMeta } from '../types';
 
 type ApiState = 'checking' | 'online' | 'offline';
@@ -487,9 +489,13 @@ onUnmounted(() => {
 
         <section class="fi-px-panel bg-[var(--fi-panel)] p-4">
           <h3 class="mono text-xs text-[var(--fi-violet)]">DISCORD · 状态</h3>
-          <p class="mono mt-2 text-xs text-[var(--fi-muted)]">
-            {{ profile.discordId ? '在线检测中…' : '未接入（在 profile.ts 填 discordId 后显示实时状态）' }}
-          </p>
+          <DiscordStatus v-if="profile.discordId" :user-id="profile.discordId" />
+          <p v-else class="mono mt-2 text-xs text-[var(--fi-muted)]">未接入（在 profile.ts 填 discordId 后显示实时状态）</p>
+        </section>
+
+        <section class="fi-px-panel bg-[var(--fi-panel)] p-4">
+          <h3 class="mono text-xs text-[var(--fi-warm)]">NETEASE · 最近听歌</h3>
+          <NeteaseCard />
         </section>
 
         <section class="fi-px-panel bg-[var(--fi-panel)] p-4">

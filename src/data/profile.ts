@@ -23,7 +23,7 @@ export const profile = {
   status: '观测站运行中',
   statusNote: '正在学习 LLM 应用与 Agent',
   ghUser: 'kannalife',
-  discordId: '',
+  discordId: '1475618125973164072',
 
   socials: [
     { label: 'GitHub', url: 'https://github.com/kannalife' },
