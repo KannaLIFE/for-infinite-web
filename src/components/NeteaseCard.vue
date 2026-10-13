@@ -5,6 +5,7 @@ interface RankItem {
   name: string;
   artist: string;
   play: number;
+  pic?: string;
 }
 interface Snapshot {
   updatedAt?: string;
@@ -37,10 +38,23 @@ onMounted(async () => {
       暂无快照数据（开机快照未运行或抓取失败）。
     </p>
     <div v-else class="space-y-1.5">
-      <div v-for="(s, i) in list" :key="s.name + i" class="flex items-baseline gap-2 border-l-2 border-[var(--fi-blue-dim)] py-0.5 pl-2">
+      <div v-for="(s, i) in list" :key="s.name + i" class="flex items-center gap-2 border-l-2 border-[var(--fi-blue-dim)] py-0.5 pl-2">
         <span class="mono w-4 shrink-0 text-[9px]" :class="i < 3 ? 'text-[var(--fi-warm)]' : 'text-[var(--fi-muted)]'">
           {{ i + 1 }}
         </span>
+        <div
+          class="relative h-9 w-9 shrink-0 overflow-hidden border border-[var(--fi-line-solid)] bg-[var(--fi-bg)]"
+        >
+          <img
+            v-if="s.pic"
+            :src="s.pic"
+            :alt="s.name"
+            class="h-full w-full object-cover"
+            loading="lazy"
+            referrerpolicy="no-referrer"
+          />
+          <span v-else class="absolute inset-0 flex items-center justify-center text-[8px] text-[var(--fi-muted)]">♪</span>
+        </div>
         <div class="min-w-0 flex-1">
           <p class="mono truncate text-xs text-[var(--fi-text)]">{{ s.name }}</p>
           <p class="truncate text-[9px] text-[var(--fi-muted)]">{{ s.artist }}</p>

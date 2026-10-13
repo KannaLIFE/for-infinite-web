@@ -56,6 +56,23 @@ watch(
 function toggle(key: string): void {
   open.value = open.value === key ? null : key;
 }
+
+let closeTimer: ReturnType<typeof setTimeout> | null = null;
+
+function hoverOpen(key: string): void {
+  if (closeTimer) {
+    clearTimeout(closeTimer);
+    closeTimer = null;
+  }
+  open.value = key;
+}
+
+function hoverClose(key: string): void {
+  if (closeTimer) clearTimeout(closeTimer);
+  closeTimer = setTimeout(() => {
+    if (open.value === key) open.value = null;
+  }, 200);
+}
 </script>
 
 <template>
@@ -102,7 +119,8 @@ function toggle(key: string): void {
           v-for="g in groups"
           :key="g.key"
           class="relative"
-          @mouseleave="open = null"
+          @mouseenter="hoverOpen(g.key)"
+          @mouseleave="hoverClose(g.key)"
         >
           <button
             type="button"
@@ -119,8 +137,9 @@ function toggle(key: string): void {
 
           <div
             v-if="open === g.key"
-            class="fi-px-panel absolute right-0 top-full mt-2 flex min-w-36 flex-col gap-1 bg-[var(--fi-panel)] p-2"
+            class="absolute right-0 top-full pt-2"
           >
+            <div class="fi-px-panel flex min-w-36 flex-col gap-1 bg-[var(--fi-panel)] p-2">
             <RouterLink
               v-for="i in g.items"
               :key="i.to"
@@ -134,6 +153,7 @@ function toggle(key: string): void {
             >
               {{ i.label }}
             </RouterLink>
+            </div>
           </div>
         </div>
       </nav>

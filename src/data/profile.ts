@@ -95,15 +95,6 @@ export const profile = {
         { name: 'MESMERIZER（Bao & Neuro 英语翻唱）', img: '', desc: '', yt: 'qhmeWiZg3cA' },
       ],
     },
-    {
-      key: 'music',
-      title: 'music · 音乐',
-      items: [
-        { name: 'Hans Zimmer（汉斯·季默）', img: '/covers/hanszimmer.jpg', desc: '' },
-        { name: 'Ludwig Göransson（信条 Tenet 配乐）', img: '/covers/ludwig.jpg', desc: '' },
-        { name: '按精选集听歌', img: '', desc: '' },
-      ],
-    },
   ] as AboutSection[],
 
   byf: [

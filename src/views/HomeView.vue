@@ -72,7 +72,19 @@ function stripItems(s: AboutSection): AboutItem[] {
   return s.items.length >= 4 ? [...s.items, ...s.items] : s.items;
 }
 
+function openAbout(s: AboutSection, it: AboutItem): void {
+  const q = encodeURIComponent(it.name);
+  if (s.key === 'shows') {
+    window.open(`https://www.youtube.com/results?search_query=${q}`, '_blank', 'noopener');
+  } else if (s.key === 'games') {
+    window.open(`https://store.steampowered.com/search/?term=${q}`, '_blank', 'noopener');
+  } else if (s.key === 'vtubers') {
+    window.open(`https://www.twitch.tv/search?term=${q}`, '_blank', 'noopener');
+  }
+}
+
 const shows = computed(() => profile.about.find((s) => s.key === 'shows')?.items ?? []);
+const showSection = computed(() => profile.about.find((s) => s.key === 'shows') as AboutSection);
 const showIdx = ref(0);
 const showPaused = ref(false);
 let showTimer: ReturnType<typeof setInterval> | null = null;
@@ -325,8 +337,10 @@ onUnmounted(() => {
               >
                 <div class="w-32 shrink-0 sm:w-36">
                   <div
-                    class="relative overflow-hidden border-2 border-[var(--fi-line-solid)]"
+                    class="relative cursor-pointer overflow-hidden border-2 border-[var(--fi-line-solid)] transition hover:border-[var(--fi-blue)]"
                     style="background: linear-gradient(135deg, rgba(121,184,255,0.16), rgba(183,140,255,0.12))"
+                    title="在 YouTube 搜索这部作品"
+                    @click="shows[showIdx] && openAbout(showSection, shows[showIdx])"
                   >
                     <transition name="fi-slide" mode="out-in">
                       <img
@@ -419,7 +433,9 @@ onUnmounted(() => {
                   v-if="s.items[0] && s.items[0].img"
                   :src="imgUrl(s.items[0].img)"
                   :alt="s.items[0].name"
-                  class="w-full border-2 border-[var(--fi-line-solid)] object-cover"
+                  class="w-full cursor-pointer border-2 border-[var(--fi-line-solid)] object-cover transition hover:border-[var(--fi-blue)]"
+                  title="在 Twitch 搜索这位主播"
+                  @click="s.items[0] && openAbout(s, s.items[0])"
                 />
                 <p class="mono mt-1.5 truncate text-[10px] text-[var(--fi-muted)]">{{ s.items[0] ? s.items[0].name : '' }}</p>
               </div>
@@ -439,6 +455,7 @@ onUnmounted(() => {
                     class="group relative w-28 shrink-0 cursor-pointer"
                     @mouseenter="enterCard($event, s, it)"
                     @mouseleave="leaveCard"
+                    @click="s.key === 'games' && openAbout(s, it)"
                   >
                     <div
                       class="relative overflow-hidden border-2 transition duration-200 group-hover:scale-[1.04] group-hover:border-[var(--fi-blue)]"
@@ -503,7 +520,7 @@ onUnmounted(() => {
           </div>
           <div>
             <p class="mono text-[9px] text-[var(--fi-muted)]">观测站版本</p>
-            <p class="mono mt-1 text-xs text-[var(--fi-warm)]">v2.0 · 末地风</p>
+            <p class="mono mt-1 text-xs text-[var(--fi-warm)]">v2.0</p>
           </div>
         </section>
 
