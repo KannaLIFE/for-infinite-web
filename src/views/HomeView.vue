@@ -498,7 +498,7 @@ onUnmounted(() => {
           <div>
             <p class="mono text-[9px] text-[var(--fi-muted)]">当前状态</p>
             <p class="mono mt-1 text-xs text-[var(--fi-violet)]">
-              {{ pcOnline === 'online' && liveStatus ? liveStatus : profile.statusNote }}
+              {{ pcOnline === 'online' && liveStatus ? liveStatus : pcOnline === 'offline' ? '未知' : profile.statusNote }}
             </p>
           </div>
           <div>
