@@ -21,18 +21,7 @@ const groups = [
       { to: '/projects', label: '项目' },
       { to: '/gallery', label: '画廊' },
       { to: '/tech', label: '技术栈' },
-      { to: '/roadmap', label: '路线图' },
       { to: '/services', label: '服务·委托' },
-    ],
-  },
-  {
-    key: 'archive',
-    label: '档案',
-    items: [
-      { to: '/achievements', label: '成就' },
-      { to: '/certificates', label: '证书' },
-      { to: '/affiliations', label: '阵营' },
-      { to: '/testimonials', label: '好评' },
     ],
   },
   {

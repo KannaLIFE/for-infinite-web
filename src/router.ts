@@ -8,13 +8,9 @@ import FriendsView from './views/FriendsView.vue';
 import ProjectsView from './views/ProjectsView.vue';
 import GalleryView from './views/GalleryView.vue';
 import TechView from './views/TechView.vue';
-import AchievementsView from './views/AchievementsView.vue';
-import TestimonialsView from './views/TestimonialsView.vue';
-import CertificatesView from './views/CertificatesView.vue';
-import AffiliationsView from './views/AffiliationsView.vue';
 import ServicesView from './views/ServicesView.vue';
 import GuestbookView from './views/GuestbookView.vue';
-import RoadmapView from './views/RoadmapView.vue';
+import BannerView from './views/BannerView.vue';
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -28,12 +24,8 @@ export const router = createRouter({
     { path: '/projects', name: 'projects', component: ProjectsView },
     { path: '/gallery', name: 'gallery', component: GalleryView },
     { path: '/tech', name: 'tech', component: TechView },
-    { path: '/achievements', name: 'achievements', component: AchievementsView },
-    { path: '/testimonials', name: 'testimonials', component: TestimonialsView },
-    { path: '/certificates', name: 'certificates', component: CertificatesView },
-    { path: '/affiliations', name: 'affiliations', component: AffiliationsView },
     { path: '/services', name: 'services', component: ServicesView },
     { path: '/guestbook', name: 'guestbook', component: GuestbookView },
-    { path: '/roadmap', name: 'roadmap', component: RoadmapView },
+    { path: '/banner', name: 'banner', component: BannerView },
   ],
 });

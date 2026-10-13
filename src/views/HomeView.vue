@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 import { profile, type AboutItem, type AboutSection } from '../data/profile';
 import { API_BASE, api } from '../lib/api';
 import { nowWorldYear } from '../lib/time';
@@ -137,7 +138,6 @@ const contentGrid = [
   { to: '/projects', glyph: '✦', label: '项目' },
   { to: '/gallery', glyph: '◈', label: '画廊' },
   { to: '/tech', glyph: '⌬', label: '技术栈' },
-  { to: '/achievements', glyph: '🏆', label: '成就' },
   { to: '/guestbook', glyph: '✍', label: '留言板' },
   { to: '/friends', glyph: '◉', label: '友链' },
   { to: '/services', glyph: '⚒', label: '服务' },
@@ -488,15 +488,20 @@ onUnmounted(() => {
 
       <div class="min-w-0 space-y-4 px-3 py-4">
         <section>
-          <img
-            v-if="profile.bannerUrl"
-            :src="profile.bannerUrl"
-            alt="banner"
-            class="block w-full"
-          />
-          <p class="mono mt-1.5 truncate text-right text-[8px] text-[var(--fi-muted)]">
-            友链横幅 · kannalife.github.io/for-infinite-web/banner.webp
-          </p>
+          <div class="mb-1.5 flex items-center justify-between">
+            <span class="mono text-[9px] text-[var(--fi-warm)]">友链横幅</span>
+            <RouterLink to="/banner" class="mono text-[9px] text-[var(--fi-blue)] hover:text-[var(--fi-warm)]">
+              横幅样式 ▸
+            </RouterLink>
+          </div>
+          <RouterLink to="/banner" title="查看友链横幅样式">
+            <img
+              v-if="profile.bannerUrl"
+              :src="profile.bannerUrl"
+              alt="友链横幅"
+              class="block w-full border border-[var(--fi-line-solid)] transition hover:border-[var(--fi-blue)]"
+            />
+          </RouterLink>
         </section>
 
         <section class="fi-px-panel space-y-3 bg-[var(--fi-panel)] p-4">
