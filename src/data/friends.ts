@@ -9,9 +9,9 @@ export interface FriendLink {
 
 export const friends: FriendLink[] = [
   {
-    name: '示例友链',
-    desc: '在这里描述你的朋友。',
-    tags: ['示例'],
-    links: [{ label: '主页', url: 'https://example.com' }],
+    name: '数字田园的悠然漫步',
+    desc: '采菊东篱下，悠然见南山。',
+    avatar: 'https://blog.gardenwalk.moe/wp-content/uploads/1737602734-icon.png',
+    links: [{ label: '主页', url: 'https://www.gardenwalk.moe' }],
   },
 ];
