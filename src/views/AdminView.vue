@@ -2,11 +2,14 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import { api } from '../lib/api';
 import { getToken, setToken } from '../lib/auth';
+import { useBackendHealth } from '../lib/backend';
 import type { AccountState } from '../types';
 
 const unlocked = ref(false);
 const keyInput = ref('');
 const unlockError = ref('');
+
+const { backend, start } = useBackendHealth();
 
 const accounts = ref<AccountState[]>([]);
 const keys = ref<{ date: string; messageKey: string; articleKey: string; adminKey: string } | null>(null);
@@ -170,6 +173,7 @@ async function deleteArticle(slug: string): Promise<void> {
 }
 
 onMounted(async () => {
+  start();
   if (getToken()) {
     unlocked.value = true;
     await loadAll();
@@ -177,7 +181,7 @@ onMounted(async () => {
   }
 
   pollTimer = setInterval(() => {
-    if (unlocked.value) void loadAll();
+    if (unlocked.value && backend.value === 'up') void loadAll();
   }, 5000);
 });
 
@@ -188,6 +192,15 @@ onUnmounted(() => {
 
 <template>
   <div class="w-full space-y-6 px-4">
+    <div v-if="backend === 'checking'" class="fi-px-panel bg-[var(--fi-panel)] p-6">
+      <p class="text-sm text-[var(--fi-muted)]">正在确认后台服务……</p>
+    </div>
+
+    <div v-else-if="backend === 'down'" class="fi-px-panel bg-[var(--fi-panel)] p-6">
+      <p class="text-sm text-[var(--fi-muted)]">后台服务未启动，此页面暂不开放。</p>
+    </div>
+
+    <template v-else>
     <header>
       <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">后台 · 调控</h1>
       <p class="mono mt-1 text-xs text-[var(--fi-muted)]">账号状态 · 名单 · 清理 · 钥匙</p>
@@ -353,6 +366,7 @@ onUnmounted(() => {
           <p v-if="!artList.length" class="mono text-xs text-[var(--fi-muted)]">该分类暂无文章。</p>
         </div>
       </section>
+    </template>
     </template>
   </div>
 </template>

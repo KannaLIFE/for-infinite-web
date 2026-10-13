@@ -2,6 +2,7 @@
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { api, mediaUrl } from '../lib/api';
 import { getToken, setToken } from '../lib/auth';
+import { useBackendHealth } from '../lib/backend';
 import type { StoredMessage } from '../types';
 
 type Page = 'filtered' | 'unfiltered';
@@ -11,6 +12,8 @@ const messages = ref<StoredMessage[]>([]);
 const unlocked = ref(false);
 const keyInput = ref('');
 const unlockError = ref('');
+
+const { backend, start } = useBackendHealth();
 
 const scroller = ref<HTMLElement | null>(null);
 const nearBottom = ref(true);
@@ -149,11 +152,14 @@ watch(page, () => {
 });
 
 onMounted(async () => {
+  start();
   if (getToken()) {
     unlocked.value = true;
     await load(true);
   }
-  pollTimer = setInterval(() => void load(), 4000);
+  pollTimer = setInterval(() => {
+    if (unlocked.value && backend.value === 'up') void load();
+  }, 4000);
 });
 
 onUnmounted(() => {
@@ -163,6 +169,15 @@ onUnmounted(() => {
 
 <template>
   <div class="w-full space-y-6 px-4">
+    <div v-if="backend === 'checking'" class="fi-px-panel bg-[var(--fi-panel)] p-6">
+      <p class="text-sm text-[var(--fi-muted)]">正在确认后台服务……</p>
+    </div>
+
+    <div v-else-if="backend === 'down'" class="fi-px-panel bg-[var(--fi-panel)] p-6">
+      <p class="text-sm text-[var(--fi-muted)]">后台服务未启动，此页面暂不开放。</p>
+    </div>
+
+    <template v-else>
     <header class="flex items-center gap-3">
       <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">消息</h1>
       <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-warm)]">/aetherlink</span>
@@ -271,6 +286,7 @@ onUnmounted(() => {
           </div>
         </button>
       </div>
+    </template>
     </template>
 
     <div
