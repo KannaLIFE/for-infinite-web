@@ -29,6 +29,11 @@ onMounted(async () => {
     state.value = 'offline';
   }
 });
+function openSong(s: RankItem): void {
+  const artist = s.artist.split('/')[0].trim();
+  const q = encodeURIComponent(`${s.name} ${artist}`);
+  window.open(`https://www.youtube.com/results?search_query=${q}`, '_blank', 'noopener');
+}
 </script>
 
 <template>
@@ -38,7 +43,13 @@ onMounted(async () => {
       暂无快照数据（开机快照未运行或抓取失败）。
     </p>
     <div v-else class="space-y-1.5">
-      <div v-for="(s, i) in list" :key="s.name + i" class="flex items-center gap-2 border-l-2 border-[var(--fi-blue-dim)] py-0.5 pl-2">
+      <div
+        v-for="(s, i) in list"
+        :key="s.name + i"
+        class="flex cursor-pointer items-center gap-2 border-l-2 border-[var(--fi-blue-dim)] py-0.5 pl-2 transition hover:border-[var(--fi-blue)]"
+        title="在 YouTube 搜索这首歌"
+        @click="openSong(s)"
+      >
         <span class="mono w-4 shrink-0 text-[9px]" :class="i < 3 ? 'text-[var(--fi-warm)]' : 'text-[var(--fi-muted)]'">
           {{ i + 1 }}
         </span>

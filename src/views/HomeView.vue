@@ -73,13 +73,13 @@ function stripItems(s: AboutSection): AboutItem[] {
 }
 
 function openAbout(s: AboutSection, it: AboutItem): void {
-  const q = encodeURIComponent(it.name);
+  if (it.site) {
+    window.open(it.site, '_blank', 'noopener');
+    return;
+  }
   if (s.key === 'shows') {
+    const q = encodeURIComponent(it.en || it.name);
     window.open(`https://www.youtube.com/results?search_query=${q}`, '_blank', 'noopener');
-  } else if (s.key === 'games') {
-    window.open(`https://store.steampowered.com/search/?term=${q}`, '_blank', 'noopener');
-  } else if (s.key === 'vtubers') {
-    window.open(`https://www.twitch.tv/search?term=${q}`, '_blank', 'noopener');
   }
 }
 
@@ -434,7 +434,7 @@ onUnmounted(() => {
                   :src="imgUrl(s.items[0].img)"
                   :alt="s.items[0].name"
                   class="w-full cursor-pointer border-2 border-[var(--fi-line-solid)] object-cover transition hover:border-[var(--fi-blue)]"
-                  title="在 Twitch 搜索这位主播"
+                  title="前往 Twitch 频道"
                   @click="s.items[0] && openAbout(s, s.items[0])"
                 />
                 <p class="mono mt-1.5 truncate text-[10px] text-[var(--fi-muted)]">{{ s.items[0] ? s.items[0].name : '' }}</p>
@@ -453,6 +453,7 @@ onUnmounted(() => {
                     v-for="(it, i) in stripItems(s)"
                     :key="i"
                     class="group relative w-28 shrink-0 cursor-pointer"
+                    :title="s.key === 'games' && it.site ? '前往官方网站' : undefined"
                     @mouseenter="enterCard($event, s, it)"
                     @mouseleave="leaveCard"
                     @click="s.key === 'games' && openAbout(s, it)"
