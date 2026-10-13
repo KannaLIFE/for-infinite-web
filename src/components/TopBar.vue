@@ -29,7 +29,6 @@ const groups = [
     label: '星联',
     items: [
       { to: '/messages', label: '消息' },
-      { to: '/guestbook', label: '留言板' },
       { to: '/admin', label: '后台' },
     ],
   },

@@ -9,7 +9,6 @@ import ProjectsView from './views/ProjectsView.vue';
 import GalleryView from './views/GalleryView.vue';
 import TechView from './views/TechView.vue';
 import ServicesView from './views/ServicesView.vue';
-import GuestbookView from './views/GuestbookView.vue';
 import BannerView from './views/BannerView.vue';
 
 export const router = createRouter({
@@ -25,7 +24,6 @@ export const router = createRouter({
     { path: '/gallery', name: 'gallery', component: GalleryView },
     { path: '/tech', name: 'tech', component: TechView },
     { path: '/services', name: 'services', component: ServicesView },
-    { path: '/guestbook', name: 'guestbook', component: GuestbookView },
     { path: '/banner', name: 'banner', component: BannerView },
   ],
 });
