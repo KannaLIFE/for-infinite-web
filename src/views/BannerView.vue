@@ -88,7 +88,7 @@ function copy(text: string): void {
             v-else-if="it.kind === 'avatar'"
             :src="it.img"
             :alt="name"
-            class="h-24 w-24 rounded-full border-2 border-[var(--fi-line-solid)] object-cover"
+            class="h-24 w-24 border-2 border-[var(--fi-line-solid)] object-cover"
           />
           <img
             v-else

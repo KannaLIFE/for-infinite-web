@@ -244,12 +244,12 @@ onUnmounted(() => {
           </section>
 
           <section class="fi-px-panel bg-[var(--fi-panel)] p-3">
-            <div class="grid grid-cols-4 gap-2 md:grid-cols-8">
+            <div class="grid grid-cols-4 gap-2 md:flex md:flex-wrap md:justify-center">
               <RouterLink
                 v-for="c in contentGrid"
                 :key="c.to + c.label"
                 :to="c.to"
-                class="group flex flex-col items-center gap-1.5 border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] p-2.5 transition hover:border-[var(--fi-blue)]"
+                class="group flex flex-col items-center gap-1.5 border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] p-2.5 transition hover:border-[var(--fi-blue)] md:w-24"
               >
                 <span class="mono text-lg text-[var(--fi-blue)]">{{ c.glyph }}</span>
                 <span class="mono text-[9px] text-[var(--fi-muted)] group-hover:text-[var(--fi-text)]">{{ c.label }}</span>
