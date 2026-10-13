@@ -3,6 +3,8 @@ import { ref } from 'vue';
 
 const base = import.meta.env.BASE_URL;
 const bannerUrl = `https://kannalife.github.io/for-infinite-web/banner.webp`;
+const bannerCardUrl = `https://kannalife.github.io/for-infinite-web/banner-card.jpg`;
+const bannerNameUrl = `https://kannalife.github.io/for-infinite-web/banner-name.jpg`;
 const avatarUrl = `https://kannalife.github.io/for-infinite-web/avatar.jpg`;
 const name = 'KannaLIFE';
 
@@ -12,16 +14,18 @@ const items = [
     title: '样式一 · 头像卡片横幅',
     desc: '浅色底框覆盖图片下方，头像半浮于框线上，名字在右侧。适合作为友链卡片。',
     html: '',
-    urls: [bannerUrl, avatarUrl],
+    urls: [bannerCardUrl],
     kind: 'card-avatar',
+    img: bannerCardUrl,
   },
   {
     key: 'card-name',
     title: '样式二 · 纯名字横幅',
     desc: '同款底框，不带头像，只放名字。',
     html: '',
-    urls: [bannerUrl],
+    urls: [bannerNameUrl],
     kind: 'card-name',
+    img: bannerNameUrl,
   },
   {
     key: 'plain',
@@ -30,6 +34,7 @@ const items = [
     html: '',
     urls: [bannerUrl],
     kind: 'plain',
+    img: bannerUrl,
   },
   {
     key: 'avatar',
@@ -38,6 +43,7 @@ const items = [
     html: '',
     urls: [avatarUrl],
     kind: 'avatar',
+    img: avatarUrl,
   },
 ];
 
@@ -72,36 +78,24 @@ function copy(text: string): void {
         <p class="mt-1 text-xs text-[var(--fi-muted)]">{{ it.desc }}</p>
 
         <div class="mt-4 flex min-h-44 items-center justify-center bg-[var(--fi-bg)] p-4">
-          <template v-if="it.kind === 'card-avatar'">
-            <div class="relative w-full max-w-sm">
-              <img :src="bannerUrl" alt="banner" class="block w-full rounded-md" />
-              <div
-                class="absolute inset-x-0 bottom-0 flex items-center gap-3 rounded-b-md bg-[#f2f6ff]/95 px-4 pb-2.5 pt-3.5"
-              >
-                <div class="-mt-10 h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-[#f2f6ff] bg-[#dbe6ff]">
-                  <img :src="avatarUrl" :alt="name" class="h-full w-full object-cover" />
-                </div>
-                <span class="mono text-sm font-semibold tracking-wider text-[#3b4a6b]">{{ name }}</span>
-              </div>
-            </div>
-          </template>
-
-          <template v-else-if="it.kind === 'card-name'">
-            <div class="relative w-full max-w-sm">
-              <img :src="bannerUrl" alt="banner" class="block w-full rounded-md" />
-              <div class="absolute inset-x-0 bottom-0 flex items-center rounded-b-md bg-[#f2f6ff]/95 px-4 py-2.5">
-                <span class="mono text-sm font-semibold tracking-wider text-[#3b4a6b]">{{ name }}</span>
-              </div>
-            </div>
-          </template>
-
-          <template v-else-if="it.kind === 'plain'">
-            <img :src="bannerUrl" alt="banner" class="w-full max-w-sm rounded border border-[var(--fi-line-solid)]" />
-          </template>
-
-          <template v-else>
-            <img :src="avatarUrl" :alt="name" class="h-24 w-24 rounded-full border-2 border-[var(--fi-line-solid)] object-cover" />
-          </template>
+          <img
+            v-if="it.kind === 'plain'"
+            :src="it.img"
+            alt="banner"
+            class="w-full max-w-sm rounded border border-[var(--fi-line-solid)]"
+          />
+          <img
+            v-else-if="it.kind === 'avatar'"
+            :src="it.img"
+            :alt="name"
+            class="h-24 w-24 rounded-full border-2 border-[var(--fi-line-solid)] object-cover"
+          />
+          <img
+            v-else
+            :src="it.img"
+            alt="banner"
+            class="w-full max-w-sm rounded-md border border-[var(--fi-line-solid)]"
+          />
         </div>
 
         <div class="mt-3 space-y-1.5">
