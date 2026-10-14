@@ -571,10 +571,19 @@ onUnmounted(() => {
               :href="f.links?.[0]?.url || '#'"
               target="_blank"
               rel="noopener"
-              class="fi-px-btn block bg-[var(--fi-panel-2)] p-2.5"
+              class="fi-px-btn flex items-center gap-2.5 bg-[var(--fi-panel-2)] p-2"
             >
-              <span class="block truncate text-xs font-medium text-[var(--fi-text)]">{{ f.name }}</span>
-              <span v-if="f.desc" class="mt-0.5 block truncate text-[10px] text-[var(--fi-muted)]">{{ f.desc }}</span>
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)]">
+                <img
+                  v-if="f.avatar"
+                  :src="f.avatar"
+                  :alt="f.name"
+                  class="h-full w-full object-cover"
+                  loading="lazy"
+                />
+                <span v-else class="mono text-sm text-[var(--fi-blue)]">{{ f.name.slice(0, 1) }}</span>
+              </span>
+              <span class="min-w-0 flex-1 truncate text-xs font-medium text-[var(--fi-text)]">{{ f.name }}</span>
             </a>
             <RouterLink to="/friends" class="mono block text-center text-[10px] text-[var(--fi-blue)] hover:text-[var(--fi-warm)]">
               全部友链 ▸

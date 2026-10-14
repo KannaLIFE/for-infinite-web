@@ -8,6 +8,12 @@ function friendUrl(f: (typeof friends)[number]): string {
   return f.links?.[0]?.url || '#';
 }
 
+function coverUrl(f: (typeof friends)[number]): string {
+  if (!f.cover) return defaultBanner;
+  if (/^https?:/.test(f.cover)) return f.cover;
+  return base + f.cover;
+}
+
 function onCoverError(e: Event): void {
   const img = e.target as HTMLImageElement;
   if (img.src !== defaultBanner) img.src = defaultBanner;
@@ -43,7 +49,7 @@ function onCoverError(e: Event): void {
           style="border-color: transparent; border-image: linear-gradient(135deg, var(--fi-blue), var(--fi-violet), var(--fi-line-solid), var(--fi-violet), var(--fi-blue)) 1"
         >
           <img
-            :src="f.cover || defaultBanner"
+            :src="coverUrl(f)"
             :alt="f.name"
             class="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
             loading="lazy"
