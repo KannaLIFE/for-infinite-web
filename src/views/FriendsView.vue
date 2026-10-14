@@ -28,7 +28,7 @@ function onCoverError(e: Event): void {
       星群空空如也。
     </div>
 
-    <div v-else class="grid gap-4 sm:grid-cols-2">
+    <div v-else class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       <a
         v-for="f in friends"
         :key="f.name"
@@ -38,35 +38,38 @@ function onCoverError(e: Event): void {
         rel="noopener"
         class="group block"
       >
-        <div class="relative aspect-video w-full overflow-hidden border-2 border-[var(--fi-line-solid)] transition hover:border-[var(--fi-blue)]">
+        <div
+          class="relative aspect-video w-full overflow-hidden border-2 transition"
+          style="border-color: transparent; border-image: linear-gradient(135deg, var(--fi-blue), var(--fi-violet), var(--fi-line-solid), var(--fi-violet), var(--fi-blue)) 1"
+        >
           <img
             :src="f.cover || defaultBanner"
             :alt="f.name"
-            class="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+            class="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
             loading="lazy"
             @error="onCoverError"
           />
 
-          <div class="absolute inset-x-0 bottom-0 h-[24%]" style="background: #f2f6ff"></div>
+          <div class="absolute inset-x-0 bottom-0 h-[24%] border-t-2" style="background: var(--fi-panel); border-color: var(--fi-line-solid)"></div>
 
           <div class="absolute bottom-[6%] left-[4%] aspect-square h-[36%]">
             <img
               v-if="f.avatar"
               :src="f.avatar"
               :alt="f.name"
-              class="h-full w-full rounded-full border-[3px] border-white object-cover"
+              class="h-full w-full rounded-full border-2 border-[var(--fi-blue)] bg-[var(--fi-panel-2)] object-cover"
               loading="lazy"
             />
             <span
               v-else
-              class="flex h-full w-full items-center justify-center rounded-full border-[3px] border-white bg-[var(--fi-blue)] mono text-white"
+              class="mono flex h-full w-full items-center justify-center rounded-full border-2 border-[var(--fi-blue)] bg-[var(--fi-panel-2)] text-white"
             >
               {{ f.name.slice(0, 1) }}
             </span>
           </div>
 
-          <div class="absolute inset-x-0 bottom-0 flex h-[24%] items-center pr-3" style="padding-left: 44%">
-            <h2 class="mono w-full truncate text-base font-semibold text-black md:text-lg">
+          <div class="absolute inset-x-0 bottom-0 flex h-[24%] items-center pr-2" style="padding-left: 44%">
+            <h2 class="mono w-full truncate text-xs font-semibold text-[var(--fi-text)] md:text-sm">
               {{ f.name }}
             </h2>
           </div>
