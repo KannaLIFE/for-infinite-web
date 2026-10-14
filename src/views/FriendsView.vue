@@ -28,42 +28,47 @@ function onCoverError(e: Event): void {
       星群空空如也。
     </div>
 
-    <div v-else class="space-y-4">
+    <div v-else class="grid gap-4 sm:grid-cols-2">
       <a
         v-for="f in friends"
         :key="f.name"
         :href="friendUrl(f)"
+        :title="f.desc || f.name"
         target="_blank"
         rel="noopener"
         class="group block"
       >
-        <div class="relative h-28 w-full overflow-hidden border-2 border-[var(--fi-line-solid)] transition hover:border-[var(--fi-blue)] sm:h-32">
+        <div class="relative aspect-video w-full overflow-hidden border-2 border-[var(--fi-line-solid)] transition hover:border-[var(--fi-blue)]">
           <img
             :src="f.cover || defaultBanner"
             :alt="f.name"
-            class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+            class="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
             loading="lazy"
             @error="onCoverError"
           />
-          <div class="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-black/75 via-black/35 to-transparent p-3">
-            <div class="flex min-w-0 items-center gap-2.5">
-              <span class="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)]">
-                <img v-if="f.avatar" :src="f.avatar" :alt="f.name" class="h-full w-full object-cover" loading="lazy" />
-                <span v-else class="mono text-sm text-[var(--fi-blue)]">{{ f.name.slice(0, 1) }}</span>
-              </span>
-              <div class="min-w-0">
-                <h2 class="mono truncate text-sm text-white">{{ f.name }}</h2>
-                <p v-if="f.desc" class="truncate text-[10px] text-white/70">{{ f.desc }}</p>
-              </div>
-            </div>
-            <div class="flex shrink-0 items-center gap-1.5">
-              <span
-                v-for="t in f.tags || []"
-                :key="t"
-                class="mono hidden border border-white/30 bg-black/40 px-1.5 py-0.5 text-[9px] text-white/80 md:inline-block"
-              >{{ t }}</span>
-              <span class="mono border border-[var(--fi-blue)]/60 bg-black/50 px-2 py-0.5 text-[10px] text-[var(--fi-blue)]">主页 ▸</span>
-            </div>
+
+          <div class="absolute inset-x-0 bottom-0 h-[24%]" style="background: #f2f6ff"></div>
+
+          <div class="absolute bottom-[6%] left-[4%] aspect-square h-[36%]">
+            <img
+              v-if="f.avatar"
+              :src="f.avatar"
+              :alt="f.name"
+              class="h-full w-full rounded-full border-[3px] border-white object-cover"
+              loading="lazy"
+            />
+            <span
+              v-else
+              class="flex h-full w-full items-center justify-center rounded-full border-[3px] border-white bg-[var(--fi-blue)] mono text-white"
+            >
+              {{ f.name.slice(0, 1) }}
+            </span>
+          </div>
+
+          <div class="absolute inset-x-0 bottom-0 flex h-[24%] items-center pr-3" style="padding-left: 44%">
+            <h2 class="mono w-full truncate text-base font-semibold text-black md:text-lg">
+              {{ f.name }}
+            </h2>
           </div>
         </div>
       </a>
