@@ -2,6 +2,7 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { profile, type AboutItem, type AboutSection } from '../data/profile';
+import { friends } from '../data/friends';
 import { API_BASE, api } from '../lib/api';
 import { nowWorldYear } from '../lib/time';
 import GhGrid from '../components/GhGrid.vue';
@@ -565,15 +566,15 @@ onUnmounted(() => {
           <h3 class="mono text-xs text-[var(--fi-warm)]">FRIENDS · 友链</h3>
           <div class="mt-2 space-y-2">
             <a
-              v-for="f in profile.friends"
-              :key="f.url"
-              :href="f.url"
+              v-for="f in friends"
+              :key="f.name"
+              :href="f.links?.[0]?.url || '#'"
               target="_blank"
               rel="noopener"
               class="fi-px-btn block bg-[var(--fi-panel-2)] p-2.5"
             >
               <span class="block truncate text-xs font-medium text-[var(--fi-text)]">{{ f.name }}</span>
-              <span class="mt-0.5 block truncate text-[10px] text-[var(--fi-muted)]">{{ f.desc }}</span>
+              <span v-if="f.desc" class="mt-0.5 block truncate text-[10px] text-[var(--fi-muted)]">{{ f.desc }}</span>
             </a>
             <RouterLink to="/friends" class="mono block text-center text-[10px] text-[var(--fi-blue)] hover:text-[var(--fi-warm)]">
               全部友链 ▸

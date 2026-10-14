@@ -122,9 +122,5 @@ export const profile = {
     '全栈（React + Node)'
   ],
 
-  friends: [
-    { name: '示例友链', url: 'https://example.com', desc: '一个示例' },
-  ],
-
   bannerUrl: 'https://kannalife.github.io/for-infinite-web/banner.webp',
 };
