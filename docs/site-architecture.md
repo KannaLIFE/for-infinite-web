@@ -65,6 +65,13 @@
 - 管理控制台仅 127.0.0.1 可开。
 - 网页上的解锁（消息/后台）采用 HMAC 签名的临时 token，由后端按日签发，前端无法伪造。
 
+## 国际化（中英双语）
+
+- **技术**：vue-i18n v11（Composition API 模式），语言包在 `src/locales/zh.ts` 与 `en.ts`，中文为兜底语言。
+- **首次检测**：读 `localStorage.fi-locale` → 无则看 `navigator.language`（以 `zh` 开头显示中文，否则英文）。
+- **全局持久**：顶栏 `EN/中文` 按钮切换后写入 `localStorage`，跨页面、跨刷新全程保持同一语言。
+- **文案结构**：界面文案用 `t('命名空间.键')`；数据内容（profile 简介、友链、技术栈、服务）在原字段旁加 `*En` 平行字段，模板里用 `pick(zh, en)` / `pickList()` 按当前语言取值。新增翻译只改语言包两个文件。
+
 ## 稳定性：自愈机制
 
 - **看门狗**：守护进程每 30 秒端到端探测公网 `/status`，连续失败且距上次重启超 2 分钟 → 自动重启隧道进程。
@@ -82,3 +89,5 @@
 | `fi-runtime\cloudflared\config.yml` | 隧道入口规则 |
 | `fi-runtime\server\` | Fastify 后端（消息/后台/文章，按需开启，平时关机） |
 | 网站 `public\data\github.json` / `netease.json` | 推送上去的静态数据 |
+| 网站 `src\lib\i18n.ts` | 语言检测 / 持久化 / `t()` / `pick()` |
+| 网站 `src\locales\zh.ts` / `en.ts` | 中英文语言包 |
