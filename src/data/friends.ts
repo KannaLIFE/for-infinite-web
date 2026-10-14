@@ -15,4 +15,11 @@ export const friends: FriendLink[] = [
     avatar: 'https://blog.gardenwalk.moe/wp-content/uploads/1737602734-icon.png',
     links: [{ label: '主页', url: 'https://www.gardenwalk.moe' }],
   },
+  {
+    name: 'dekxi',
+    desc: 'CS student · full-stack app builder · roblox studio dev · UI / Visual Design',
+    cover: 'covers/friend-dekxi.jpg',
+    avatar: 'https://avatars.githubusercontent.com/u/201718391?v=4',
+    links: [{ label: '主页', url: 'https://dekxi-atelier.vercel.app/' }],
+  },
 ];
