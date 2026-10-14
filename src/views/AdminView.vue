@@ -3,6 +3,7 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import { api } from '../lib/api';
 import { getToken, setToken } from '../lib/auth';
 import { useBackendHealth } from '../lib/backend';
+import { t } from '../lib/i18n';
 import type { AccountState } from '../types';
 
 const unlocked = ref(false);
@@ -35,10 +36,10 @@ function fmtBytes(n: number): string {
 }
 
 function fmtAgo(sec: number | null | undefined): string {
-  if (sec === null || sec === undefined) return '等待首条消息…';
-  if (sec < 60) return `${Math.floor(sec)} 秒前`;
-  if (sec < 3600) return `${Math.floor(sec / 60)} 分钟前`;
-  return `${Math.floor(sec / 3600)} 小时前`;
+  if (sec === null || sec === undefined) return t('admin.waitingFirst');
+  if (sec < 60) return t('admin.secsAgo', { n: Math.floor(sec) });
+  if (sec < 3600) return t('admin.minsAgo', { n: Math.floor(sec / 60) });
+  return t('admin.hoursAgo', { n: Math.floor(sec / 3600) });
 }
 
 function isStale(a: AccountState): boolean {
@@ -46,14 +47,14 @@ function isStale(a: AccountState): boolean {
 }
 
 function napcatInfo(a: AccountState): { label: string; color: string; busy: boolean } {
-  if (a.offline) return { label: '已掉线（需重扫登录）', color: '#ef4444', busy: false };
+  if (a.offline) return { label: t('admin.napcatDropped'), color: '#ef4444', busy: false };
   switch (a.napcatState) {
-    case 'running': return { label: '正常运行', color: '#4ade80', busy: false };
-    case 'starting': return { label: '正在启动', color: '#60a5fa', busy: true };
-    case 'stopping': return { label: '正在关闭', color: '#fbbf24', busy: true };
-    case 'stopped': return { label: '已关闭', color: '#f87171', busy: false };
-    case 'failed': return { label: '失败', color: '#ef4444', busy: false };
-    default: return { label: '状态未知', color: '#9ca3af', busy: false };
+    case 'running': return { label: t('admin.napcatRunning'), color: '#4ade80', busy: false };
+    case 'starting': return { label: t('admin.napcatStarting'), color: '#60a5fa', busy: true };
+    case 'stopping': return { label: t('admin.napcatStopping'), color: '#fbbf24', busy: true };
+    case 'stopped': return { label: t('admin.napcatStopped'), color: '#f87171', busy: false };
+    case 'failed': return { label: t('admin.napcatFailed'), color: '#ef4444', busy: false };
+    default: return { label: t('admin.napcatUnknown'), color: '#9ca3af', busy: false };
   }
 }
 
@@ -69,10 +70,10 @@ async function unlock(): Promise<void> {
       keyInput.value = '';
       await loadAll();
     } else {
-      unlockError.value = '钥匙无效';
+      unlockError.value = t('common.keyInvalid');
     }
   } catch {
-    unlockError.value = '解锁失败';
+    unlockError.value = t('common.unlockFailed');
   }
 }
 
@@ -103,17 +104,17 @@ async function toggleAccount(id: string): Promise<void> {
       token(),
     );
     if (!r.ok && r.error) {
-      alert(`操作未完全生效：\n${r.error}`);
+      alert(t('admin.togglePartial', { err: r.error }));
     }
   } catch (err) {
-    alert(`操作失败：${String(err)}`);
+    alert(t('admin.toggleFailed', { err: String(err) }));
   }
   await loadAll();
 }
 
 async function cleanup(): Promise<void> {
   const r = await api.post<{ removed: number }>('/api/admin/cleanup', { keepDays: keepDays.value }, token());
-  cleanupMsg.value = `已清理 ${r.removed} 条（保留最近 ${keepDays.value} 天）。`;
+  cleanupMsg.value = t('admin.cleanupDone', { n: r.removed, d: keepDays.value });
   await loadAll();
 }
 
@@ -138,7 +139,7 @@ async function loadArtList(): Promise<void> {
 async function createArticle(): Promise<void> {
   artMsg.value = '';
   if (!artForm.value.title.trim() || !artForm.value.content.trim()) {
-    artMsg.value = '标题和正文不能为空。';
+    artMsg.value = t('admin.artEmpty');
     return;
   }
   const body: Record<string, unknown> = {
@@ -154,16 +155,16 @@ async function createArticle(): Promise<void> {
   if (artForm.value.excerpt.trim()) body.excerpt = artForm.value.excerpt.trim();
   try {
     await api.post('/api/admin/articles', body, token());
-    artMsg.value = '已创建。';
+    artMsg.value = t('admin.artCreated');
     artForm.value = { title: '', year: '', date: '', tags: '', excerpt: '', content: '' };
     await loadArtList();
   } catch (err) {
-    artMsg.value = `创建失败：${String(err)}`;
+    artMsg.value = t('admin.artFailed', { err: String(err) });
   }
 }
 
 async function deleteArticle(slug: string): Promise<void> {
-  if (!confirm(`删除文章 ${slug}？`)) return;
+  if (!confirm(t('admin.deleteConfirm', { slug }))) return;
   try {
     await api.delete(`/api/admin/articles/${artCategory.value}/${slug}`, token());
     await loadArtList();
@@ -193,31 +194,31 @@ onUnmounted(() => {
 <template>
   <div class="w-full space-y-6 px-4">
     <div v-if="backend === 'checking'" class="fi-px-panel bg-[var(--fi-panel)] p-6">
-      <p class="text-sm text-[var(--fi-muted)]">正在确认后台服务……</p>
+      <p class="text-sm text-[var(--fi-muted)]">{{ t('common.backendChecking') }}</p>
     </div>
 
     <div v-else-if="backend === 'down'" class="fi-px-panel bg-[var(--fi-panel)] p-6">
-      <p class="text-sm text-[var(--fi-muted)]">后台服务未启动，此页面暂不开放。</p>
+      <p class="text-sm text-[var(--fi-muted)]">{{ t('common.backendDown') }}</p>
     </div>
 
     <template v-else>
     <header>
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">后台 · 调控</h1>
-      <p class="mono mt-1 text-xs text-[var(--fi-muted)]">账号状态 · 名单 · 清理 · 钥匙</p>
+      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">{{ t('admin.title') }}</h1>
+      <p class="mono mt-1 text-xs text-[var(--fi-muted)]">{{ t('admin.subtitle') }}</p>
     </header>
 
     <div v-if="!unlocked" class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-6">
-      <p class="text-sm text-[var(--fi-muted)]">后台需管理权限，请输入钥匙。</p>
+      <p class="text-sm text-[var(--fi-muted)]">{{ t('admin.locked') }}</p>
       <div class="mt-4 flex gap-2">
         <input
           v-model="keyInput"
           type="password"
           class="mono flex-1 fi-px-panel bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none focus:border-[var(--fi-blue)]"
-          placeholder="管理钥匙……"
+          :placeholder="t('admin.adminKeyPlaceholder')"
           @keyup.enter="unlock"
         />
         <button class="fi-px-btn px-4 py-2 text-sm" style="background: var(--fi-warm); color: #1a1208" @click="unlock">
-          进入
+          {{ t('admin.enter') }}
         </button>
       </div>
       <p v-if="unlockError" class="mt-2 text-xs text-red-400">{{ unlockError }}</p>
@@ -227,16 +228,16 @@ onUnmounted(() => {
 
       <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
         <div class="mb-3 flex items-center justify-between">
-          <h2 class="mono text-sm text-[var(--fi-warm)]">账号状态</h2>
+          <h2 class="mono text-sm text-[var(--fi-warm)]">{{ t('admin.accounts') }}</h2>
           <button
             class="mono rounded border border-[var(--fi-line)] px-3 py-1 text-xs text-[var(--fi-text)] hover:border-[var(--fi-blue)]"
             @click="refresh"
           >
-            ⟳ 刷新检测
+            {{ t('admin.refresh') }}
           </button>
         </div>
         <p v-if="lastRefresh" class="mono mb-2 text-[10px] text-[var(--fi-muted)]">
-          上次刷新：{{ lastRefresh }}
+          {{ t('admin.lastRefresh', { t: lastRefresh }) }}
         </p>
         <div class="space-y-2">
           <div v-for="a in accounts" :key="a.id" class="flex items-center gap-3">
@@ -246,70 +247,70 @@ onUnmounted(() => {
             ></span>
             <span class="mono text-sm text-[var(--fi-text)]">{{ a.id }}</span>
             <span class="mono text-xs" :style="`color:${napcatInfo(a).color}`">
-              {{ napcatInfo(a).label }}<template v-if="isStale(a)"> · 疑似掉线</template>
+              {{ napcatInfo(a).label }}<template v-if="isStale(a)">{{ t('admin.maybeDropped') }}</template>
             </span>
             <span class="mono text-[10px]" :style="isStale(a) ? 'color:#fbbf24' : 'color:var(--fi-muted)'">
-              最后收到：{{ fmtAgo(a.lastMessageAgoSec) }}
+              {{ t('admin.lastMessage', { t: fmtAgo(a.lastMessageAgoSec) }) }}
             </span>
             <span class="mono text-[10px] text-[var(--fi-muted)]">
-              {{ a.mode === 'whitelist' ? '白名单' : '黑名单' }}
+              {{ a.mode === 'whitelist' ? t('admin.whitelist') : t('admin.blacklist') }}
             </span>
             <button
               class="mono ml-auto rounded border border-[var(--fi-line)] px-2 py-1 text-xs text-[var(--fi-muted)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-text)] disabled:opacity-40"
               :disabled="napcatInfo(a).busy"
               @click="toggleAccount(a.id)"
             >
-              {{ napcatInfo(a).busy ? '…' : a.napcatState === 'running' ? '停用' : '启用' }}
+              {{ napcatInfo(a).busy ? '…' : a.napcatState === 'running' ? t('admin.stop') : t('admin.start') }}
             </button>
           </div>
-          <p v-if="!accounts.length" class="mono text-xs text-[var(--fi-muted)]">尚无账号配置。</p>
+          <p v-if="!accounts.length" class="mono text-xs text-[var(--fi-muted)]">{{ t('admin.noAccounts') }}</p>
         </div>
       </section>
 
       <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
-        <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">今日钥匙</h2>
+        <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">{{ t('admin.todayKeys') }}</h2>
         <button
           class="mono rounded border border-[var(--fi-line)] px-3 py-1.5 text-xs text-[var(--fi-text)] hover:border-[var(--fi-warm)]"
           @click="loadKeys"
         >
-          显示 / 刷新
+          {{ t('admin.showRefresh') }}
         </button>
         <div v-if="showKeys && keys" class="mono mt-3 space-y-1 text-sm">
-          <p class="text-[var(--fi-muted)]">日期：{{ keys.date }}</p>
-          <p>消息钥匙：<span class="text-[var(--fi-warm)]">{{ keys.messageKey }}</span></p>
-          <p>文章钥匙：<span class="text-[var(--fi-warm)]">{{ keys.articleKey }}</span></p>
-          <p>后台钥匙：<span class="text-[var(--fi-warm)]">{{ keys.adminKey }}</span></p>
+          <p class="text-[var(--fi-muted)]">{{ t('admin.date') }}{{ keys.date }}</p>
+          <p>{{ t('admin.messageKey') }}<span class="text-[var(--fi-warm)]">{{ keys.messageKey }}</span></p>
+          <p>{{ t('admin.articleKey') }}<span class="text-[var(--fi-warm)]">{{ keys.articleKey }}</span></p>
+          <p>{{ t('admin.adminKey') }}<span class="text-[var(--fi-warm)]">{{ keys.adminKey }}</span></p>
         </div>
       </section>
 
       <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
-        <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">存储</h2>
+        <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">{{ t('admin.storage') }}</h2>
         <div v-if="disk" class="mono space-y-1 text-sm text-[var(--fi-muted)]">
-          <p>消息占用：{{ fmtBytes(disk.messagesBytes) }}</p>
-          <p>媒体占用：{{ fmtBytes(disk.mediaBytes) }}</p>
-          <p>磁盘剩余：{{ fmtBytes(disk.freeBytes) }}</p>
+          <p>{{ t('admin.msgUsage', { n: fmtBytes(disk.messagesBytes) }) }}</p>
+          <p>{{ t('admin.mediaUsage', { n: fmtBytes(disk.mediaBytes) }) }}</p>
+          <p>{{ t('admin.diskFree', { n: fmtBytes(disk.freeBytes) }) }}</p>
         </div>
         <div class="mt-3 flex items-center gap-2">
-          <label class="mono text-xs text-[var(--fi-muted)]">清理未过滤（保留最近</label>
+          <label class="mono text-xs text-[var(--fi-muted)]">{{ t('admin.cleanupLabel') }}</label>
           <input
             v-model.number="keepDays"
             type="number"
             min="0"
             class="mono w-20 rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-2 py-1 text-sm text-[var(--fi-text)] outline-none"
           />
-          <span class="mono text-xs text-[var(--fi-muted)]">天）</span>
+          <span class="mono text-xs text-[var(--fi-muted)]">{{ t('admin.daysUnit') }}</span>
           <button
             class="mono rounded border border-[var(--fi-line)] px-3 py-1.5 text-xs text-[var(--fi-text)] hover:border-[#f87171]"
             @click="cleanup"
           >
-            执行清理
+            {{ t('admin.cleanup') }}
           </button>
         </div>
         <p v-if="cleanupMsg" class="mono mt-2 text-xs text-[var(--fi-warm)]">{{ cleanupMsg }}</p>
       </section>
 
       <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
-        <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">文章管理</h2>
+        <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">{{ t('admin.articles') }}</h2>
 
         <div class="mb-4 flex gap-2">
           <button
@@ -319,37 +320,37 @@ onUnmounted(() => {
             :class="artCategory === c ? 'border-[var(--fi-warm)] text-[var(--fi-warm)]' : 'border-[var(--fi-line)] text-[var(--fi-muted)]'"
             @click="artCategory = c; loadArtList()"
           >
-            {{ c === 'blog' ? '博客' : c === 'worldview' ? '世界观' : '现实(上锁)' }}
+            {{ c === 'blog' ? t('admin.catBlog') : c === 'worldview' ? t('admin.catWorldview') : t('admin.catReality') }}
           </button>
         </div>
 
         <div class="space-y-2">
-          <input v-model="artForm.title" class="mono w-full rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none" placeholder="标题" />
+          <input v-model="artForm.title" class="mono w-full rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none" :placeholder="t('admin.titlePh')" />
           <div class="flex gap-2">
             <input
               v-if="artCategory === 'worldview'"
               v-model="artForm.year"
               type="number"
               class="mono w-28 rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none"
-              placeholder="世界观年"
+              :placeholder="t('admin.yearPh')"
             />
             <input
               v-else
               v-model="artForm.date"
               class="mono w-40 rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none"
-              placeholder="日期 YYYY-MM-DD"
+              :placeholder="t('admin.datePh')"
             />
-            <input v-model="artForm.tags" class="mono min-w-0 flex-1 rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none" placeholder="标签，逗号分隔" />
+            <input v-model="artForm.tags" class="mono min-w-0 flex-1 rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none" :placeholder="t('admin.tagsPh')" />
           </div>
-          <input v-model="artForm.excerpt" class="mono w-full rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none" placeholder="摘要（可选）" />
+          <input v-model="artForm.excerpt" class="mono w-full rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none" :placeholder="t('admin.excerptPh')" />
           <textarea
             v-model="artForm.content"
             rows="8"
             class="w-full rounded border border-[var(--fi-line)] bg-[var(--fi-panel-2)] px-3 py-2 text-sm leading-relaxed text-[var(--fi-text)] outline-none"
-            placeholder="正文（Markdown）……"
+            :placeholder="t('admin.contentPh')"
           ></textarea>
           <button class="rounded-lg px-4 py-2 text-sm" style="background: var(--fi-warm); color: #1a1208" @click="createArticle">
-            创建文章
+            {{ t('admin.createArticle') }}
           </button>
           <p v-if="artMsg" class="mono text-xs text-[var(--fi-warm)]">{{ artMsg }}</p>
         </div>
@@ -360,10 +361,10 @@ onUnmounted(() => {
             <span v-if="a.locked" class="mono text-[10px] text-[var(--fi-muted)]">🔒</span>
             <span class="mono shrink-0 text-[10px] text-[var(--fi-muted)]">{{ a.slug }}</span>
             <button class="mono ml-auto rounded border border-[var(--fi-line)] px-2 py-1 text-xs text-[var(--fi-muted)] hover:border-[#f87171] hover:text-[#f87171]" @click="deleteArticle(a.slug)">
-              删除
+              {{ t('admin.delete') }}
             </button>
           </div>
-          <p v-if="!artList.length" class="mono text-xs text-[var(--fi-muted)]">该分类暂无文章。</p>
+          <p v-if="!artList.length" class="mono text-xs text-[var(--fi-muted)]">{{ t('admin.catEmpty') }}</p>
         </div>
       </section>
     </template>

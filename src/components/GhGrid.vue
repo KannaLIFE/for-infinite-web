@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { t } from '../lib/i18n';
 
 interface Contribution {
   date: string;
@@ -47,16 +48,16 @@ onMounted(async () => {
 <template>
   <div class="fi-px-panel min-w-0 overflow-hidden bg-[var(--fi-panel)] p-4">
     <div class="flex items-center justify-between">
-      <h3 class="mono text-xs text-[var(--fi-warm)]">CONTRIBUTIONS · 贡献图</h3>
+      <h3 class="mono text-xs text-[var(--fi-warm)]">{{ t('widgets.ghContrib') }}</h3>
       <span class="mono text-[10px] text-[var(--fi-muted)]">
-        <template v-if="loading">加载中…</template>
-        <template v-else-if="failed">信号不可达</template>
-        <template v-else>近一年 {{ total }} 次提交</template>
+        <template v-if="loading">{{ t('widgets.ghLoading') }}</template>
+        <template v-else-if="failed">{{ t('widgets.ghUnreachable') }}</template>
+        <template v-else>{{ t('widgets.ghYearCommits', { n: total }) }}</template>
       </span>
     </div>
 
     <div v-if="loading || failed" class="mt-3 flex h-20 items-center justify-center">
-      <span class="mono text-xs text-[var(--fi-muted)]">{{ failed ? '星联中断' : '…' }}</span>
+      <span class="mono text-xs text-[var(--fi-muted)]">{{ failed ? t('widgets.ghDown') : '…' }}</span>
     </div>
 
     <div

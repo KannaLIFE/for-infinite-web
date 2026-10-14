@@ -5,6 +5,7 @@ import { profile, type AboutItem, type AboutSection } from '../data/profile';
 import { friends } from '../data/friends';
 import { API_BASE, api } from '../lib/api';
 import { nowWorldYear } from '../lib/time';
+import { pick, pickList, t } from '../lib/i18n';
 import GhGrid from '../components/GhGrid.vue';
 import GhStats from '../components/GhStats.vue';
 import WorldClock from '../components/WorldClock.vue';
@@ -134,18 +135,18 @@ function jumpVoc(i: number): void {
   restartVocTimer();
 }
 
-const contentGrid = [
-  { to: '/blog', glyph: '▤', label: '博客' },
-  { to: '/projects', glyph: '✦', label: '项目' },
-  { to: '/gallery', glyph: '◈', label: '画廊' },
-  { to: '/tech', glyph: '⌬', label: '技术栈' },
-  { to: '/friends', glyph: '◉', label: '友链' },
-  { to: '/services', glyph: '⚒', label: '服务' },
-];
+const contentGrid = computed(() => [
+  { to: '/blog', glyph: '▤', label: t('home.contentBlog') },
+  { to: '/projects', glyph: '✦', label: t('home.contentProjects') },
+  { to: '/gallery', glyph: '◈', label: t('home.contentGallery') },
+  { to: '/tech', glyph: '⌬', label: t('home.contentTech') },
+  { to: '/friends', glyph: '◉', label: t('home.contentFriends') },
+  { to: '/services', glyph: '⚒', label: t('home.contentServices') },
+]);
 
 const marqueeChips = computed(() => [
   ...profile.techStack.map((t) => ({ name: t, kind: 'using' as const })),
-  ...profile.learning.map((t) => ({ name: t, kind: 'learning' as const })),
+  ...pickList(profile.learning, profile.learningEn).map((n) => ({ name: n, kind: 'learning' as const })),
 ]);
 
 onMounted(async () => {
@@ -185,11 +186,11 @@ onUnmounted(() => {
       <div class="min-w-0 lg:border-r-2 lg:border-[var(--fi-line-solid)]">
         <div class="space-y-4 px-3 py-4">
           <section class="fi-rise text-center">
-            <p class="mono text-xs tracking-[0.4em] text-[var(--fi-muted)]">第 {{ nowWorldYear() }} 观测纪</p>
+            <p class="mono text-xs tracking-[0.4em] text-[var(--fi-muted)]">{{ t('home.era', { n: nowWorldYear() }) }}</p>
             <h1 class="mono mt-3 text-4xl font-bold tracking-widest text-[var(--fi-text)] md:text-6xl">
               {{ profile.motto }}
             </h1>
-            <p class="mono mt-2 text-sm text-[var(--fi-violet)]">{{ profile.mottoSub }}</p>
+            <p class="mono mt-2 text-sm text-[var(--fi-violet)]">{{ pick(profile.mottoSub, profile.mottoSubEn) }}</p>
           </section>
 
           <section class="flex flex-wrap justify-center gap-2">
@@ -228,14 +229,14 @@ onUnmounted(() => {
                 <span class="mono text-xs text-[var(--fi-muted)]">{{ profile.handle }}</span>
                 <span class="mono flex items-center gap-1.5 border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[9px] text-[var(--fi-muted)]">
                   <span class="inline-block h-1.5 w-1.5 bg-[var(--fi-blue)]"></span>
-                  {{ profile.status }}
+                  {{ pick(profile.status, profile.statusEn) }}
                 </span>
               </div>
-              <p class="serif-quote mt-1.5 text-sm text-[var(--fi-warm-soft)]">{{ profile.tagline }}</p>
-              <p class="mt-1.5 text-xs leading-relaxed text-[var(--fi-muted)]">{{ profile.intro }}</p>
+              <p class="serif-quote mt-1.5 text-sm text-[var(--fi-warm-soft)]">{{ pick(profile.tagline, profile.taglineEn) }}</p>
+              <p class="mt-1.5 text-xs leading-relaxed text-[var(--fi-muted)]">{{ pick(profile.intro, profile.introEn) }}</p>
               <div class="mt-2.5 flex flex-wrap gap-1.5">
                 <span
-                  v-for="p in profile.pills"
+                  v-for="p in pickList(profile.pills, profile.pillsEn)"
                   :key="p"
                   class="mono border border-[var(--fi-violet-dim)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[9px] text-[var(--fi-violet)]"
                 >{{ p }}</span>
@@ -259,8 +260,8 @@ onUnmounted(() => {
 
           <section class="fi-px-panel bg-[var(--fi-panel)] p-4">
             <div class="mb-2 flex items-center justify-between">
-              <h2 class="mono text-xs text-[var(--fi-warm)]">TECH · 技术栈</h2>
-              <RouterLink to="/tech" class="mono text-[10px] text-[var(--fi-blue)] hover:text-[var(--fi-warm)]">详情 ▸</RouterLink>
+              <h2 class="mono text-xs text-[var(--fi-warm)]">{{ t('home.techHeader') }}</h2>
+              <RouterLink to="/tech" class="mono text-[10px] text-[var(--fi-blue)] hover:text-[var(--fi-warm)]">{{ t('common.more') }}</RouterLink>
             </div>
             <div class="fi-marquee">
               <div class="fi-marquee-track">
@@ -279,18 +280,18 @@ onUnmounted(() => {
           <div class="grid grid-cols-2 gap-3">
             <section class="fi-px-panel bg-[var(--fi-panel)] p-3" :class="profile.dni.length ? '' : 'col-span-2'">
               <div class="mb-2 flex items-center justify-between">
-                <h2 class="mono text-xs text-[var(--fi-blue)]">BYF · 关注前须知</h2>
+                <h2 class="mono text-xs text-[var(--fi-blue)]">{{ t('home.byfHeader') }}</h2>
                 <span class="mono text-[9px] text-[var(--fi-blue)]">/byf</span>
               </div>
               <ul class="space-y-1 text-xs text-[var(--fi-muted)]">
-                <li v-for="b in profile.byf" :key="b" class="flex items-center gap-1.5">
+                <li v-for="b in pickList(profile.byf, profile.byfEn)" :key="b" class="flex items-center gap-1.5">
                   <span class="inline-block h-1.5 w-1.5 bg-[var(--fi-blue)]"></span>{{ b }}
                 </li>
               </ul>
             </section>
             <section v-if="profile.dni.length" class="fi-px-panel bg-[var(--fi-panel)] p-3">
               <div class="mb-2 flex items-center justify-between">
-                <h2 class="mono text-xs text-[#ff8a8a]">DNI · 请勿互动</h2>
+                <h2 class="mono text-xs text-[#ff8a8a]">{{ t('home.dniHeader') }}</h2>
                 <span class="mono text-[9px] text-[#ff8a8a]">/dni</span>
               </div>
               <ul class="space-y-1 text-xs text-[var(--fi-muted)]">
@@ -305,13 +306,13 @@ onUnmounted(() => {
 
           <section class="fi-px-panel bg-[var(--fi-panel)] p-3">
             <div class="mb-2 flex items-center justify-between">
-              <h2 class="mono text-xs text-[var(--fi-violet)]">GITHUB · 统计</h2>
+              <h2 class="mono text-xs text-[var(--fi-violet)]">{{ t('home.githubHeader') }}</h2>
               <a
                 href="https://github.com/kannalife"
                 target="_blank"
                 rel="noopener"
                 class="mono text-[10px] text-[var(--fi-blue)] hover:text-[var(--fi-warm)]"
-              >主页 ▸</a>
+              >{{ t('home.githubHome') }}</a>
             </div>
             <GhStats username="kannalife" />
           </section>
@@ -323,12 +324,12 @@ onUnmounted(() => {
       <div class="min-w-0 space-y-4 px-3 py-4 lg:border-r-2 lg:border-[var(--fi-line-solid)]">
         <section class="fi-px-panel bg-[var(--fi-panel)] p-4">
           <div class="mb-3 flex items-center justify-between">
-            <h2 class="mono text-xs text-[var(--fi-warm)]">ABOUT · 档案</h2>
+            <h2 class="mono text-xs text-[var(--fi-warm)]">{{ t('home.aboutHeader') }}</h2>
             <span class="mono text-[10px] text-[var(--fi-blue)]">/about</span>
           </div>
           <div class="space-y-3">
             <div v-for="s in profile.about" :key="s.key" class="border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] p-3">
-              <h3 class="mono text-[10px] text-[var(--fi-violet)]">{{ s.title }}</h3>
+              <h3 class="mono text-[10px] text-[var(--fi-violet)]">{{ pick(s.title, s.titleEn) }}</h3>
               <div
                 v-if="s.key === 'shows'"
                 class="mt-2 flex gap-3"
@@ -339,15 +340,14 @@ onUnmounted(() => {
                   <div
                     class="relative cursor-pointer overflow-hidden border-2 border-[var(--fi-line-solid)] transition hover:border-[var(--fi-blue)]"
                     style="background: linear-gradient(135deg, rgba(121,184,255,0.16), rgba(183,140,255,0.12))"
-                    title="在 YouTube 搜索这部作品"
-                    @click="shows[showIdx] && openAbout(showSection, shows[showIdx])"
+                    :title="t('common.searchOnYoutube')"                    @click="shows[showIdx] && openAbout(showSection, shows[showIdx])"
                   >
                     <transition name="fi-slide" mode="out-in">
                       <img
                         v-if="shows[showIdx] && shows[showIdx].img"
                         :key="'slide-' + showIdx"
                         :src="imgUrl(shows[showIdx].img)"
-                        :alt="shows[showIdx].name"
+                        :alt="shows[showIdx] ? pick(shows[showIdx].name, shows[showIdx].nameEn) : ''"
                         class="aspect-[2/3] w-full object-cover"
                       />
                       <div v-else :key="'slide-empty-' + showIdx" class="aspect-[2/3] w-full"></div>
@@ -357,9 +357,9 @@ onUnmounted(() => {
                 <div class="flex min-w-0 flex-1 flex-col">
                   <transition name="fi-fade" mode="out-in">
                     <div v-if="shows[showIdx]" :key="'info-' + showIdx">
-                      <h4 class="mono text-sm text-[var(--fi-text)]">{{ shows[showIdx].name }}</h4>
+                      <h4 class="mono text-sm text-[var(--fi-text)]">{{ pick(shows[showIdx].name, shows[showIdx].nameEn) }}</h4>
                       <p class="mt-1.5 text-xs leading-relaxed text-[var(--fi-muted)]">
-                        {{ shows[showIdx].desc || '（暂无简述）' }}
+                        {{ pick(shows[showIdx].desc, shows[showIdx].descEn) || t('common.noDesc') }}
                       </p>
                     </div>
                   </transition>
@@ -370,7 +370,7 @@ onUnmounted(() => {
                         :key="it.name"
                         class="h-1.5 transition-all"
                         :class="i === showIdx ? 'w-4 bg-[var(--fi-blue)]' : 'w-1.5 bg-[var(--fi-line-solid)] hover:bg-[var(--fi-muted)]'"
-                        :aria-label="it.name"
+                        :aria-label="pick(it.name, it.nameEn)"
                         @click="jumpShow(i)"
                       ></button>
                     </div>
@@ -378,12 +378,12 @@ onUnmounted(() => {
                       <span class="mono text-[9px] text-[var(--fi-muted)]">{{ showIdx + 1 }}/{{ shows.length }}</span>
                       <button
                         class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[10px] text-[var(--fi-text)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-blue)]"
-                        aria-label="上一部"
+                        :aria-label="t('home.prev')"
                         @click="stepShow(-1)"
                       >◀</button>
                       <button
                         class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[10px] text-[var(--fi-text)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-blue)]"
-                        aria-label="下一部"
+                        :aria-label="t('home.next')"
                         @click="stepShow(1)"
                       >▶</button>
                     </div>
@@ -400,7 +400,7 @@ onUnmounted(() => {
                   v-if="vocaloid[vocIdx]"
                   :key="vocaloid[vocIdx].name"
                   :video-id="vocaloid[vocIdx].yt || ''"
-                  :name="vocaloid[vocIdx].name"
+                  :name="pick(vocaloid[vocIdx].name, vocaloid[vocIdx].nameEn)"
                 />
                 <div class="mt-2 flex items-center justify-between gap-2">
                   <div class="flex items-center gap-1">
@@ -409,7 +409,7 @@ onUnmounted(() => {
                       :key="it.name"
                       class="h-1.5 transition-all"
                       :class="i === vocIdx ? 'w-4 bg-[var(--fi-blue)]' : 'w-1.5 bg-[var(--fi-line-solid)] hover:bg-[var(--fi-muted)]'"
-                      :aria-label="it.name"
+                      :aria-label="pick(it.name, it.nameEn)"
                       @click="jumpVoc(i)"
                     ></button>
                   </div>
@@ -417,12 +417,11 @@ onUnmounted(() => {
                     <span class="mono text-[9px] text-[var(--fi-muted)]">{{ vocIdx + 1 }}/{{ vocaloid.length }}</span>
                     <button
                       class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[10px] text-[var(--fi-text)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-blue)]"
-                      aria-label="上一首"
-                      @click="stepVoc(-1)"
-                    >◀</button>
+                      :aria-label="t('home.prevSong')"
+                      @click="stepVoc(-1)"                    >◀</button>
                     <button
                       class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[10px] text-[var(--fi-text)] hover:border-[var(--fi-blue)] hover:text-[var(--fi-blue)]"
-                      aria-label="下一首"
+                      :aria-label="t('home.nextSong')"
                       @click="stepVoc(1)"
                     >▶</button>
                   </div>
@@ -432,12 +431,12 @@ onUnmounted(() => {
                 <img
                   v-if="s.items[0] && s.items[0].img"
                   :src="imgUrl(s.items[0].img)"
-                  :alt="s.items[0].name"
+                  :alt="s.items[0] ? pick(s.items[0].name, s.items[0].nameEn) : ''"
                   class="w-full cursor-pointer border-2 border-[var(--fi-line-solid)] object-cover transition hover:border-[var(--fi-blue)]"
-                  title="前往 Twitch 频道"
+                  :title="t('home.twitchChannel')"
                   @click="s.items[0] && openAbout(s, s.items[0])"
                 />
-                <p class="mono mt-1.5 truncate text-[10px] text-[var(--fi-muted)]">{{ s.items[0] ? s.items[0].name : '' }}</p>
+                <p class="mono mt-1.5 truncate text-[10px] text-[var(--fi-muted)]">{{ s.items[0] ? pick(s.items[0].name, s.items[0].nameEn) : '' }}</p>
               </div>
               <div
                 v-else
@@ -453,7 +452,7 @@ onUnmounted(() => {
                     v-for="(it, i) in stripItems(s)"
                     :key="i"
                     class="group relative w-28 shrink-0 cursor-pointer"
-                    :title="s.key === 'games' && it.site ? '前往官方网站' : undefined"
+                    :title="s.key === 'games' && it.site ? t('home.officialSite') : undefined"
                     @mouseenter="enterCard($event, s, it)"
                     @mouseleave="leaveCard"
                     @click="s.key === 'games' && openAbout(s, it)"
@@ -466,17 +465,17 @@ onUnmounted(() => {
                       <img
                         v-if="it.img"
                         :src="imgUrl(it.img)"
-                        :alt="it.name"
+                        :alt="pick(it.name, it.nameEn)"
                         class="h-full w-full object-cover"
                         loading="lazy"
                       />
                       <span
                         v-else
                         class="mono absolute inset-0 flex items-center justify-center text-3xl text-[var(--fi-violet)]/40"
-                      >{{ it.name.slice(0, 1) }}</span>
+                      >{{ pick(it.name, it.nameEn).slice(0, 1) }}</span>
                     </div>
                     <p class="mono mt-1 truncate text-center text-[10px] text-[var(--fi-muted)] group-hover:text-[var(--fi-text)]">
-                      {{ it.name }}
+                      {{ pick(it.name, it.nameEn) }}
                     </p>
                   </div>
                 </div>
@@ -489,66 +488,66 @@ onUnmounted(() => {
       <div class="min-w-0 space-y-4 px-3 py-4">
         <section>
           <div class="mb-1.5 flex items-center justify-between">
-            <span class="mono text-[9px] text-[var(--fi-warm)]">友链横幅</span>
+            <span class="mono text-[9px] text-[var(--fi-warm)]">{{ t('home.bannerLabel') }}</span>
             <RouterLink to="/banner" class="mono text-[9px] text-[var(--fi-blue)] hover:text-[var(--fi-warm)]">
-              横幅样式 ▸
+              {{ t('home.bannerStyles') }}
             </RouterLink>
           </div>
-          <RouterLink to="/banner" title="查看友链横幅样式">
+          <RouterLink to="/banner" :title="t('home.bannerTitle')">
             <img
               v-if="profile.bannerUrl"
               :src="profile.bannerUrl"
-              alt="友链横幅"
+              :alt="t('home.bannerAlt')"
               class="block w-full border border-[var(--fi-line-solid)] transition hover:border-[var(--fi-blue)]"
             />
           </RouterLink>
         </section>
 
         <section class="fi-px-panel space-y-3 bg-[var(--fi-panel)] p-4">
-          <h3 class="mono text-xs text-[var(--fi-warm)]">STATION · 观测站状态</h3>
+          <h3 class="mono text-xs text-[var(--fi-warm)]">{{ t('home.stationHeader') }}</h3>
           <div>
-            <p class="mono text-[9px] text-[var(--fi-muted)]">电脑在线</p>
+            <p class="mono text-[9px] text-[var(--fi-muted)]">{{ t('home.pcOnline') }}</p>
             <p class="mono mt-1 flex items-center gap-1.5 text-xs">
               <span
                 class="inline-block h-2 w-2"
                 :class="pcOnline === 'online' ? 'bg-[var(--fi-blue)]' : pcOnline === 'offline' ? 'bg-[#ff6b6b]' : 'bg-[var(--fi-muted)] animate-pulse'"
               ></span>
               <span :class="pcOnline === 'online' ? 'text-[var(--fi-blue)]' : pcOnline === 'offline' ? 'text-[#ff8a8a]' : 'text-[var(--fi-muted)]'">
-                {{ pcOnline === 'online' ? '在线' : pcOnline === 'offline' ? '离线' : '检测中' }}
+                {{ pcOnline === 'online' ? t('common.online') : pcOnline === 'offline' ? t('common.offline') : t('common.checking') }}
               </span>
             </p>
           </div>
           <div>
-            <p class="mono text-[9px] text-[var(--fi-muted)]">当前状态</p>
+            <p class="mono text-[9px] text-[var(--fi-muted)]">{{ t('home.currentStatus') }}</p>
             <p class="mono mt-1 text-xs text-[var(--fi-violet)]">
-              {{ pcOnline === 'online' && liveStatus ? liveStatus : pcOnline === 'offline' ? '未知' : profile.statusNote }}
+              {{ pcOnline === 'online' && liveStatus ? liveStatus : pcOnline === 'offline' ? t('common.unknown') : pick(profile.statusNote, profile.statusNoteEn) }}
             </p>
           </div>
           <div>
-            <p class="mono text-[9px] text-[var(--fi-muted)]">观测站版本</p>
+            <p class="mono text-[9px] text-[var(--fi-muted)]">{{ t('home.stationVersion') }}</p>
             <p class="mono mt-1 text-xs text-[var(--fi-warm)]">v2.0</p>
           </div>
         </section>
 
         <section class="fi-px-panel bg-[var(--fi-panel)] p-4">
-          <h3 class="mono text-xs text-[var(--fi-violet)]">DISCORD · 状态</h3>
+          <h3 class="mono text-xs text-[var(--fi-violet)]">{{ t('home.discordHeader') }}</h3>
           <DiscordStatus v-if="profile.discordId" :user-id="profile.discordId" />
-          <p v-else class="mono mt-2 text-xs text-[var(--fi-muted)]">未接入（在 profile.ts 填 discordId 后显示实时状态）</p>
+          <p v-else class="mono mt-2 text-xs text-[var(--fi-muted)]">{{ t('home.discordUnconfigured') }}</p>
         </section>
 
         <section class="fi-px-panel bg-[var(--fi-panel)] p-4">
-          <h3 class="mono text-xs text-[var(--fi-warm)]">NETEASE · 最近听歌</h3>
+          <h3 class="mono text-xs text-[var(--fi-warm)]">{{ t('home.neteaseHeader') }}</h3>
           <NeteaseCard />
         </section>
 
         <section class="fi-px-panel bg-[var(--fi-panel)] p-4">
           <div class="mb-2 flex items-center justify-between">
-            <h3 class="mono text-xs text-[var(--fi-warm)]">LATEST · 最近日志</h3>
+            <h3 class="mono text-xs text-[var(--fi-warm)]">{{ t('home.latestHeader') }}</h3>
             <RouterLink to="/blog" class="mono text-[10px] text-[var(--fi-blue)] hover:text-[var(--fi-warm)]">
-              全部 ▸
+              {{ t('common.all') }}
             </RouterLink>
           </div>
-          <p v-if="!latestPosts.length" class="mono text-xs text-[var(--fi-muted)]">星联离线，日志暂不可读。</p>
+          <p v-if="!latestPosts.length" class="mono text-xs text-[var(--fi-muted)]">{{ t('home.latestOffline') }}</p>
           <div v-else class="space-y-1.5">
             <RouterLink
               v-for="p in latestPosts"
@@ -563,7 +562,7 @@ onUnmounted(() => {
         </section>
 
         <section class="fi-px-panel bg-[var(--fi-panel)] p-4">
-          <h3 class="mono text-xs text-[var(--fi-warm)]">FRIENDS · 友链</h3>
+          <h3 class="mono text-xs text-[var(--fi-warm)]">{{ t('home.friendsHeader') }}</h3>
           <div class="mt-2 space-y-2">
             <a
               v-for="f in friends"
@@ -581,19 +580,19 @@ onUnmounted(() => {
                   class="h-full w-full object-cover"
                   loading="lazy"
                 />
-                <span v-else class="mono text-sm text-[var(--fi-blue)]">{{ f.name.slice(0, 1) }}</span>
+                <span v-else class="mono text-sm text-[var(--fi-blue)]">{{ pick(f.name, f.nameEn).slice(0, 1) }}</span>
               </span>
-              <span class="min-w-0 flex-1 truncate text-xs font-medium text-[var(--fi-text)]">{{ f.name }}</span>
+              <span class="min-w-0 flex-1 truncate text-xs font-medium text-[var(--fi-text)]">{{ pick(f.name, f.nameEn) }}</span>
             </a>
             <RouterLink to="/friends" class="mono block text-center text-[10px] text-[var(--fi-blue)] hover:text-[var(--fi-warm)]">
-              全部友链 ▸
+              {{ t('home.allFriends') }}
             </RouterLink>
           </div>
         </section>
 
         <section class="fi-px-panel bg-[var(--fi-panel)] p-4 text-center">
-          <h3 class="mono text-xs text-[var(--fi-warm)]">REACH OUT · 联系</h3>
-          <p class="mt-1.5 text-xs text-[var(--fi-muted)]">{{ profile.reachout }}</p>
+          <h3 class="mono text-xs text-[var(--fi-warm)]">{{ t('home.reachHeader') }}</h3>
+          <p class="mt-1.5 text-xs text-[var(--fi-muted)]">{{ pick(profile.reachout, profile.reachoutEn) }}</p>
           <div class="mt-2.5 flex flex-wrap justify-center gap-2">
             <a
               v-for="s in profile.socials"
@@ -610,12 +609,12 @@ onUnmounted(() => {
 
     <section class="fi-px-panel mx-3 mb-6 bg-[var(--fi-panel)] p-4">
       <div class="mb-2 flex items-center justify-between">
-        <h2 class="mono text-xs text-[var(--fi-warm)]">SERVICES · 服务预览</h2>
+        <h2 class="mono text-xs text-[var(--fi-warm)]">{{ t('home.servicesHeader') }}</h2>
         <RouterLink to="/services" class="mono text-[10px] text-[var(--fi-blue)] hover:text-[var(--fi-warm)]">
-          查看完整服务 ▸
+          {{ t('home.servicesAll') }}
         </RouterLink>
       </div>
-      <p class="text-xs text-[var(--fi-muted)]">服务内容整理中，敬请期待。</p>
+      <p class="text-xs text-[var(--fi-muted)]">{{ t('home.servicesWip') }}</p>
     </section>
 
     <div
@@ -638,10 +637,10 @@ onUnmounted(() => {
           />
         </div>
         <div class="min-w-0 flex-1">
-          <h4 class="mono truncate text-sm text-[var(--fi-text)]">{{ hoverCard.item.name }}</h4>
-          <p class="mono text-[10px] text-[var(--fi-violet)]">{{ hoverCard.section.title }}</p>
+          <h4 class="mono truncate text-sm text-[var(--fi-text)]">{{ pick(hoverCard.item.name, hoverCard.item.nameEn) }}</h4>
+          <p class="mono text-[10px] text-[var(--fi-violet)]">{{ pick(hoverCard.section.title, hoverCard.section.titleEn) }}</p>
           <p class="mt-1.5 text-xs leading-relaxed text-[var(--fi-muted)]">
-            {{ hoverCard.item.desc || '（暂无简述）' }}
+            {{ pick(hoverCard.item.desc, hoverCard.item.descEn) || t('common.noDesc') }}
           </p>
         </div>
       </div>

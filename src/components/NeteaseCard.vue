@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { t } from '../lib/i18n';
 
 interface RankItem {
   name: string;
@@ -38,16 +39,16 @@ function openSong(s: RankItem): void {
 
 <template>
   <div class="mt-2">
-    <p v-if="state === 'loading'" class="mono animate-pulse text-[10px] text-[var(--fi-muted)]">听歌记录接收中…</p>
+    <p v-if="state === 'loading'" class="mono animate-pulse text-[10px] text-[var(--fi-muted)]">{{ t('widgets.neteaseLoading') }}</p>
     <p v-else-if="state === 'offline'" class="text-[10px] text-[var(--fi-muted)]">
-      暂无快照数据（开机快照未运行或抓取失败）。
+      {{ t('widgets.neteaseNoSnapshot') }}
     </p>
     <div v-else class="space-y-1.5">
       <div
         v-for="(s, i) in list"
         :key="s.name + i"
         class="flex cursor-pointer items-center gap-2 border-l-2 border-[var(--fi-blue-dim)] py-0.5 pl-2 transition hover:border-[var(--fi-blue)]"
-        title="在 YouTube 搜索这首歌"
+        :title="t('common.searchOnYoutubeSong')"
         @click="openSong(s)"
       >
         <span class="mono w-4 shrink-0 text-[9px]" :class="i < 3 ? 'text-[var(--fi-warm)]' : 'text-[var(--fi-muted)]'">
@@ -70,11 +71,11 @@ function openSong(s: RankItem): void {
           <p class="mono truncate text-xs text-[var(--fi-text)]">{{ s.name }}</p>
           <p class="truncate text-[9px] text-[var(--fi-muted)]">{{ s.artist }}</p>
         </div>
-        <span class="mono shrink-0 text-[9px] text-[var(--fi-muted)]">{{ s.play }} 次</span>
+        <span class="mono shrink-0 text-[9px] text-[var(--fi-muted)]">{{ t('widgets.neteasePlays', { n: s.play }) }}</span>
       </div>
-      <p v-if="!list.length" class="mono text-[10px] text-[var(--fi-muted)]">本周暂无记录。</p>
+      <p v-if="!list.length" class="mono text-[10px] text-[var(--fi-muted)]">{{ t('widgets.neteaseEmpty') }}</p>
       <p v-if="updatedAt" class="mono text-right text-[8px] text-[var(--fi-muted)]">
-        更新于 {{ updatedAt.slice(5, 10) }} {{ updatedAt.slice(11, 16) }}
+        {{ t('widgets.neteaseUpdated', { d: updatedAt.slice(5, 10), t: updatedAt.slice(11, 16) }) }}
       </p>
     </div>
   </div>

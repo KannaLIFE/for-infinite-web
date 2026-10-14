@@ -2,6 +2,7 @@
 import { nextTick, ref } from 'vue';
 import { api } from '../lib/api';
 import { getVisitorId } from '../lib/visitor';
+import { t } from '../lib/i18n';
 
 interface ChatMsg {
   role: 'user' | 'assistant';
@@ -29,7 +30,7 @@ async function openChat(): Promise<void> {
       messages.value.push({ role: 'assistant', content: r.reply });
       await scrollBottom();
     } catch {
-      messages.value.push({ role: 'assistant', content: '（信号有些微弱……）' });
+      messages.value.push({ role: 'assistant', content: t('widgets.lifeSignal') });
     }
   }
 }
@@ -48,7 +49,7 @@ async function send(): Promise<void> {
     });
     messages.value.push({ role: 'assistant', content: r.reply });
   } catch {
-    messages.value.push({ role: 'assistant', content: '（信号有些微弱……）' });
+    messages.value.push({ role: 'assistant', content: t('widgets.lifeSignal') });
   } finally {
     busy.value = false;
     await scrollBottom();
@@ -71,7 +72,7 @@ async function send(): Promise<void> {
             style="background: var(--fi-warm); box-shadow: 0 0 6px var(--fi-warm)"
           ></span>
           <span class="mono text-sm text-[var(--fi-text)]">LIFE</span>
-          <span class="mono ml-auto text-[10px] text-[var(--fi-muted)]">壳里的暖光</span>
+          <span class="mono ml-auto text-[10px] text-[var(--fi-muted)]">{{ t('widgets.lifeTitle') }}</span>
         </div>
 
         <div ref="listEl" class="h-72 space-y-2 overflow-y-auto px-4 py-3">
@@ -99,7 +100,7 @@ async function send(): Promise<void> {
           <input
             v-model="input"
             class="mono fi-px-panel min-w-0 flex-1 bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none placeholder:text-[var(--fi-muted)] focus:border-[var(--fi-blue)]"
-            placeholder="说点什么……"
+            :placeholder="t('widgets.lifePlaceholder')"
             @keyup.enter="send"
           />
           <button
@@ -107,7 +108,7 @@ async function send(): Promise<void> {
             style="background: var(--fi-warm); color: #1a1208"
             @click="send"
           >
-            发送
+            {{ t('common.send') }}
           </button>
         </div>
       </div>

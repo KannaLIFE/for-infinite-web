@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { t } from '../lib/i18n';
 
 const props = defineProps<{ userId: string }>();
 
@@ -19,14 +20,14 @@ const dot: Record<DiscStatus, string> = {
   offline: 'var(--fi-muted)',
   none: 'var(--fi-muted)',
 };
-const label: Record<DiscStatus, string> = {
-  loading: '检测中',
-  online: '在线',
-  idle: '离开',
-  dnd: '勿扰',
-  offline: '离线',
-  none: '未检测到',
-};
+const label = computed<Record<DiscStatus, string>>(() => ({
+  loading: t('widgets.discChecking'),
+  online: t('widgets.discOnline'),
+  idle: t('widgets.discIdle'),
+  dnd: t('widgets.discDnd'),
+  offline: t('widgets.discOffline'),
+  none: t('widgets.discNone'),
+}));
 
 let timer: ReturnType<typeof setInterval> | null = null;
 
@@ -82,8 +83,7 @@ onBeforeUnmount(() => {
         :class="status === 'loading' ? 'animate-pulse' : ''"
         :style="{ background: dot[status] }"
       ></span>
-      <span class="text-[var(--fi-text)]">{{ label[status] }}</span>
-    </p>
+      <span class="text-[var(--fi-text)]">{{ label[status] }}</span>    </p>
     <p v-if="spotify" class="mono truncate text-[10px] text-[var(--fi-muted)]">
       🎧 {{ spotify }}<template v-if="spotifyArtist"> · {{ spotifyArtist }}</template>
     </p>
@@ -94,7 +94,7 @@ onBeforeUnmount(() => {
       “{{ custom }}”
     </p>
     <p v-if="status === 'none'" class="text-[10px] text-[var(--fi-muted)]">
-      需要先加入 Lanyard 服务器：discord.com/invite/lanyard
+      {{ t('widgets.discJoin') }}
     </p>
   </div>
 </template>

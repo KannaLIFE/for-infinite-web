@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from 'vue';
+import { t } from '../lib/i18n';
 
 const props = defineProps<{
 
@@ -128,7 +129,7 @@ const segmentD = computed(() => `${arcD.value} Z`);
     <div class="pointer-events-none absolute left-[74%] top-1/2 -translate-y-1/2">
       <div class="flex items-baseline gap-1">
         <span class="mono text-3xl font-semibold text-[var(--fi-text)]">{{ modelValue }}</span>
-        <span class="mono text-sm text-[var(--fi-muted)]">年</span>
+        <span class="mono text-sm text-[var(--fi-muted)]">{{ t('common.year') }}</span>
       </div>
     </div>
   </div>

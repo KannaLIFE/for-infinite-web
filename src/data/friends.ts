@@ -1,6 +1,8 @@
 export interface FriendLink {
   name: string;
+  nameEn?: string;
   desc?: string;
+  descEn?: string;
   cover?: string;
   avatar?: string;
   tags?: string[];
@@ -10,7 +12,9 @@ export interface FriendLink {
 export const friends: FriendLink[] = [
   {
     name: '数字田园的悠然漫步',
+    nameEn: 'A Leisurely Stroll in the Digital Garden',
     desc: '采菊东篱下，悠然见南山。',
+    descEn: 'Picking chrysanthemums by the eastern hedge, I gaze at the southern hills.',
     cover: 'covers/friend-gardenwalk.webp',
     avatar: 'https://blog.gardenwalk.moe/wp-content/uploads/1737602734-icon.png',
     links: [{ label: '主页', url: 'https://www.gardenwalk.moe' }],

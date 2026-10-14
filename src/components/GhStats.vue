@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { t } from '../lib/i18n';
 
 const props = defineProps<{ username: string }>();
 
@@ -117,17 +118,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="state === 'offline'" class="mono text-[10px] text-[var(--fi-muted)]">星联离线，统计暂不可读。</div>
-  <div v-else-if="state === 'loading'" class="mono animate-pulse text-[10px] text-[var(--fi-muted)]">统计接收中…</div>
+  <div v-if="state === 'offline'" class="mono text-[10px] text-[var(--fi-muted)]">{{ t('widgets.ghStatsOffline') }}</div>
+  <div v-else-if="state === 'loading'" class="mono animate-pulse text-[10px] text-[var(--fi-muted)]">{{ t('widgets.ghStatsLoading') }}</div>
   <div v-else class="space-y-2">
     <div class="grid grid-cols-5 gap-1.5 text-center">
       <div
         v-for="cell in [
-          { label: '仓库', value: snap && snap.repos !== undefined ? snap.repos : (user ? user.public_repos : 0) },
-          { label: '贡献', value: snap && snap.contributions !== undefined ? snap.contributions : (contributions !== null ? contributions : '…') },
-          { label: '星标', value: totals.stars },
+          { label: t('widgets.ghRepos'), value: snap && snap.repos !== undefined ? snap.repos : (user ? user.public_repos : 0) },
+          { label: t('widgets.ghContribs'), value: snap && snap.contributions !== undefined ? snap.contributions : (contributions !== null ? contributions : '…') },
+          { label: t('widgets.ghStars'), value: totals.stars },
           { label: 'Fork', value: totals.forks },
-          { label: '粉丝', value: snap && snap.followers !== undefined ? snap.followers : (user ? user.followers : 0) },
+          { label: t('widgets.ghFollowers'), value: snap && snap.followers !== undefined ? snap.followers : (user ? user.followers : 0) },
         ]"
         :key="cell.label"
         class="border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] py-1"
@@ -137,7 +138,7 @@ onMounted(async () => {
       </div>
     </div>
     <div class="border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] p-2">
-      <p class="mono mb-1.5 text-[9px] text-[var(--fi-muted)]">常用语言</p>
+      <p class="mono mb-1.5 text-[9px] text-[var(--fi-muted)]">{{ t('widgets.ghTopLangs') }}</p>
       <div v-for="l in langs" :key="l.name" class="mb-1 flex items-center gap-1.5 last:mb-0">
         <span class="mono w-16 shrink-0 truncate text-[9px] text-[var(--fi-text)]">{{ l.name }}</span>
         <div class="h-1.5 flex-1 bg-[var(--fi-bg)]">
@@ -145,7 +146,7 @@ onMounted(async () => {
         </div>
         <span class="mono w-6 shrink-0 text-right text-[8px] text-[var(--fi-muted)]">{{ l.pct }}%</span>
       </div>
-      <p v-if="!langs.length" class="mono text-[9px] text-[var(--fi-muted)]">暂无数据</p>
+      <p v-if="!langs.length" class="mono text-[9px] text-[var(--fi-muted)]">{{ t('widgets.ghNoData') }}</p>
     </div>
   </div>
 </template>

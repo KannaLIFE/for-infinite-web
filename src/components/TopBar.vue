@@ -1,38 +1,45 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
+import { currentLocale, setLocale, t } from '../lib/i18n';
 
 const route = useRoute();
 const open = ref<string | null>(null);
 
-const groups = [
+const locale = computed(() => currentLocale());
+
+function toggleLang(): void {
+  setLocale(locale.value === 'zh' ? 'en' : 'zh');
+}
+
+const groups = computed(() => [
   {
     key: 'map',
-    label: '星图',
+    label: t('nav.map'),
     items: [
-      { to: '/blog', label: '博客' },
-      { to: '/personal', label: '个人文章' },
+      { to: '/blog', label: t('nav.blog') },
+      { to: '/personal', label: t('nav.personal') },
     ],
   },
   {
     key: 'workshop',
-    label: '工坊',
+    label: t('nav.workshop'),
     items: [
-      { to: '/projects', label: '项目' },
-      { to: '/gallery', label: '画廊' },
-      { to: '/tech', label: '技术栈' },
-      { to: '/services', label: '服务·委托' },
+      { to: '/projects', label: t('nav.projects') },
+      { to: '/gallery', label: t('nav.gallery') },
+      { to: '/tech', label: t('nav.tech') },
+      { to: '/services', label: t('nav.services') },
     ],
   },
   {
     key: 'link',
-    label: '星联',
+    label: t('nav.link'),
     items: [
-      { to: '/messages', label: '消息' },
-      { to: '/admin', label: '后台' },
+      { to: '/messages', label: t('nav.messages') },
+      { to: '/admin', label: t('nav.admin') },
     ],
   },
-];
+]);
 
 watch(
   () => route.path,
@@ -88,7 +95,7 @@ function hoverClose(key: string): void {
               : 'text-[var(--fi-muted)] hover:text-[var(--fi-text)]'
           "
         >
-          主页
+          {{ t('nav.home') }}
         </RouterLink>
 
         <RouterLink
@@ -100,7 +107,7 @@ function hoverClose(key: string): void {
               : 'text-[var(--fi-muted)] hover:text-[var(--fi-text)]'
           "
         >
-          友链
+          {{ t('nav.friends') }}
         </RouterLink>
 
         <div
@@ -144,6 +151,15 @@ function hoverClose(key: string): void {
             </div>
           </div>
         </div>
+
+        <button
+          type="button"
+          class="mono ml-1 border border-[var(--fi-line-solid)] px-2.5 py-1.5 text-xs text-[var(--fi-muted)] transition hover:border-[var(--fi-warm)] hover:text-[var(--fi-text)]"
+          :title="locale === 'zh' ? 'Switch to English' : '切换到中文'"
+          @click="toggleLang"
+        >
+          {{ locale === 'zh' ? 'EN' : '中文' }}
+        </button>
       </nav>
     </div>
   </header>

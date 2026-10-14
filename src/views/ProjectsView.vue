@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { profile } from '../data/profile';
 import { projects as staticProjects } from '../data/projects';
+import { pick, t } from '../lib/i18n';
 
 interface Repo {
   name: string;
@@ -40,19 +41,19 @@ onMounted(async () => {
 <template>
   <div class="w-full space-y-6 px-4">
     <header class="flex items-center gap-3">
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">项目 · 工坊</h1>
+      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">{{ t('projects.title') }}</h1>
       <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-blue)]">/projects</span>
     </header>
     <p class="mono text-xs text-[var(--fi-muted)]">
-      数据来自 GitHub 公开 API · @{{ profile.ghUser }} · 按最近更新排序
+      {{ t('projects.source', { user: profile.ghUser }) }}
     </p>
 
     <div v-if="loading" class="mono fi-px-panel bg-[var(--fi-panel)] p-8 text-center text-sm text-[var(--fi-muted)]">
-      正在连接 GitHub……
+      {{ t('projects.connecting') }}
     </div>
 
     <div v-else-if="failed" class="fi-px-panel space-y-3 bg-[var(--fi-panel)] p-8">
-      <p class="mono text-center text-sm text-[var(--fi-muted)]">GitHub 信号不可达，显示备用列表。</p>
+      <p class="mono text-center text-sm text-[var(--fi-muted)]">{{ t('projects.unreachable') }}</p>
       <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <a
           v-for="p in staticProjects"
@@ -62,14 +63,14 @@ onMounted(async () => {
           rel="noopener"
           class="fi-px-panel bg-[var(--fi-panel)] p-4 transition hover:border-[var(--fi-blue)]"
         >
-          <h2 class="mono text-sm text-[var(--fi-text)]">{{ p.name }}</h2>
-          <p v-if="p.desc" class="mt-1.5 text-xs text-[var(--fi-muted)]">{{ p.desc }}</p>
+          <h2 class="mono text-sm text-[var(--fi-text)]">{{ pick(p.name, p.nameEn) }}</h2>
+          <p v-if="p.desc" class="mt-1.5 text-xs text-[var(--fi-muted)]">{{ pick(p.desc, p.descEn) }}</p>
         </a>
       </div>
     </div>
 
     <div v-else-if="!repos.length" class="mono fi-px-panel bg-[var(--fi-panel)] p-8 text-center text-sm text-[var(--fi-muted)]">
-      GitHub 上还没有公开仓库。
+      {{ t('projects.noRepos') }}
     </div>
 
     <div v-else class="fi-stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -88,14 +89,14 @@ onMounted(async () => {
           <span class="mono shrink-0 text-[10px] text-[var(--fi-warm)]">★ {{ r.stargazers_count }}</span>
         </div>
         <p class="mt-2 line-clamp-3 flex-1 text-xs leading-relaxed text-[var(--fi-muted)]">
-          {{ r.description || '暂无描述' }}
+          {{ r.description || t('projects.noDesc') }}
         </p>
         <div class="mono mt-3 flex items-center justify-between gap-2 text-[10px] text-[var(--fi-muted)]">
           <span v-if="r.language" class="border border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] px-1.5 py-0.5 text-[var(--fi-violet)]">
             {{ r.language }}
           </span>
           <span v-else></span>
-          <span>{{ new Date(r.updated_at).toLocaleDateString() }} 更新</span>
+          <span>{{ t('projects.updated', { date: new Date(r.updated_at).toLocaleDateString() }) }}</span>
         </div>
       </a>
     </div>

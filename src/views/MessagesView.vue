@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { api, mediaUrl } from '../lib/api';
 import { getToken, setToken } from '../lib/auth';
 import { useBackendHealth } from '../lib/backend';
+import { t } from '../lib/i18n';
 import type { StoredMessage } from '../types';
 
 type Page = 'filtered' | 'unfiltered';
@@ -36,10 +37,10 @@ async function unlock(): Promise<void> {
       keyInput.value = '';
       await load(true);
     } else {
-      unlockError.value = '钥匙无效';
+      unlockError.value = t('common.keyInvalid');
     }
   } catch {
-    unlockError.value = '解锁失败';
+    unlockError.value = t('common.unlockFailed');
   }
 }
 
@@ -170,27 +171,27 @@ onUnmounted(() => {
 <template>
   <div class="w-full space-y-6 px-4">
     <div v-if="backend === 'checking'" class="fi-px-panel bg-[var(--fi-panel)] p-6">
-      <p class="text-sm text-[var(--fi-muted)]">正在确认后台服务……</p>
+      <p class="text-sm text-[var(--fi-muted)]">{{ t('common.backendChecking') }}</p>
     </div>
 
     <div v-else-if="backend === 'down'" class="fi-px-panel bg-[var(--fi-panel)] p-6">
-      <p class="text-sm text-[var(--fi-muted)]">后台服务未启动，此页面暂不开放。</p>
+      <p class="text-sm text-[var(--fi-muted)]">{{ t('common.backendDown') }}</p>
     </div>
 
     <template v-else>
     <header class="flex items-center gap-3">
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">消息</h1>
+      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">{{ t('messages.title') }}</h1>
       <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-warm)]">/aetherlink</span>
     </header>
 
     <div v-if="!unlocked" class="fi-px-panel bg-[var(--fi-panel)] p-6">
-      <p class="text-sm text-[var(--fi-muted)]">消息链路已上锁，请输入钥匙。</p>
+      <p class="text-sm text-[var(--fi-muted)]">{{ t('messages.locked') }}</p>
       <div class="mt-4 flex gap-2">
         <input
           v-model="keyInput"
           type="password"
           class="mono fi-px-panel min-w-0 flex-1 bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none placeholder:text-[var(--fi-muted)] focus:border-[var(--fi-blue)]"
-          placeholder="钥匙……"
+          :placeholder="t('common.keyPlaceholder')"
           @keyup.enter="unlock"
         />
         <button
@@ -198,7 +199,7 @@ onUnmounted(() => {
           style="background: var(--fi-warm); color: #1a1208"
           @click="unlock"
         >
-          解锁
+          {{ t('common.unlock') }}
         </button>
       </div>
       <p v-if="unlockError" class="mt-2 text-xs text-red-400">{{ unlockError }}</p>
@@ -215,9 +216,8 @@ onUnmounted(() => {
           "
           @click="page = 'filtered'"
         >
-          过滤后
-        </button>
-        <button
+          {{ t('messages.filtered') }}
+        </button>        <button
           class="mono border-2 px-4 py-1.5 text-xs transition"
           :class="
             page === 'unfiltered'
@@ -226,7 +226,7 @@ onUnmounted(() => {
           "
           @click="page = 'unfiltered'"
         >
-          未过滤
+          {{ t('messages.unfiltered') }}
         </button>
       </div>
 
@@ -235,7 +235,7 @@ onUnmounted(() => {
         class="fi-px-panel h-[60vh] space-y-1.5 overflow-y-auto bg-[var(--fi-bg-2)]/70 p-3"
         @scroll="onScroll"
       >
-        <div v-if="!messages.length" class="mono p-4 text-sm text-[var(--fi-muted)]">暂无消息。</div>
+        <div v-if="!messages.length" class="mono p-4 text-sm text-[var(--fi-muted)]">{{ t('messages.empty') }}</div>
 
         <button
           v-for="m in messages"
@@ -249,20 +249,20 @@ onUnmounted(() => {
               &lt;{{ title(m) }}&gt;
             </span>
             <span class="mono shrink-0 text-[10px] text-[var(--fi-muted)]">
-              {{ m.source === 'group' ? '群' : '私' }} · {{ new Date(m.timestamp).toLocaleString() }}
+              {{ m.source === 'group' ? t('messages.group') : t('messages.dm') }} · {{ new Date(m.timestamp).toLocaleString() }}
             </span>
           </div>
           <p class="mt-0.5 truncate text-sm text-[var(--fi-text)]">{{ m.content }}</p>
 
           <div v-if="page === 'unfiltered'" class="mono mt-2 flex flex-wrap gap-1.5 text-[10px]">
             <span class="border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-1.5 py-0.5 text-[var(--fi-muted)]">
-              模式:{{ m.filter.mode === 'whitelist' ? '白' : m.filter.mode === 'blacklist' ? '黑' : '无' }}
+              {{ t('messages.mode') }}{{ m.filter.mode === 'whitelist' ? t('messages.modeWhite') : m.filter.mode === 'blacklist' ? t('messages.modeBlack') : t('messages.modeNone') }}
             </span>
             <span class="border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-1.5 py-0.5 text-[var(--fi-muted)]">
-              群检测:{{ m.filter.groupCheck }}
+              {{ t('messages.groupCheck') }}{{ m.filter.groupCheck }}
             </span>
             <span class="border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-1.5 py-0.5 text-[var(--fi-muted)]">
-              用户检测:{{ m.filter.userCheck }}
+              {{ t('messages.userCheck') }}{{ m.filter.userCheck }}
             </span>
             <span
               class="border px-1.5 py-0.5"
@@ -272,7 +272,7 @@ onUnmounted(() => {
                   : 'border-color:rgba(255,90,90,0.5);color:#ff7a7a'
               "
             >
-              最终:{{ m.filter.final === 'pass' ? '通过' : '拦截' }}
+              {{ t('messages.final') }}{{ m.filter.final === 'pass' ? t('messages.pass') : t('messages.block') }}
             </span>
           </div>
 
@@ -297,24 +297,24 @@ onUnmounted(() => {
       <div class="fi-px-panel w-full max-w-md bg-[var(--fi-panel)] p-6">
         <h3 class="mono text-base text-[var(--fi-text)]">&lt;{{ title(active) }}&gt;</h3>
         <p class="mono mt-1 text-xs text-[var(--fi-muted)]">
-          账号 {{ active.accountId }} · {{ active.source === 'group' ? '群聊' : '私聊' }}
+          {{ t('messages.accountLine', { id: active.accountId }) }}{{ active.source === 'group' ? t('messages.groupChat') : t('messages.dmChat') }}
         </p>
 
         <div class="mt-4 space-y-3">
           <div>
-            <label class="mono text-xs text-[var(--fi-muted)]">回复（发回原会话）</label>
+            <label class="mono text-xs text-[var(--fi-muted)]">{{ t('messages.replyLabel') }}</label>
             <div class="mt-1 flex gap-2">
               <input
                 v-model="replyText"
                 class="mono fi-px-panel min-w-0 flex-1 bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none focus:border-[var(--fi-blue)]"
-                placeholder="回复内容……"
+                :placeholder="t('messages.replyPlaceholder')"
               />
               <button
                 class="mono fi-px-btn px-3 py-2 text-sm"
                 style="background: var(--fi-blue); color: #04101f"
                 @click="sendReply"
               >
-                发送
+                {{ t('common.send') }}
               </button>
             </div>
           </div>
@@ -323,19 +323,19 @@ onUnmounted(() => {
             class="mono fi-px-btn w-full bg-[var(--fi-panel-2)] px-3 py-2 text-xs text-[var(--fi-text)]"
             @click="toggleMode(active)"
           >
-            当前模式：{{ active.filter.mode === 'whitelist' ? '白名单' : '黑名单' }}（点击切换）
+            {{ t('messages.modeToggle', { mode: active.filter.mode === 'whitelist' ? t('messages.modeWhiteFull') : t('messages.modeBlackFull') }) }}
           </button>
 
           <button
             class="mono fi-px-btn w-full bg-[var(--fi-panel-2)] px-3 py-2 text-xs text-[var(--fi-text)]"
             @click="addToList(active)"
           >
-            将{{ active.source === 'group' ? '该群' : '该用户' }}加入{{ active.filter.mode === 'whitelist' ? '白名单' : '黑名单' }}
+            {{ t('messages.addTarget', { target: active.source === 'group' ? t('messages.thisGroup') : t('messages.thisUser'), list: active.filter.mode === 'whitelist' ? t('messages.modeWhiteFull') : t('messages.modeBlackFull') }) }}
           </button>
         </div>
 
         <button class="mono mt-4 text-xs text-[var(--fi-muted)] hover:text-[var(--fi-text)]" @click="active = null">
-          关闭
+          {{ t('common.close') }}
         </button>
       </div>
     </div>

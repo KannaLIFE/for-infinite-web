@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { api } from '../lib/api';
+import { t } from '../lib/i18n';
 
 const emit = defineEmits<{ done: [] }>();
 
 const quote = ref<{ text: string; author: string }>({
-  text: '认识你自己。',
-  author: '苏格拉底',
+  text: t('boot.quote'),
+  author: t('boot.quoteAuthor'),
 });
 const phase = ref<'intro' | 'shrink'>('intro');
 const showQuote = ref(false);
@@ -14,7 +15,7 @@ const typed = ref('');
 const typingDone = ref(false);
 
 const letters = 'FOR INFINITE'.split('');
-const fullLine = '> 连接星权穹顶 ▮';
+const fullLine = t('boot.connect');
 
 const style = computed(() => {
   if (phase.value === 'shrink') {
@@ -129,9 +130,8 @@ function skip(): void {
       class="mono absolute bottom-8 right-8 border-2 border-[var(--fi-line-solid)] px-3 py-1 text-xs text-[var(--fi-muted)] transition hover:border-[var(--fi-blue)] hover:text-[var(--fi-text)]"
       @click="skip"
     >
-      跳过 ▸
-    </button>
-  </div>
+      {{ t('boot.skip') }}
+    </button>  </div>
 </template>
 
 <style>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue';
 import { loadYt } from '../lib/yt';
+import { t } from '../lib/i18n';
 
 const props = defineProps<{ videoId: string; name: string }>();
 
@@ -76,7 +77,7 @@ onBeforeUnmount(() => {
     <button
       v-show="playing"
       class="mono absolute right-1 top-1 border border-[var(--fi-line-solid)] bg-[var(--fi-bg)]/85 px-1 py-0.5 text-[10px] leading-none text-[var(--fi-text)] hover:text-[var(--fi-blue)]"
-      :aria-label="muted ? '取消静音' : '静音'"
+      :aria-label="muted ? t('widgets.ytUnmute') : t('widgets.ytMute')"
       @click.stop="toggleMute"
     >{{ muted ? '🔇' : '🔊' }}</button>
     <span
