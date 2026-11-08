@@ -23,8 +23,25 @@ const colors = [
 
 const WEEKS = 53;
 const DAYS = 7;
+const base = import.meta.env.BASE_URL;
 
 onMounted(async () => {
+  // 优先用本站快照（守护进程推送的 github.json 内含 grid），稳定不受第三方限流影响
+  try {
+    const r = await fetch(`${base}data/github.json`, { cache: 'no-store' });
+    if (r.ok) {
+      const j = (await r.json()) as { grid?: Contribution[] };
+      if (Array.isArray(j.grid) && j.grid.length) {
+        cells.value = j.grid.slice(-(WEEKS * DAYS));
+        total.value = j.grid.reduce((s, c) => s + c.count, 0);
+        loading.value = false;
+        return;
+      }
+    }
+  } catch {
+    // 快照不可用，走实时 API
+  }
+
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 8000);
