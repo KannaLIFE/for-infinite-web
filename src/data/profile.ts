@@ -57,12 +57,12 @@ export const profile = {
   ],
 
   clocks: [
-    { label: '北京', en: 'Beijing', offset: 8 },
-    { label: '洛杉矶', en: 'Los Angeles', offset: -8 },
-    { label: '伦敦', en: 'London', offset: 0 },
-    { label: '东京', en: 'Tokyo', offset: 9 },
-    { label: '纽约', en: 'New York', offset: -5 },
-    { label: '悉尼', en: 'Sydney', offset: 10 },
+    { label: '北京', en: 'Beijing', tz: 'Asia/Shanghai' },
+    { label: '洛杉矶', en: 'Los Angeles', tz: 'America/Los_Angeles' },
+    { label: '伦敦', en: 'London', tz: 'Europe/London' },
+    { label: '东京', en: 'Tokyo', tz: 'Asia/Tokyo' },
+    { label: '纽约', en: 'New York', tz: 'America/New_York' },
+    { label: '悉尼', en: 'Sydney', tz: 'Australia/Sydney' },
   ],
 
   about: [
@@ -71,14 +71,14 @@ export const profile = {
       title: 'shows · 影视',
       titleEn: 'shows · TV & Film',
       items: [
-        { name: '神探夏洛克', nameEn: 'Sherlock', img: '/covers/shows-sherlock-s1.webp', en: 'Sherlock', desc: '《神探夏洛克》是BBC出品的英剧，把福尔摩斯的故事背景从19世纪搬到了21世纪的繁华大都市：这一次夏洛克·福尔摩斯（本尼迪克特·康伯巴奇饰）与好友约翰·华生（马丁·弗瑞曼饰）接连经历离奇自杀案、黑帮走私案和倒计时炸弹案——每个案件看似独立其实都有联系，幕后黑手莫里亚蒂（安德鲁·斯科特饰）正浮出水面。', descEn: "BBC's modern-day take on Sherlock Holmes: the great detective (Benedict Cumberbatch) and Dr. John Watson (Martin Freeman) are pulled through bizarre suicides, smuggling rings and countdown bombings in 21st-century London — each case seemingly separate, yet all connected to a single mastermind: Moriarty (Andrew Scott)." },
-        { name: '是，大臣', nameEn: 'Yes Minister', img: '/covers/shows-ministry.webp', en: 'Yes Minister', desc: '本剧叙述在野党影子内阁成员Jim Hacker在帮助本党大选获胜后出任行政事务部（DAA）大臣，从此面对以部秘书Sir Humphrey Appleby为首的公务员体系；政客与公务员之间既有互相捂盖子，也有互相揭老底，英国政治体制的种种弊端与黑幕在大量喜剧情节中展现在观众眼前。', descEn: "After helping his party win the election, shadow-cabinet minister Jim Hacker takes over the Department of Administrative Affairs — and walks straight into the civil service machine led by Sir Humphrey Appleby. Politician and civil servant alternately cover for and expose each other, as the absurdities of British politics unfold in classic comedy." },
-        { name: '是，首相', nameEn: 'Yes, Prime Minister', img: '/covers/shows-prime.webp', en: 'Yes, Prime Minister', desc: '理论告诉我们权力越大责任越大，事情越多麻烦越多——老熟人吉姆·哈克终于入主唐宁街十号，成为英国首相！在内阁秘书汉弗莱·阿普比爵士与私人秘书伯纳·伍利的辅佐下，明暗之间棋逢对手，首相的政治生涯注定不亚于大臣。', descEn: "Theory says more power means more responsibility, and more matters mean more trouble — old friend Jim Hacker has finally moved into 10 Downing Street as Prime Minister! Advised by Cabinet Secretary Sir Humphrey Appleby and Principal Private Secretary Bernard Woolley, his career at the top promises to be no easier than his days as a minister." },
-        { name: 'Alan Becker 火柴人动画', nameEn: 'Alan Becker Animations', img: '/covers/alanbecker-banner.webp', en: 'Alan Becker', desc: 'Alan Becker 和他的团队制作火柴人动画：故事就发生在电脑的桌面屏幕上，全程没有对白，却充满幽默与情感；成名作《Animator vs. Animation》系列让「电脑里的火柴人」成为一代网络经典。', descEn: "Alan Becker and his team craft stick-figure animation: stories that take place right on a computer desktop, with no dialogue, yet full of humor and heart. The iconic 'Animator vs. Animation' series made 'stick figures inside your computer' an internet classic." },
-        { name: '星球大战前传3：西斯的复仇', nameEn: 'Star Wars: Episode III – Revenge of the Sith', img: '/covers/shows-starwars.webp', en: 'Star Wars: Episode III – Revenge of the Sith', desc: '星球大战前传终章：克隆战争三年后共和国即将胜利，欧比-旺与阿纳金奉命营救被劫持的帕尔帕庭议长；阿纳金因预见妻子之死而逐渐倒向黑暗面，一场针对绝地武士与共和国的阴谋就此展开。', descEn: "The final chapter of the Star Wars prequels: three years into the Clone Wars, victory is near — Obi-Wan and Anakin are sent to rescue the captured Chancellor Palpatine. Haunted by visions of his wife's death, Anakin drifts toward the dark side, and a conspiracy against the Jedi and the Republic begins to unfold." },
-        { name: '哈利·波特与死亡圣器（上）', nameEn: 'Harry Potter and the Deathly Hallows: Part 1', img: '/covers/shows-hp.webp', en: 'Harry Potter and the Deathly Hallows: Part 1', desc: '邓布利多死后，伏地魔与食死徒入侵魔法学校，邪恶阴云笼罩魔法世界。17 岁的哈利与罗恩、赫敏在逃亡中按邓布利多的嘱托寻找魂器；死亡圣器的面纱渐渐揭开，最后的决战即将到来。', descEn: "After Dumbledore's death, Voldemort and the Death Eaters tighten their grip on the wizarding world. Seventeen-year-old Harry, with Ron and Hermione, flees to hunt the Horcruxes as Dumbledore instructed; the veil over the Deathly Hallows slowly lifts, and the final battle draws near." },
-        { name: '信条', nameEn: 'Tenet', img: '/covers/shows-tenet.webp', en: 'Tenet', desc: '世界存亡危在旦夕，“信条”一词是惟一的线索与武器。主人公穿梭于全球各地，开展特工活动，力求揭示“信条”之谜，并完成一项超越了真实时间的神秘任务。这项任务并非时间之旅，而是【时空逆转】。', descEn: "The world's survival hangs by a thread — 'Tenet' is the only clue and the only weapon. The Protagonist races across the globe on covert missions to unravel the mystery of Tenet and complete a task that transcends real time: not time travel, but time inversion." },
-        { name: '奥本海默', nameEn: 'Oppenheimer', img: '/covers/shows-oppenheimer.webp', en: 'Oppenheimer', desc: '克里斯托弗·诺兰自编自导《奥本海默》：聚焦基里安·墨菲饰演的“原子弹之父”罗伯特·奥本海默。改编自普利策获奖传记《美国普罗米修斯：罗伯特·奥本海默的胜利与悲剧》。一部史诗级惊悚片——一个神秘之人必须冒着毁灭世界的危险来拯救世界。', descEn: "Christopher Nolan's 'Oppenheimer' centers on Cillian Murphy as Robert Oppenheimer, 'father of the atomic bomb', adapted from the Pulitzer-winning biography 'American Prometheus'. An epic thriller about a mysterious man who must risk destroying the world in order to save it." },
+        { name: '神探夏洛克', nameEn: 'Sherlock', img: '/covers/shows-sherlock-s1.webp', en: 'Sherlock', desc: 'BBC 将福尔摩斯搬进 21 世纪伦敦：夏洛克与华生接连侦破离奇自杀、走私与炸弹案，幕后黑手莫里亚蒂正浮出水面。', descEn: "BBC's modern take on Holmes: in 21st-century London, Sherlock and Watson face bizarre suicides, smuggling rings and bomb plots — all pointing to Moriarty." },
+        { name: '是，大臣', nameEn: 'Yes Minister', img: '/covers/shows-ministry.webp', en: 'Yes Minister', desc: '影子内阁成员 Jim Hacker 出任大臣后，与常务秘书 Humphrey 爵士为首的文官体系斗智斗勇，英国政治的弊端尽付笑谈。', descEn: "Jim Hacker takes office and collides with the civil-service machine of Sir Humphrey Appleby — cover-ups and exposes alike, all in classic comedy." },
+        { name: '是，首相', nameEn: 'Yes, Prime Minister', img: '/covers/shows-prime.webp', en: 'Yes, Prime Minister', desc: '理论说权力越大责任越大——老熟人吉姆·哈克终于入主唐宁街十号，在内阁秘书与私人秘书辅佐下，明暗之间棋逢对手。', descEn: "Old friend Jim Hacker finally reaches 10 Downing Street. Advised by Sir Humphrey and Bernard Woolley, life at the top proves no easier than as a minister." },
+        { name: 'Alan Becker 火柴人动画', nameEn: 'Alan Becker Animations', img: '/covers/alanbecker-banner.webp', en: 'Alan Becker', desc: 'Alan Becker 团队的火柴人动画：故事发生在电脑桌面上，全程没有对白，却充满幽默与情感，成为一代网络经典。', descEn: "Alan Becker's stick-figure animation: stories on a computer desktop, no dialogue, yet full of humor and heart — an internet classic." },
+        { name: '星球大战前传3：西斯的复仇', nameEn: 'Star Wars: Episode III – Revenge of the Sith', img: '/covers/shows-starwars.webp', en: 'Star Wars: Episode III – Revenge of the Sith', desc: '前传终章：克隆战争三年后，欧比-旺与阿纳金奉命营救帕尔帕庭议长；阿纳金因预见妻子之死倒向黑暗面，一场针对绝地的阴谋就此展开。', descEn: "The prequel finale: three years into the Clone Wars, Obi-Wan and Anakin rescue Chancellor Palpatine; haunted by visions, Anakin drifts to the dark side." },
+        { name: '哈利·波特与死亡圣器（上）', nameEn: 'Harry Potter and the Deathly Hallows: Part 1', img: '/covers/shows-hp.webp', en: 'Harry Potter and the Deathly Hallows: Part 1', desc: '邓布利多死后，伏地魔的阴云笼罩魔法世界。17 岁的哈利与罗恩、赫敏踏上寻找魂器的逃亡之路，最后的决战即将到来。', descEn: "After Dumbledore's death, Voldemort's shadow falls over the wizarding world. Harry, Ron and Hermione hunt the Horcruxes as the final battle draws near." },
+        { name: '信条', nameEn: 'Tenet', img: '/covers/shows-tenet.webp', en: 'Tenet', desc: '“信条”是惟一的线索与武器。主人公穿梭全球执行特工任务，力求揭示信条之谜，完成一项超越真实时间的任务——时空逆转。', descEn: "'Tenet' is the only clue and the only weapon. The Protagonist races across the globe to unravel its mystery — not time travel, but time inversion." },
+        { name: '奥本海默', nameEn: 'Oppenheimer', img: '/covers/shows-oppenheimer.webp', en: 'Oppenheimer', desc: '诺兰聚焦基里安·墨菲饰演的“原子弹之父”奥本海默，改编自普利策获奖传记，讲述一个必须冒着毁灭世界的风险来拯救世界的人。', descEn: "Nolan's epic thriller on the 'father of the atomic bomb', Robert Oppenheimer — a man who must risk destroying the world in order to save it." },
       ],
     },
     {
