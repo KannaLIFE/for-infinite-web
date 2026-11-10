@@ -72,6 +72,13 @@
 - **全局持久**：顶栏 `EN/中文` 按钮切换后写入 `localStorage`，跨页面、跨刷新全程保持同一语言。
 - **文案结构**：界面文案用 `t('命名空间.键')`；数据内容（profile 简介、友链、技术栈、服务）在原字段旁加 `*En` 平行字段，模板里用 `pick(zh, en)` / `pickList()` 按当前语言取值。新增翻译只改语言包两个文件。
 
+## 贡献图 / GitHub 数据（自托管快照）
+
+- **来源**：守护进程用 GITHUB_TOKEN 调 GitHub GraphQL 拉取 `contributionCalendar.weeks`（每日贡献格子），同时抓用户/仓库/语言统计，全部写入 `public/data/github.json`（`grid`=365 天格子、`reposList`=项目列表、`langs`=语言统计、`contributions`=总数）。
+- **前端策略**：`GhGrid`（贡献图）、`GhStats`（统计条）、`ProjectsView`（项目页）都是**快照优先**——先读本站 `github.json`，读不到才回退到第三方/官方 API。这样不受 GitHub 公开 API 被屏蔽、第三方限流的影响。
+- **刷新周期**：默认 600 分钟自动抓取一次；控制台 `检测` 按钮或 `POST /api/detect` 可手动触发（抓完自动 git 推送快照 → Actions 重新部署）。
+- **修复记录**：GitHub REST 请求全部带 token（匿名 60 次/小时限流曾导致语言统计只剩"1 语言"）。
+
 ## 稳定性：自愈机制
 
 - **看门狗**：守护进程每 30 秒端到端探测公网 `/status`，连续失败且距上次重启超 2 分钟 → 自动重启隧道进程。
@@ -91,3 +98,4 @@
 | 网站 `public\data\github.json` / `netease.json` | 推送上去的静态数据 |
 | 网站 `src\lib\i18n.ts` | 语言检测 / 持久化 / `t()` / `pick()` |
 | 网站 `src\locales\zh.ts` / `en.ts` | 中英文语言包 |
+| 网站 `public\_headers` | index.html 禁止缓存（防止旧哈希资源 404 导致白屏） |
