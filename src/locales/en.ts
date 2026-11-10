@@ -227,7 +227,7 @@ export default {
   },
   projects: {
     title: 'Projects · Workshop',
-    source: 'Data from the public GitHub API · @{user} · sorted by recent updates',
+    source: 'Data from the public GitHub API · {user} · sorted by recent updates',
     connecting: 'Connecting to GitHub…',
     unreachable: 'GitHub unreachable — showing fallback list.',
     noRepos: 'No public repositories yet.',

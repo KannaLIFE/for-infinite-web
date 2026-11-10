@@ -62,7 +62,7 @@ onMounted(async () => {
       <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-blue)]">/projects</span>
     </header>
     <p class="mono text-xs text-[var(--fi-muted)]">
-      {{ t('projects.source', { user: profile.ghUser }) }}
+      {{ t('projects.source', { user: '@' + profile.ghUser }) }}
     </p>
 
     <div v-if="loading" class="mono fi-px-panel bg-[var(--fi-panel)] p-8 text-center text-sm text-[var(--fi-muted)]">

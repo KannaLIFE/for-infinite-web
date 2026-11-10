@@ -227,7 +227,7 @@ export default {
   },
   projects: {
     title: '项目 · 工坊',
-    source: '数据来自 GitHub 公开 API · @{user} · 按最近更新排序',
+    source: '数据来自 GitHub 公开 API · {user} · 按最近更新排序',
     connecting: '正在连接 GitHub……',
     unreachable: 'GitHub 信号不可达，显示备用列表。',
     noRepos: 'GitHub 上还没有公开仓库。',
