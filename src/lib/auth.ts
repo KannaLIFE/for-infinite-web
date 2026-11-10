@@ -31,3 +31,19 @@ export function clearToken(): void {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(SCOPES_KEY);
 }
+
+// ---- 后台登录（sessionStorage：每次打开页面需重新登录，关闭页面即失效） ----
+
+const SESSION_TOKEN_KEY = 'fi_session_token';
+
+export function getSessionToken(): string | null {
+  return sessionStorage.getItem(SESSION_TOKEN_KEY);
+}
+
+export function setSessionToken(t: string): void {
+  sessionStorage.setItem(SESSION_TOKEN_KEY, t);
+}
+
+export function clearSessionToken(): void {
+  sessionStorage.removeItem(SESSION_TOKEN_KEY);
+}

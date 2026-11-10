@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
 import { api } from '../lib/api';
-import { getToken, setToken } from '../lib/auth';
+import { getSessionToken, setSessionToken } from '../lib/auth';
 import { useBackendHealth } from '../lib/backend';
 import { t } from '../lib/i18n';
 import type { AccountState } from '../types';
@@ -13,15 +13,13 @@ const unlockError = ref('');
 const { backend, start } = useBackendHealth();
 
 const accounts = ref<AccountState[]>([]);
-const keys = ref<{ date: string; messageKey: string; articleKey: string; adminKey: string } | null>(null);
 const disk = ref<{ messagesBytes: number; mediaBytes: number; totalUsedBytes: number; freeBytes: number } | null>(null);
 const keepDays = ref(30);
 const cleanupMsg = ref('');
-const showKeys = ref(false);
 const lastRefresh = ref('');
 let pollTimer: ReturnType<typeof setInterval> | null = null;
 
-const token = () => getToken() || undefined;
+const token = () => getSessionToken() || undefined;
 
 async function refresh(): Promise<void> {
   await loadAll();
@@ -58,19 +56,22 @@ function napcatInfo(a: AccountState): { label: string; color: string; busy: bool
   }
 }
 
+// ---- 登录：密码 → token 存 sessionStorage（关页失效） ----
 async function unlock(): Promise<void> {
   unlockError.value = '';
   try {
-    const r = await api.post<{ ok: boolean; token?: string }>('/api/auth/unlock', {
-      key: keyInput.value.trim(),
+    const r = await api.post<{ ok: boolean; token?: string }>('/api/auth/login', {
+      password: keyInput.value,
     });
     if (r.ok && r.token) {
-      setToken(r.token);
+      setSessionToken(r.token);
       unlocked.value = true;
       keyInput.value = '';
       await loadAll();
+      await loadFiles();
+      await loadArtList();
     } else {
-      unlockError.value = t('common.keyInvalid');
+      unlockError.value = t('admin.wrongPassword');
     }
   } catch {
     unlockError.value = t('common.unlockFailed');
@@ -88,12 +89,6 @@ async function loadAll(): Promise<void> {
   } catch (err) {
     if ((err as { status?: number }).status === 401) unlocked.value = false;
   }
-}
-
-async function loadKeys(): Promise<void> {
-  const r = await api.get<{ keys: typeof keys.value }>('/api/admin/keys', token());
-  keys.value = r.keys;
-  showKeys.value = true;
 }
 
 async function toggleAccount(id: string): Promise<void> {
@@ -118,6 +113,101 @@ async function cleanup(): Promise<void> {
   await loadAll();
 }
 
+// ---- 文件管理（content/blog，仅 .md） ----
+interface BlogFile {
+  name: string;
+  size: number;
+  mtime: string;
+}
+
+const files = ref<BlogFile[]>([]);
+const fileMsg = ref('');
+const uploading = ref(false);
+const quickTitle = ref('');
+const quickContent = ref('');
+const preview = ref<{ name: string; content: string } | null>(null);
+
+async function loadFiles(): Promise<void> {
+  try {
+    const r = await api.get<{ items: BlogFile[] }>('/api/admin/files', token());
+    files.value = r.items;
+  } catch {
+    /* ignore */
+  }
+}
+
+async function onUpload(e: Event): Promise<void> {
+  const input = e.target as HTMLInputElement;
+  const f = input.files?.[0];
+  input.value = '';
+  if (!f) return;
+  if (!/\.(md|markdown)$/i.test(f.name)) {
+    fileMsg.value = t('admin.mdOnly');
+    return;
+  }
+  uploading.value = true;
+  fileMsg.value = '';
+  try {
+    const content = await f.text();
+    await api.post('/api/admin/files/upload', { name: f.name, content }, token());
+    fileMsg.value = t('admin.uploadDone', { name: f.name });
+    await loadFiles();
+    await loadArtList();
+  } catch (err) {
+    const msg = (err as { message?: string }).message || '';
+    fileMsg.value = msg === 'exists' ? t('admin.nameExists') : t('admin.uploadFail', { err: msg || String(err) });
+  } finally {
+    uploading.value = false;
+  }
+}
+
+async function quickCreate(): Promise<void> {
+  fileMsg.value = '';
+  if (!quickTitle.value.trim() || !quickContent.value.trim()) {
+    fileMsg.value = t('admin.artEmpty');
+    return;
+  }
+  try {
+    await api.post(
+      '/api/admin/articles',
+      { category: 'blog', title: quickTitle.value.trim(), content: quickContent.value },
+      token(),
+    );
+    quickTitle.value = '';
+    quickContent.value = '';
+    fileMsg.value = t('admin.artCreated');
+    await loadFiles();
+    await loadArtList();
+  } catch (err) {
+    fileMsg.value = t('admin.artFailed', { err: String(err) });
+  }
+}
+
+async function removeFile(name: string): Promise<void> {
+  if (!confirm(t('admin.deleteFileConfirm', { name }))) return;
+  try {
+    await api.delete(`/api/admin/files/${encodeURIComponent(name)}`, token());
+    fileMsg.value = t('admin.deleted');
+    await loadFiles();
+    await loadArtList();
+  } catch {
+    /* ignore */
+  }
+}
+
+async function openFile(name: string): Promise<void> {
+  try {
+    const r = await api.get<{ name: string; content: string }>(
+      `/api/admin/files/${encodeURIComponent(name)}`,
+      token(),
+    );
+    preview.value = r;
+  } catch {
+    /* ignore */
+  }
+}
+
+// ---- 文章管理（世界观/现实等分类） ----
 type ArtCategory = 'blog' | 'worldview' | 'reality';
 const artCategory = ref<ArtCategory>('blog');
 const artList = ref<{ slug: string; title: string; locked: boolean }[]>([]);
@@ -132,7 +222,7 @@ async function loadArtList(): Promise<void> {
     );
     artList.value = r.items;
   } catch {
-
+    /* ignore */
   }
 }
 
@@ -158,6 +248,7 @@ async function createArticle(): Promise<void> {
     artMsg.value = t('admin.artCreated');
     artForm.value = { title: '', year: '', date: '', tags: '', excerpt: '', content: '' };
     await loadArtList();
+    await loadFiles();
   } catch (err) {
     artMsg.value = t('admin.artFailed', { err: String(err) });
   }
@@ -168,16 +259,18 @@ async function deleteArticle(slug: string): Promise<void> {
   try {
     await api.delete(`/api/admin/articles/${artCategory.value}/${slug}`, token());
     await loadArtList();
+    await loadFiles();
   } catch {
-
+    /* ignore */
   }
 }
 
 onMounted(async () => {
   start();
-  if (getToken()) {
+  if (getSessionToken()) {
     unlocked.value = true;
     await loadAll();
+    await loadFiles();
     await loadArtList();
   }
 
@@ -214,7 +307,7 @@ onUnmounted(() => {
           v-model="keyInput"
           type="password"
           class="mono flex-1 fi-px-panel bg-[var(--fi-panel-2)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none focus:border-[var(--fi-blue)]"
-          :placeholder="t('admin.adminKeyPlaceholder')"
+          :placeholder="t('admin.loginPassword')"
           @keyup.enter="unlock"
         />
         <button class="fi-px-btn px-4 py-2 text-sm" style="background: var(--fi-warm); color: #1a1208" @click="unlock">
@@ -225,6 +318,59 @@ onUnmounted(() => {
     </div>
 
     <template v-else>
+
+      <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
+        <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">{{ t('admin.files') }}</h2>
+        <p class="mono mb-3 text-[10px] text-[var(--fi-muted)]">{{ t('admin.filesHint') }}</p>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] p-3">
+            <h3 class="mono text-xs text-[var(--fi-blue)]">{{ t('admin.quickCreate') }}</h3>
+            <p class="mono mt-1 text-[10px] text-[var(--fi-muted)]">{{ t('admin.quickHint') }}</p>
+            <input
+              v-model="quickTitle"
+              class="mono mt-2 w-full rounded border border-[var(--fi-line)] bg-[var(--fi-panel)] px-3 py-2 text-sm text-[var(--fi-text)] outline-none focus:border-[var(--fi-blue)]"
+              :placeholder="t('admin.titlePh')"
+            />
+            <textarea
+              v-model="quickContent"
+              rows="6"
+              class="mt-2 w-full rounded border border-[var(--fi-line)] bg-[var(--fi-panel)] px-3 py-2 text-sm leading-relaxed text-[var(--fi-text)] outline-none focus:border-[var(--fi-blue)]"
+              :placeholder="t('admin.contentPh')"
+            ></textarea>
+            <button class="mt-2 rounded px-4 py-2 text-sm" style="background: var(--fi-warm); color: #1a1208" @click="quickCreate">
+              {{ t('admin.create') }}
+            </button>
+          </div>
+
+          <div class="flex flex-col border-2 border-[var(--fi-line-solid)] bg-[var(--fi-panel-2)] p-3">
+            <h3 class="mono text-xs text-[var(--fi-violet)]">{{ t('admin.uploadMd') }}</h3>
+            <label class="fi-px-btn mt-3 cursor-pointer text-center text-sm text-[var(--fi-blue)]">
+              {{ uploading ? t('admin.uploading') : t('admin.uploadMd') }}
+              <input type="file" accept=".md,.markdown" class="hidden" :disabled="uploading" @change="onUpload" />
+            </label>
+            <p class="mono mt-2 text-[10px] text-[var(--fi-muted)]">{{ t('admin.mdOnly') }}</p>
+            <div class="mt-3 min-h-24 flex-1 space-y-1.5 overflow-y-auto">
+              <p v-if="!files.length" class="mono text-xs text-[var(--fi-muted)]">{{ t('admin.noFiles') }}</p>
+              <div
+                v-for="f in files"
+                :key="f.name"
+                class="flex items-center gap-2 border-l-2 border-[var(--fi-blue-dim)] py-1 pl-2"
+              >
+                <button class="mono min-w-0 flex-1 truncate text-left text-xs text-[var(--fi-text)] hover:text-[var(--fi-blue)]" @click="openFile(f.name)">
+                  {{ f.name }}
+                </button>
+                <span class="mono shrink-0 text-[9px] text-[var(--fi-muted)]">{{ fmtBytes(f.size) }}</span>
+                <button class="mono shrink-0 text-[10px] text-[var(--fi-muted)] hover:text-[#f87171]" @click="removeFile(f.name)">
+                  {{ t('admin.delete') }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p v-if="fileMsg" class="mono mt-2 text-xs text-[var(--fi-warm)]">{{ fileMsg }}</p>
+      </section>
 
       <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
         <div class="mb-3 flex items-center justify-between">
@@ -264,22 +410,6 @@ onUnmounted(() => {
             </button>
           </div>
           <p v-if="!accounts.length" class="mono text-xs text-[var(--fi-muted)]">{{ t('admin.noAccounts') }}</p>
-        </div>
-      </section>
-
-      <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
-        <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">{{ t('admin.todayKeys') }}</h2>
-        <button
-          class="mono rounded border border-[var(--fi-line)] px-3 py-1.5 text-xs text-[var(--fi-text)] hover:border-[var(--fi-warm)]"
-          @click="loadKeys"
-        >
-          {{ t('admin.showRefresh') }}
-        </button>
-        <div v-if="showKeys && keys" class="mono mt-3 space-y-1 text-sm">
-          <p class="text-[var(--fi-muted)]">{{ t('admin.date') }}{{ keys.date }}</p>
-          <p>{{ t('admin.messageKey') }}<span class="text-[var(--fi-warm)]">{{ keys.messageKey }}</span></p>
-          <p>{{ t('admin.articleKey') }}<span class="text-[var(--fi-warm)]">{{ keys.articleKey }}</span></p>
-          <p>{{ t('admin.adminKey') }}<span class="text-[var(--fi-warm)]">{{ keys.adminKey }}</span></p>
         </div>
       </section>
 
@@ -369,5 +499,21 @@ onUnmounted(() => {
       </section>
     </template>
     </template>
+
+    <div
+      v-if="preview"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6"
+      @click.self="preview = null"
+    >
+      <div class="fi-px-panel w-full max-w-2xl bg-[var(--fi-panel)] p-6">
+        <div class="flex items-start justify-between gap-4">
+          <h3 class="mono truncate text-base text-[var(--fi-text)]">{{ preview.name }}</h3>
+          <button class="mono text-sm text-[var(--fi-muted)] hover:text-[var(--fi-text)]" @click="preview = null">
+            {{ t('common.closeX') }}
+          </button>
+        </div>
+        <pre class="mt-3 max-h-[60vh] overflow-y-auto whitespace-pre-wrap text-sm leading-relaxed text-[var(--fi-text)]">{{ preview.content }}</pre>
+      </div>
+    </div>
   </div>
 </template>
