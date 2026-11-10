@@ -11,14 +11,31 @@ interface Repo {
   stargazers_count: number;
   updated_at: string;
   html_url: string;
-  fork: boolean;
+  fork?: boolean;
 }
 
 const repos = ref<Repo[]>([]);
 const failed = ref(false);
 const loading = ref(true);
+const base = import.meta.env.BASE_URL;
 
 onMounted(async () => {
+  // 1) 本站快照优先：守护进程推送的 github.json 内含 reposList，不受 GitHub API 屏蔽影响
+  try {
+    const r = await fetch(`${base}data/github.json`, { cache: 'no-store' });
+    if (r.ok) {
+      const j = (await r.json()) as { reposList?: Repo[] };
+      if (Array.isArray(j.reposList) && j.reposList.length) {
+        repos.value = j.reposList;
+        loading.value = false;
+        return;
+      }
+    }
+  } catch {
+    // 快照不可用，走实时 API
+  }
+
+  // 2) GitHub 公开 API（能访问时数据更新鲜）
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 8000);

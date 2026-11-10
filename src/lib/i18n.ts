@@ -47,7 +47,7 @@ export function setLocale(l: Locale): void {
   } catch {
     // ignore storage failures
   }
-  document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en';
+  applyDocMeta(l);
 }
 
 /** Pick the string matching the current locale (data-driven content). */
@@ -62,4 +62,15 @@ export function pickList(zhList: string[], enList?: string[]): string[] {
   return zhList;
 }
 
-document.documentElement.lang = initial === 'zh' ? 'zh-CN' : 'en';
+const META_DESCRIPTION: Record<Locale, string> = {
+  zh: 'For Infinite — 星权穹顶 · 观测站',
+  en: 'For Infinite — Stellar Dome · Observatory',
+};
+
+function applyDocMeta(l: Locale): void {
+  document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en';
+  const el = document.querySelector('meta[name="description"]');
+  if (el) el.setAttribute('content', META_DESCRIPTION[l]);
+}
+
+applyDocMeta(initial);
