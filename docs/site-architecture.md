@@ -81,16 +81,17 @@
 
 ## 博客后端（Debian 托管 · 2026-11 新架构）
 
-- **部署位置**：私有仓库 `for-infinite-server`（Fastify）clone 到局域网 Debian 主机（[REDACTED]，主机名 [REDACTED]）的 `[REDACTED]`，systemd 常驻（`for-infinite.service`），Node 22，端口 [REDACTED]（`HOST=0.0.0.0`，ufw 只放行局域网来源）。
-- **域名链路**：公网域名 `api.kannalife.asia` 仍由 Windows 守护进程的 cloudflared 隧道承载——`/status` 留在本机 8790（电脑状态），**其余流量 → `127.0.0.1:8787` →（Windows `netsh portproxy` 转发）→ Debian 后端**。
-- **为什么加端口转发**：Cloudflare 边缘对"非 loopback 的私有 IP 源站"返回 error 1000（实测 127.0.0.1 通、192.168.x 不通），用 `netsh portproxy` 把本机回环端口转发到局域网 Debian 即可绕开（规则已持久化，重启不丢；删除命令见部署记录）。
-- **sharp 兼容**：老 CPU（AMD E2-3200）与 sharp 预编译二进制不兼容（加载即 SIGILL）。已改为可选加载：默认不加载、不压缩图片；兼容机器设 `COMPRESS_MEDIA=1` 才启用 WebP 压缩。
-- **后台登录**：单密码（`.env` 的 `MASTER_KEY`）→ `POST /api/auth/login` 签发全权限 HMAC token；前端把 token 存 **sessionStorage**——每次打开页面需重新输入密码、关闭页面即失效。
+> 说明：本节刻意**不写具体 IP / 主机名 / 端口**——完整运维细节（含网络地址与命令）保存在**私有仓库 `for-infinite-server` 的 docs 里**，不在公开仓库出现。
+
+- **部署位置**：后端（Fastify）clone 到局域网内一台无头 Debian 主机，systemd 常驻，Node 22，监听后端端口（ufw 只放行局域网来源）。
+- **域名链路**：公网域名仍由本机守护进程的 cloudflared 隧道承载——`/status` 留在本机（电脑状态），**其余流量 → 本机回环端口 →（系统端口转发桥）→ Debian 后端**。
+- **为什么经回环转发**：Cloudflare 边缘对"非 loopback 的私有源站"有限制（返回 error 1000），用系统自带的端口转发把回环端口桥接到局域网主机即可绕开（转发规则已持久化）。
+- **sharp 兼容**：老 CPU 与 sharp 预编译二进制不兼容（加载即 SIGILL）。已改为可选加载：默认不加载、不压缩图片；兼容机器设 `COMPRESS_MEDIA=1` 才启用 WebP 压缩。
+- **后台登录**：单密码（后端 `.env` 的 `MASTER_KEY`）→ `POST /api/auth/login` 签发全权限 HMAC token；前端把 token 存 **sessionStorage**——每次打开页面需重新输入密码、关闭页面即失效。
 - **文件管理**：`/api/admin/files`（列表/读取/上传/删除，仅 .md），目录 = `content/blog/`——上传的 .md 直接成为博客文章；"快速创建文章"复用 `/api/admin/articles`（自动生成 frontmatter）。未解锁访客看不到任何页面结构（标题/分区均在解锁分支内）。
-- **部署脚本**：`fi-runtime\deploy\`（deploy-backend.sh / step2-4.sh / probe.sh），统一采用"本地写脚本 + scp + ssh 执行"，避免 PowerShell→ssh→bash 多层引号转义坑。
 - **两个仓库分工**：
   - **公开仓库 `for-infinite-web`**：前端 + 快照数据（守护进程把 `public/data/github.json`、`netease.json` 提交推送到这里，推送后 Actions 自动重新部署）；
-  - **私有仓库 `for-infinite-server`**：后端代码 + 文章内容（`content/`，git 跟踪，可手动提交备份）。
+  - **私有仓库 `for-infinite-server`**：后端代码 + 文章内容（`content/`，git 跟踪）+ 运维细节文档。
 
 ## 稳定性：自愈机制
 
@@ -112,6 +113,6 @@
 | 网站 `src\lib\i18n.ts` | 语言检测 / 持久化 / `t()` / `pick()` |
 | 网站 `src\locales\zh.ts` / `en.ts` | 中英文语言包 |
 | 网站 `public\_headers` | index.html 禁止缓存（防止旧哈希资源 404 导致白屏） |
-| `fi-runtime\deploy\*.sh` | Debian 后端部署/探针脚本（scp + ssh 执行） |
-| Debian `[REDACTED]` | Fastify 后端（博客/后台/文件管理，systemd 常驻） |
-| Windows `netsh portproxy` [REDACTED] | 回环→Debian 端口转发（隧道链路的桥） |
+| 本机部署脚本目录 | Debian 后端部署/探针脚本（scp + ssh 执行） |
+| Debian 主机后端目录 | Fastify 后端（博客/后台/文件管理，systemd 常驻） |
+| 本机系统端口转发桥 | 回环→局域网主机的转发（隧道链路的桥） |
