@@ -53,8 +53,8 @@ onMounted(async () => {
   }, 55);
 
   setTimeout(() => (showQuote.value = true), 1600);
-  setTimeout(() => (phase.value = 'shrink'), 2300);
-  setTimeout(() => emit('done'), 3300);
+  setTimeout(() => (phase.value = 'shrink'), 4000);
+  setTimeout(() => emit('done'), 5000);
 });
 
 function skip(): void {

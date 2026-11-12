@@ -179,11 +179,6 @@ onUnmounted(() => {
     </div>
 
     <template v-else>
-    <header class="flex items-center gap-3">
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">{{ t('messages.title') }}</h1>
-      <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-warm)]">/aetherlink</span>
-    </header>
-
     <div v-if="!unlocked" class="fi-px-panel bg-[var(--fi-panel)] p-6">
       <p class="text-sm text-[var(--fi-muted)]">{{ t('messages.locked') }}</p>
       <div class="mt-4 flex gap-2">
@@ -206,6 +201,11 @@ onUnmounted(() => {
     </div>
 
     <template v-else>
+      <header class="flex items-center gap-3">
+        <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">{{ t('messages.title') }}</h1>
+        <span class="mono border border-[var(--fi-line-solid)] bg-[var(--fi-panel)] px-2 py-0.5 text-[10px] text-[var(--fi-warm)]">/aetherlink</span>
+      </header>
+
       <div class="fi-px-panel flex w-fit gap-1 bg-[var(--fi-panel)] p-1">
         <button
           class="mono border-2 px-4 py-1.5 text-xs transition"

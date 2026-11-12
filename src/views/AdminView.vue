@@ -295,11 +295,6 @@ onUnmounted(() => {
     </div>
 
     <template v-else>
-    <header>
-      <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">{{ t('admin.title') }}</h1>
-      <p class="mono mt-1 text-xs text-[var(--fi-muted)]">{{ t('admin.subtitle') }}</p>
-    </header>
-
     <div v-if="!unlocked" class="rounded-xl border border-[var(--fi-line)] bg-[var(--fi-panel)] p-6">
       <p class="text-sm text-[var(--fi-muted)]">{{ t('admin.locked') }}</p>
       <div class="mt-4 flex gap-2">
@@ -318,6 +313,11 @@ onUnmounted(() => {
     </div>
 
     <template v-else>
+
+      <header>
+        <h1 class="mono text-2xl font-semibold text-[var(--fi-text)]">{{ t('admin.title') }}</h1>
+        <p class="mono mt-1 text-xs text-[var(--fi-muted)]">{{ t('admin.subtitle') }}</p>
+      </header>
 
       <section class="fi-px-panel bg-[var(--fi-panel)] p-5">
         <h2 class="mono mb-3 text-sm text-[var(--fi-warm)]">{{ t('admin.files') }}</h2>
