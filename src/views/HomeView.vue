@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { profile, type AboutItem, type AboutSection } from '../data/profile';
 import { friends } from '../data/friends';
-import { API_BASE, api } from '../lib/api';
+import { API_BASE, STATUS_BASE, api } from '../lib/api';
 import { nowWorldYear } from '../lib/time';
 import { pick, pickList, t } from '../lib/i18n';
 import GhGrid from '../components/GhGrid.vue';
@@ -27,7 +27,7 @@ async function pollStatus(): Promise<void> {
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 5000);
-    const r = await fetch(`${API_BASE}/status`, { signal: ctrl.signal, cache: 'no-store' });
+    const r = await fetch(`${STATUS_BASE}/status`, { signal: ctrl.signal, cache: 'no-store' });
     clearTimeout(t);
     if (!r.ok) throw new Error();
     const j = await r.json();

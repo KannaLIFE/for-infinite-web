@@ -1,5 +1,9 @@
 export const API_BASE = import.meta.env.VITE_API_BASE || '';
 
+/** 电脑实时状态（窗口标题）走独立的 status 隧道；未配置时回退到 API 域名 */
+export const STATUS_BASE =
+  import.meta.env.VITE_STATUS_BASE || `${API_BASE}`;
+
 export function mediaUrl(relPath: string): string {
   return `${API_BASE}/${relPath}`;
 }
