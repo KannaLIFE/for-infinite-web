@@ -1,36 +1,31 @@
 # 站点"实时状态"与统计功能实现说明
 
-> 用途：给朋友解释 / 未来写博客的素材。最后更新：2026-11-12。
+> 用途：给朋友解释 / 未来写博客的素材。最后更新：2026-11-25。
 
 ## 一句话总览
 
 网站本身是**纯静态页面**（Vue3 + Vite，托管在 GitHub Pages），不跑任何服务器。
 所有"活数据"（电脑活动状态、GitHub 统计、网易云听歌）由**本机常驻的一个小程序**（快照守护进程）定时生产，然后"推"到网站上去。
-公网只暴露一个极小的状态接口。
+公网入口拆成两个独立隧道：`status` 走会关机的 Windows 电脑，`api`（博客/后台/LIFE）走常驻的 Debian 主机。
 
 ## 架构图（文字版）
 
 ```
-┌─ 你的电脑 ────────────────────────────────┐
-│                                          │
-│  FI-Tray（托盘小图标）─控制─► 守护进程(8790)│
-│        ▲                │                │
-│        │                ├─ 每5秒: Win32 API 抓前台窗口标题
-│        │                ├─ 定时: GitHub REST/GraphQL
-│        │                ├─ 定时: 网易云接口（浏览器Cookie）
-│        │                ├─ git push 静态 JSON 回网站仓库
-│        │                └─ 启动 cloudflared 隧道
-│                                          │
-│  cloudflared ──(TUN 代理出墙)──► Cloudflare 边缘
-└──────────────────────────┬───────────────┘
-                           │ 隧道（公网只放行 /status 一个路径）
-                           ▼
-        https://api.kannalife.asia/status  ← JSON: {online,status,mode,at}
-                           ▲
-                           │ 每15秒轮询
+┌─ Windows（可关机）────────────────────┐        ┌─ Debian 常驻主机 ────────────────┐
+│ FI-Tray ─► 守护进程(127.0.0.1:8790)   │        │ Fastify 后端 (127.0.0.1:8787)     │
+│   ├ 每5秒抓前台窗口标题                 │        │  博客 / 后台 / LIFE               │
+│   ├ 定时抓 GitHub / 网易云              │        │ cloudflared（api 隧道, systemd）  │
+│   ├ git push 静态 JSON 回网站仓库       │        └───────────────┬───────────────────┘
+│   └ cloudflared（status 隧道）          │                        │
+└──────────────┬─────────────────────────┘                        │
+               │ status.kannalife.asia/status                     │ api.kannalife.asia
+               ▼                                                  ▼
+        ┌────────────────────── Cloudflare 边缘 ──────────────────────┐
+               ▲
+               │  常驻后端不依赖 Windows；Windows 关机只影响状态卡
 ┌─ 网站（GitHub Pages 纯静态）──────────────┐
-│  首页实时状态卡片 / GitHub语言条 / 听歌卡  │
-│  数据文件: public/data/*.json（由电脑推送）│
+│  首页状态卡 / 博客 / 后台 / LIFE           │
+│  数据文件: public/data/*.json（电脑推送）  │
 └──────────────────────────────────────────┘
 ```
 
@@ -39,10 +34,10 @@
 ### ① 电脑活动状态（"实时状态"）
 
 1. 本机守护进程每 5 秒调用 Win32 API `GetForegroundWindow` + `GetWindowText` 抓取**当前前台窗口的标题**（PowerShell 通过 `-EncodedCommand` 以 UTF-16LE 传参避免中文乱码）。
-2. 守护进程在本机 127.0.0.1:8790 开一个 HTTP 服务，通过 Cloudflare 隧道把唯一路径 `/status` 暴露到公网，返回 `{online, status, mode, at}`。
-3. 网站首页每 15 秒 fetch 一次该 JSON，渲染成"当前状态"。
+2. 守护进程在 `127.0.0.1:8790` 开一个 HTTP 服务，通过 Windows 侧的 cloudflared 隧道把唯一路径 `/status` 暴露到 `https://status.kannalife.asia/status`，返回 `{online, status, mode, at}`。
+3. 网站首页每 15 秒 fetch 一次该 JSON（`VITE_STATUS_BASE`），渲染成"当前状态"。
 4. 两种模式可切换：`window`（自动抓窗口名）/ `custom`（固定自定义文本，保护隐私）。
-5. 关键点：**公网只有一个只读 JSON 端点**；守护进程的管理控制台只监听 127.0.0.1，公网访问不到。
+5. 关键点：**公网只能访问这一个只读 JSON 路径**；守护进程的管理控制台只在回环地址，公网访问不到。
 
 ### ② GitHub 统计（WakaTime 风格语言条）
 
@@ -60,10 +55,11 @@
 
 ## 安全设计
 
-- 所有敏感信息（GitHub token、网易云 Cookie、密钥）只存在**本机 .env**，公网永远接触不到。
-- 隧道入口做了精确收窄：公网只能访问 `/status`；模糊路径（如 `/foo/status`）一律 404。
-- 管理控制台仅 127.0.0.1 可开。
-- 网页上的解锁（消息/后台）采用 HMAC 签名的临时 token，由后端按日签发，前端无法伪造。
+- 所有敏感信息（GitHub token、网易云 Cookie、后端密钥）只存在**主机本地的 .env**，公网接触不到。
+- 两条隧道各自只放行必要的路径：status 隧道只放行 `/status`，api 隧道只转发到后端。
+- 管理控制台仅回环可访问。
+- 后台登录用单密码换 HMAC token，前端只存 `sessionStorage`——每次打开需重新输入、关页即失效。
+- 博客正文渲染前过 DOMPurify 消毒。
 
 ## 国际化（中英双语）
 
@@ -83,9 +79,9 @@
 
 > 说明：本节刻意**不写具体 IP / 主机名 / 端口**——完整运维细节（含网络地址与命令）保存在**私有仓库 `for-infinite-server` 的 docs 里**，不在公开仓库出现。
 
-- **部署位置**：后端（Fastify）clone 到局域网内一台无头 Debian 主机，systemd 常驻，Node 22，监听后端端口（ufw 只放行局域网来源）。
-- **域名链路**：公网域名仍由本机守护进程的 cloudflared 隧道承载——`/status` 留在本机（电脑状态），**其余流量 → 本机回环端口 →（系统端口转发桥）→ Debian 后端**。
-- **为什么经回环转发**：Cloudflare 边缘对"非 loopback 的私有源站"有限制（返回 error 1000），用系统自带的端口转发把回环端口桥接到局域网主机即可绕开（转发规则已持久化）。
+- **部署位置**：后端（Fastify）clone 到局域网内一台无头 Debian 主机，systemd 常驻，Node 22，监听回环地址（由同机的 cloudflared 转发）。
+- **域名链路**：`api.kannalife.asia` 由 **Debian 主机上的 cloudflared 服务**承载（systemd），入口直接指向**同机回环端口**——因此不需要任何端口转发桥，也不受局域网 IP 变化影响；`/status` 则单独走 Windows 侧的隧道（见 ①）。
+- **为什么拆成两条隧道**：api 的宿主（博客/LIFE/后台）在常驻的 Debian 上，Windows 关机不该影响它；而状态卡反映的就是 Windows 电脑本身，关机时显示离线是合理语义。两条隧道各自独立，互不牵连。
 - **sharp 兼容**：老 CPU 与 sharp 预编译二进制不兼容（加载即 SIGILL）。已改为可选加载：默认不加载、不压缩图片；兼容机器设 `COMPRESS_MEDIA=1` 才启用 WebP 压缩。
 - **后台登录**：单密码（后端 `.env` 的 `MASTER_KEY`）→ `POST /api/auth/login` 签发全权限 HMAC token；前端把 token 存 **sessionStorage**——每次打开页面需重新输入密码、关闭页面即失效。
 - **文件管理**：`/api/admin/files`（列表/读取/上传/删除，仅 .md），目录 = `content/blog/`——上传的 .md 直接成为博客文章；"快速创建文章"复用 `/api/admin/articles`（自动生成 frontmatter）。未解锁访客看不到任何页面结构（标题/分区均在解锁分支内）。
@@ -95,10 +91,10 @@
 
 ## 稳定性：自愈机制
 
-- **看门狗**：守护进程每 30 秒端到端探测公网 `/status`，连续失败且距上次重启超 2 分钟 → 自动重启隧道进程。
-- **进程守护**：cloudflared 异常退出 → 5 秒自动拉起。
+- **看门狗**：守护进程每 30 秒端到端探测 `https://status.kannalife.asia/status`，连续失败且距上次重启超 2 分钟 → 自动重启 Windows 侧隧道进程。
+- **进程守护**：cloudflared 异常退出 → 5 秒自动拉起；Debian 侧隧道由 systemd `Restart=on-failure` 兜底。
 - **日志落盘**：守护进程 events.log + 隧道 cf.log，故障可回溯。
-- 国内网络直连 Cloudflare 边缘（QUIC/UDP 7844）不稳，隧道经本机 Clash TUN 模式出墙；`hosts` 固定了边缘真实 IP 以绕开 fake-ip DNS；Windows 路由表收窄为只让边缘 IP 段进 TUN，避免拖慢其他流量。
+- 国内网络直连 Cloudflare 边缘（QUIC/UDP）不稳：Windows 侧隧道经本机代理出墙；Debian 侧用 `http2` 传输（QUIC 在此网络下会超时）。
 
 ## 文件清单
 
@@ -107,12 +103,12 @@
 | `fi-runtime\snapshot\daemon.mjs` | 守护进程本体（抓取/上传/状态服务/看门狗） |
 | `fi-runtime\snapshot\FI-Tray.exe` | 托盘控制程序 |
 | `fi-runtime\snapshot\daemon.vbs` | 启动脚本（计划任务调用） |
-| `fi-runtime\cloudflared\config.yml` | 隧道入口规则 |
-| `fi-runtime\server\` | Fastify 后端（消息/后台/文章，按需开启，平时关机） |
+| `fi-runtime\cloudflared\config.yml` | Windows 侧 status 隧道入口规则 |
+| Debian `/etc/cloudflared/config.yml` | Debian 侧 api 隧道入口规则（systemd `cloudflared` 服务） |
 | 网站 `public\data\github.json` / `netease.json` | 推送上去的静态数据 |
 | 网站 `src\lib\i18n.ts` | 语言检测 / 持久化 / `t()` / `pick()` |
+| 网站 `src\lib\api.ts` | `API_BASE` / `STATUS_BASE` 两个入口常量 |
 | 网站 `src\locales\zh.ts` / `en.ts` | 中英文语言包 |
 | 网站 `public\_headers` | index.html 禁止缓存（防止旧哈希资源 404 导致白屏） |
 | 本机部署脚本目录 | Debian 后端部署/探针脚本（scp + ssh 执行） |
 | Debian 主机后端目录 | Fastify 后端（博客/后台/文件管理，systemd 常驻） |
-| 本机系统端口转发桥 | 回环→局域网主机的转发（隧道链路的桥） |
